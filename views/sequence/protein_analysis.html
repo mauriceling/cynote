@@ -1,0 +1,18 @@
+{{extend 'layout.html'}}
+[<a href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
+Back to Menu </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry"> 
+Create New Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook"> 
+Create New Notebook </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries"> 
+List all Entries </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual"> 
+Notarize an Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
+Show all Results </a>]
+<br><br><h1>Protein Analysis<br></h1>
+Analyse amino acid sequence for amino acid distribution, pI, MW, aromaticity, 
+instability, flexibility, and secondary structure fractions.
+<br><br>
+{{=form}}

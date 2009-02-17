@@ -1,0 +1,26 @@
+{{extend 'layout.html'}}
+[<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/default/index"> 
+Back to Menu </a>|
+<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/cynote/new_entry"> 
+Create New Entry </a>|
+<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/cynote/new_notebook"> 
+Create New Notebook </a>|
+<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/cynote/entries"> 
+List all Entries </a>|
+<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/cynote/notarize_bymanual"> 
+Notarize an Entry </a>|
+<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/cynote/results"> 
+Show all Results </a>]
+<br>
+<h1>List all Entries</h1>
+This page lists all entries of a particular notebook as "inverse Table of Contents" (newest entry to oldest entry) for navigation.<br><br>{{=form}}
+<table>
+{{for entry in records:}}
+<tbody><tr>
+<td>{{=A(entry.title,_href=URL(r=request, f='show', args=[entry.id]))}}</td>
+<td><br></td>
+<td>{{=entry.datetime}}</td>
+</tr>
+{{pass}}
+
+</tbody></table>
