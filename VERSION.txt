@@ -1,2 +1,4 @@
-VERSION 1.0 (Feb 13, 2009)
-SVN version 133
+VERSION 1 (Feb 13, 2009)
+SVN version 1
+using
+web2py 1.56.3 (2009-02-16 10:07:09)
