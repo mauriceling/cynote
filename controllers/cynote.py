@@ -14,7 +14,24 @@ def entries():
             .select(cynotedb.entry.ALL,orderby=~cynotedb.entry.id) 
         form=SQLFORM(cynotedb.entry,fields=['notebook'])
     return dict(form=form, records=records)
-    
+
+def archived_entries(): 
+    # return the archived notebook itself - Table of contents
+    # This function re-runs itself. At the first run, records is None;
+    # hence, does not show the records, only show the form.
+    # When a notebook was selected, this function will repeat itself
+    # to give the TOC
+    # "records" needs to run before SQLFORM in order to list the 
+    # notebooks available
+    if session.username == None: redirect(URL(r=request,f='../account/log_in'))
+    else:
+        records=cynotedb(cynotedb.entry.notebook==request.vars.notebook)\
+            (cynotedb.entry.notebook==cynotedb.notebook.id)\
+            (cynotedb.notebook.archived==True)\
+            .select(cynotedb.entry.ALL,orderby=~cynotedb.entry.id) 
+        form=SQLFORM(cynotedb.entry,fields=['notebook'])
+    return dict(form=form, records=records)
+        
 def show():
     # called to show one entry and its linked comments based on 
     # the entry.id
@@ -135,3 +152,27 @@ def show_results():
         redirect(URL(r=request,f='entries'))
     return dict(result=session['form_vars'],test=test,form=form)
     #return dict(option_checked=option_checked)
+
+def archive_notebook():   
+    if session.username == None: redirect(URL(r=request,f='../account/log_in'))          
+    form = FORM(
+            TABLE(*[TR(""+str(id['name']), 
+                INPUT(_type="checkbox",_name=str(id['name']),value=False,_value='on'))
+            for id in cynotedb(cynotedb.notebook.archived=="False").select(cynotedb.notebook.name)]+\
+            [TR("",INPUT(_type="submit",_value="Archive"))]))    
+    if form.accepts(request.vars,session):
+        for notebook in form.vars.keys():
+            cynotedb(cynotedb.notebook.name == notebook).update(archived=True)
+    return dict(form=form)
+
+def unarchive_notebook():  
+    if session.username == None: redirect(URL(r=request,f='../account/log_in'))           
+    form = FORM(
+            TABLE(*[TR(""+str(id['name']), 
+                INPUT(_type="checkbox",_name=str(id['name']),value=False,_value='on'))
+            for id in cynotedb(cynotedb.notebook.archived=="True").select(cynotedb.notebook.name)]+\
+            [TR("",INPUT(_type="submit",_value="Unarchive"))]))    
+    if form.accepts(request.vars,session):
+        for notebook in form.vars.keys():
+            cynotedb(cynotedb.notebook.name == notebook).update(archived=False)
+    return dict(form=form)
