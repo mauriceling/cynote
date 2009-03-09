@@ -163,7 +163,7 @@ def archive_notebook():
     if form.accepts(request.vars,session):
         for notebook in form.vars.keys():
             cynotedb(cynotedb.notebook.name == notebook).update(archived=True)
-        redirect(URL(r=request,f='archive_notebook')
+        redirect(URL(r=request,f='archive_notebook'))
     return dict(form=form)
 
 def unarchive_notebook():  
@@ -176,5 +176,5 @@ def unarchive_notebook():
     if form.accepts(request.vars,session):
         for notebook in form.vars.keys():
             cynotedb(cynotedb.notebook.name == notebook).update(archived=False)
-        redirect(URL(r=request,f='unarchive_notebook')
+        redirect(URL(r=request,f='unarchive_notebook'))
     return dict(form=form)
