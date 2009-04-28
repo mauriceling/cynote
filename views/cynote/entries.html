@@ -1,15 +1,15 @@
 {{extend 'layout.html'}}
-[<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/default/index"> 
+[<a href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
 Back to Menu </a>|
-<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/cynote/new_entry"> 
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry"> 
 Create New Entry </a>|
-<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/cynote/new_notebook"> 
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook"> 
 Create New Notebook </a>|
-<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/cynote/entries"> 
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries"> 
 List all Entries </a>|
-<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/cynote/notarize_bymanual"> 
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual"> 
 Notarize an Entry </a>|
-<a href="http://%7B%7B=request.env.http_host%7D%7D/%7B%7B=request.application%7D%7D/cynote/results"> 
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
 Show all Results </a>]
 <br>
 <h1>List all Entries</h1>
