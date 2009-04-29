@@ -2,11 +2,8 @@
 
 import os
 import zipfile
+import time
 from shutil import rmtree, copytree, copy2, ignore_patterns
-
-old_cynote = os.sep.join([os.getcwd().split(os.sep)[0], 'cynote'])
-new_cynote = os.getcwd()
-bdirectory = os.getcwd().split(os.sep)[0]
 
 def cleanup_new_cynote(new_cynote):
     # Step 1.1: remove contents of new_cynote's database directory
@@ -51,11 +48,35 @@ def old_to_new(old_cynote, new_cynote):
     print
 
 def backup_data(old_cynote, bdirectory):
-    pass
+    # Step 3.1: create backup file
+    zfile = bdirectory + os.sep + 'cynote_backup-' + \
+            str(int(time.time())) + '.zip'
+    z = zipfile.ZipFile(zfile, 'w')
+    print "Step 3.1: Backup file (%s) created" % (zfile)
+    # Step 3.2: backup database directory 
+    directory = os.sep.join([old_cynote, 'applications', 'init', 'databases'])
+    print "Step 3.2: Backup database files from %s to %s" % (directory, zfile)
+    os.chdir(directory)
+    print "Changed working directory to %s" % (directory)
+    for f in [t for t in os.walk(directory)][0][2]:
+        z.write(os.sep.join([directory, f]))
+        print "%s file backup to %s" % (f, zfile)
+    # Step 3.3: backup uploads directory 
+    directory = os.sep.join([old_cynote, 'applications', 'init', 'uploads'])
+    print "Step 3.3: Backup upload files from %s to %s" % (directory, zfile)
+    os.chdir(directory)
+    print "Changed working directory to %s" % (directory)
+    for f in [t for t in os.walk(directory)][0][2]:
+        z.write(os.sep.join([directory, f]))
+        print "%s file backup to %s" % (f, zfile)
+    z.close()
+    print "Step 3 completed"
+    print
 
-def remove_old(old_cynote):
+def remove_old(old_cynote, new_cynote):
     # Step 4: remove old cynote
     print "Step 4: remove %s directory" % (old_cynote)
+    os.chdir(new_cynote)
     rmtree(old_cynote)
     print "Step 4 completed"
     print
@@ -69,8 +90,32 @@ def replace_cynote(old_cynote, new_cynote):
     print
     
 
-cleanup_new_cynote(new_cynote)
-old_to_new(old_cynote, new_cynote)
-backup_data(old_cynote, bdirectory)
-remove_old(old_cynote)
-replace_cynote(old_cynote, new_cynote)
+if __name__ == '__main__':
+    new_cynote = os.getcwd()
+    bdirectory = os.getcwd().split(os.sep)[0]
+    print '=================================================================='
+    print 'Welcome to CyNote updating utility                                '
+    print '=================================================================='
+    print 'IMPORTANT: Please close your CyNote before updating'
+    print '           or there will be irrecoverable errors.'
+    print
+    correct = False
+    while correct == False:
+        old_cynote = raw_input('Please enter your existing CyNote directory: ')
+        if os.path.isdir(old_cynote) and \
+        os.path.isdir(os.sep.join([old_cynote, 'applications'])):
+            correct = True
+        else:
+            print '%s directory does not contain CyNote. Please try again.' % (old_cynote)
+    correct = False
+    while correct == False:
+        bdirectory = raw_input('Please enter a directory to keep your backup file: ')
+        if os.path.isdir(bdirectory):
+            correct = True
+        else:
+            print '%s directory does not exist. Please try again.' % (bdirectory)        
+    cleanup_new_cynote(new_cynote)
+    old_to_new(old_cynote, new_cynote)
+    backup_data(old_cynote, bdirectory)
+    remove_old(old_cynote, new_cynote)
+    replace_cynote(old_cynote, new_cynote)
