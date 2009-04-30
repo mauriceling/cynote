@@ -89,16 +89,15 @@ def replace_cynote(old_cynote, new_cynote):
     print "Step 5 completed"
     print
     
-
-if __name__ == '__main__':
-    new_cynote = os.getcwd()
-    bdirectory = os.getcwd().split(os.sep)[0]
+def print_headers():
     print '=================================================================='
     print 'Welcome to CyNote updating utility                                '
     print '=================================================================='
     print 'IMPORTANT: Please close your CyNote before updating'
     print '           or there will be irrecoverable errors.'
     print
+
+def get_old_cynote():
     correct = False
     while correct == False:
         old_cynote = raw_input('Please enter your existing CyNote directory: ')
@@ -116,13 +115,16 @@ if __name__ == '__main__':
             except: pass
             if len(app_list) == 0: correct = True
             else:
-		print
+                print
                 print '%s directory contains the following applications:' % (old_cynote)
-		print app_list 
-		print 'You cannot use this updating utility without destroying the above mentioned applications'
-		print
+                print app_list 
+                print 'You cannot use this updating utility without destroying the above mentioned applications'
+                print
         except:
             print '%s directory does not contain CyNote. Please try again.' % (old_cynote)    
+    return old_cynote
+
+def get_bdirectory():
     correct = False
     while correct == False:
         bdirectory = raw_input('Please enter a directory to keep your backup file: ')
@@ -130,6 +132,14 @@ if __name__ == '__main__':
             correct = True
         else:
             print '%s directory does not exist. Please try again.' % (bdirectory)        
+    return bdirectory
+
+if __name__ == '__main__':
+    new_cynote = os.getcwd()
+    bdirectory = os.getcwd().split(os.sep)[0]
+    print_headers()
+    old_cynote = get_old_cynote()
+    bdirectory = get_bdirectory()
     cleanup_new_cynote(new_cynote)
     old_to_new(old_cynote, new_cynote)
     backup_data(old_cynote, bdirectory)
