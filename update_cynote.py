@@ -102,11 +102,27 @@ if __name__ == '__main__':
     correct = False
     while correct == False:
         old_cynote = raw_input('Please enter your existing CyNote directory: ')
-        if os.path.isdir(old_cynote) and \
-        os.path.isdir(os.sep.join([old_cynote, 'applications'])):
-            correct = True
-        else:
-            print '%s directory does not contain CyNote. Please try again.' % (old_cynote)
+        try:
+            app_list = [t for t in
+                        os.walk(os.sep.join([old_cynote, 'applications']))][0][1]
+##            print app_list
+            try: app_list.remove('admin')
+            except: pass
+            try: app_list.remove('examples')
+            except: pass
+            try: app_list.remove('welcome')
+            except: pass
+            try: app_list.remove('init')
+            except: pass
+            if len(app_list) == 0: correct = True
+            else:
+		print
+                print '%s directory contains the following applications:' % (old_cynote)
+		print app_list 
+		print 'You cannot use this updating utility without destroying the above mentioned applications'
+		print
+        except:
+            print '%s directory does not contain CyNote. Please try again.' % (old_cynote)    
     correct = False
     while correct == False:
         bdirectory = raw_input('Please enter a directory to keep your backup file: ')
