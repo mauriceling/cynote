@@ -10,7 +10,6 @@ python ez_setup.py
 goto check_python_modules
 
 :check_python_modules
-easy_install "numpy==1.3.0"
 easy_install "biopython==1.50"
 easy_install "pil==1.1.6"
 goto run_web2py
