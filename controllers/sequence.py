@@ -134,6 +134,25 @@ ncbi_db = {"Non-redundant GenBank (nr)" : "nr",
            "Whole Genome Shotgun sequences (wgs)" : "wgs",
            "Nucleotide - environmental samples (env_nr)" : "env_nt"}
 
+genetic_code = {"Standard (1)" : 1,
+                "Vertebrate Mitochondria (2)" : 2,
+                "Yeast Mitochondria (3)" : 3,
+                "Mold, Protozoan, and Coelenterate Mitochondria (4)" : 4,
+                "Mycoplasma/Spiroplasma (4)" : 4,
+                "Invertebrate Mitochondria (5)" : 5,
+                "Ciliate, Dasycladacean and Hexamita Nuclear (6)" : 6,
+                "Echinoderm and Flatworm Mitochondria (9)" : 9,
+                "Euplotid Nuclear (10" : 10,
+                "Bacterial, Archaeal and Plant Plastid (11)" : 11,
+                "Alternative Yeast Nuclear (12)" : 12,
+                "Ascidian Mitochondria (13)" : 13,
+                "Alternative Flatworm Mitochondria (14)" : 14,
+                "Blepharisma Nuclear (15)" : 15,
+                "Chlorophycean Mitochondria (16)" : 16,
+                "Trematode Mitochondria (21)" : 21,
+                "Scenedesmus obliquus Mitochondria (22)" : 22,
+                "Thraustochytrium Mitochondria (23)" : 23}
+
 def ncbiblast():
     if session.username == None: redirect(URL(r=request,f='../account/log_in'))
     form = FORM(TABLE(TR("Sequence:  ", 
@@ -159,9 +178,35 @@ def ncbiblast():
                         "Whole Genome Shotgun sequences (wgs)",
                         "Nucleotide - environmental samples (env_nr)",
                         _name="database")),
+                      TR("Translation Table: ", 
+                        SELECT("Standard (1)",
+                        "Vertebrate Mitochondria (2)",
+                        "Yeast Mitochondria (3)",
+                        "Mold, Protozoan, and Coelenterate Mitochondria (4)",
+                        "Mycoplasma/Spiroplasma (4)",
+                        "Invertebrate Mitochondria (5)",
+                        "Ciliate, Dasycladacean and Hexamita Nuclear (6)",
+                        "Echinoderm and Flatworm Mitochondria (9)",
+                        "Euplotid Nuclear (10)",
+                        "Bacterial, Archaeal and Plant Plastid (11)",
+                        "Alternative Yeast Nuclear (12)",
+                        "Ascidian Mitochondria (13)",
+                        "Alternative Flatworm Mitochondria (14)",
+                        "Blepharisma Nuclear (15)",
+                        "Chlorophycean Mitochondria (16)",
+                        "Trematode Mitochondria (21)",
+                        "Scenedesmus obliquus Mitochondria (22)",
+                        "Thraustochytrium Mitochondria (23)",_name="gcode")),
                       TR("Matrix: ", 
                         SELECT("BLOSUM62", "BLOSUM80", "BLOSUM45", 
                         "PAM30", "PAM70",_name="matrix")),
+                      TR("Maximum number of hits to return: ", 
+                        SELECT("50", "100", "200", "500", "1000", "2000", "5000",
+                        "10000", "20000", "50000",_name="hitlist_size")),
+                      TR("Number of random hits expected: ", 
+                        INPUT(_type="text",_name="expect", value=10)),
+                      TR("Word size: ", 
+                        INPUT(_type="text",_name="word_size", value=3)),
                       TR("",INPUT(_type="submit",_value="SUBMIT"))))
     if form.accepts(request.vars,session):
         from Bio.Blast.NCBIWWW import qblast
@@ -170,11 +215,19 @@ def ncbiblast():
         rec = NCBIXML.parse(qblast(form.vars.program, 
                                    ncbi_db[form.vars.database], 
                                    sequence,
-                                   matrix_name=form.vars.matrix)).next()
+                                   matrix_name=form.vars.matrix,
+                                   hitlist_size=int(form.vars.hitlist_size),
+                                   expect=float(form.vars.expect),
+                                   word_size=int(form.vars.word_size),
+                                   db_genetic_code=genetic_code[form.vars.gcode])).next()
         session['sequence'] = sequence
         session['database'] = form.vars.database
         session['program'] = form.vars.program
         session['matrix'] = form.vars.matrix
+        session['gcode'] = form.vars.gcode
+        session['hitsize'] = form.vars.hitlist_size
+        session['expect'] = form.vars.expect
+        session['word_size'] = form.vars.word_size
         session['data'] = [{'Title':row.title, 'Score':str(row.score), 'E-value':str(row.e)} 
                            for row in rec.descriptions]
             
@@ -187,6 +240,10 @@ def ncbiblast_output():
               'Database' : session.pop('database', None),
               'Program' : session.pop('program', None),
               'Matrix' : session.pop('matrix', None),
+              'Genetic Code' : session.pop('gcode', None),
+              'Word Size' : session.pop('word_size', None),
+              'Maximum hits' : session.pop('hitsize', None),
+              'Expect' : session.pop('expect', None),
               'Output' : session.pop('data', None)}
     cynotedb.result.insert(testresult=result)
     cynotedb.commit()
@@ -194,4 +251,8 @@ def ncbiblast_output():
                 Database=result['Database'],
                 Program=result['Program'],
                 Matrix=result['Matrix'],
+                Genetic_code=result['Genetic Code'],
+                Word_size=result['Word Size'],
+                Hitlist_size=result['Maximum hits'],
+                Expect=result['Expect'],
                 Result=result['Output'])
