@@ -117,6 +117,23 @@ def protein_analysis_output():
     cynotedb.commit()
     return dict(result=result)
 
+ncbi_db = {"Non-redundant GenBank (nr)" : "nr",
+           "NCBI Reference Sequence (refseq)" : "refseq",
+           "SWISS-PROT protein sequence (last update) (swissprot)" : "swissprot",
+           "Patent division of GenPept (pat)" : "pat",
+           "Protein Data Bank (pdb)" : "pdb",
+           "Protein - environmental samples (env_nr)" : "env_nr",
+           "RNA - NCBI Reference Sequence (refseq_rna)" : "refseq_rna",
+           "Genomic - NCBI Reference Sequence (refseq_genomic)" : "refseq_genomic",
+           "ESTs - GenBank + EMBL + DDBJ (est)" : "est",
+           "Mouse subset of ESTs (est_mouse)" : "est_mouse",
+           "Human subset of ESTs (est_human)" : "est_human",
+           "Non-mouse non-human subset of ESTs (est_others)" : "est_others",
+           "Genome Survey Sequences (gss)" : "gss",
+           "Complete chromosomes (chromosome)" : "chromosome",
+           "Whole Genome Shotgun sequences (wgs)" : "wgs",
+           "Nucleotide - environmental samples (env_nr)" : "env_nt"}
+
 def ncbiblast():
     if session.username == None: redirect(URL(r=request,f='../account/log_in'))
     form = FORM(TABLE(TR("Sequence:  ", 
@@ -125,7 +142,22 @@ def ncbiblast():
                         SELECT("blastn", "blastp", "blastx", "tblastn", "tblastx", 
                         _name="program")),
                       TR("Database: ", 
-                        SELECT("nr",
+                        SELECT("Non-redundant GenBank (nr)", 
+                        "NCBI Reference Sequence (refseq)",
+                        "SWISS-PROT protein sequence (last update) (swissprot)",
+                        "Patent division of GenPept (pat)", 
+                        "Protein Data Bank (pdb)",
+                        "Protein - environmental samples (env_nr)",
+                        "RNA - NCBI Reference Sequence (refseq_rna)",
+                        "Genomic - NCBI Reference Sequence (refseq_genomic)",
+                        "ESTs from GenBank + EMBL + DDBJ (est)",
+                        "Mouse subset of ESTs (est_mouse)", 
+                        "Human subset of ESTs (est_human)",
+                        "Non-mouse non-human subset of ESTs (est_others)",
+                        "Genome Survey Sequences (gss)", 
+                        "Complete chromosomes (chromosome)",
+                        "Whole Genome Shotgun sequences (wgs)",
+                        "Nucleotide - environmental samples (env_nr)",
                         _name="database")),
                       TR("Matrix: ", 
                         SELECT("BLOSUM62", "BLOSUM80", "BLOSUM45", 
@@ -136,7 +168,7 @@ def ncbiblast():
         from Bio.Blast import NCBIXML
         sequence = seqClean(fasta_to_raw(form.vars.sequence.upper()))
         rec = NCBIXML.parse(qblast(form.vars.program, 
-                                   form.vars.database, 
+                                   ncbi_db[form.vars.database], 
                                    sequence,
                                    matrix_name=form.vars.matrix)).next()
         session['sequence'] = sequence
