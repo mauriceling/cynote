@@ -155,7 +155,9 @@ genetic_code = {"Standard (1)" : 1,
 
 def ncbiblast():
     if session.username == None: redirect(URL(r=request,f='../account/log_in'))
-    form = FORM(TABLE(TR("Sequence:  ", 
+    form = FORM(TABLE(TR("Job Title: ", 
+                        INPUT(_type="text",_name="title")),
+                      TR("Sequence:  ", 
                         TEXTAREA(_type="text",_name="sequence",requires=IS_NOT_EMPTY())),
                       TR("Program: ", 
                         SELECT("blastn", "blastp", "blastx", "tblastn", "tblastx", 
@@ -220,6 +222,7 @@ def ncbiblast():
                                    expect=float(form.vars.expect),
                                    word_size=int(form.vars.word_size),
                                    db_genetic_code=genetic_code[form.vars.gcode])).next()
+        session['title'] = form.vars.title
         session['sequence'] = sequence
         session['database'] = form.vars.database
         session['program'] = form.vars.program
@@ -236,7 +239,8 @@ def ncbiblast():
 
 def ncbiblast_output():
     #These 2 lines inserts result dictionary into cynote.result table
-    result = {'Sequence' : session.pop('sequence', None),
+    result = {'Job Title' : session.pop('title', 'Untitled'),
+              'Sequence' : session.pop('sequence', None),
               'Database' : session.pop('database', None),
               'Program' : session.pop('program', None),
               'Matrix' : session.pop('matrix', None),
@@ -244,10 +248,11 @@ def ncbiblast_output():
               'Word Size' : session.pop('word_size', None),
               'Maximum hits' : session.pop('hitsize', None),
               'Expect' : session.pop('expect', None),
-              'Output' : session.pop('data', None)}
+              'Output' : session.pop('data', "No result")}
     cynotedb.result.insert(testresult=result)
     cynotedb.commit()
-    return dict(Sequence=result['Sequence'],
+    return dict(Title=result['Job Title'],
+                Sequence=result['Sequence'],
                 Database=result['Database'],
                 Program=result['Program'],
                 Matrix=result['Matrix'],
