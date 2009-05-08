@@ -1,5 +1,11 @@
 import Bio.Seq as Seq
 
+def seqClean(s):
+    if s.isspace() == False: return s
+    else:
+        import re
+        return re.sub('\s', '', s)
+    
 def dna_aa():
     if session.username == None: redirect(URL(r=request,f='../account/log_in'))
     form = FORM(TABLE(TR("Sequence:  ", 
@@ -11,8 +17,9 @@ def dna_aa():
                                "Back Transcribe", "Back Translate",_name="action")),
                       TR("",INPUT(_type="submit",_value="SUBMIT"))))
     if form.accepts(request.vars,session):
-        if form.vars.seq_type=="FASTA": session['sequence'] = fasta_to_raw(form.vars.sequence.upper())
-        else: session['sequence'] = form.vars.sequence.upper()
+        if form.vars.seq_type=="FASTA": 
+            session['sequence'] = seqClean(fasta_to_raw(form.vars.sequence.upper()))
+        else: session['sequence'] = seqClean(form.vars.sequence.upper())
         if form.vars.action=="Complementation":
            session['action'] = "Complementation"
            session['Complement'] = Seq.reverse_complement(session['sequence'])
@@ -82,7 +89,7 @@ def protein_analysis():
                         TEXTAREA(_type="text",_name="sequence",requires=IS_NOT_EMPTY())),
                       TR("",INPUT(_type="submit",_value="SUBMIT"))))
     if form.accepts(request.vars,session):
-        session['sequence'] = form.vars.sequence.upper()
+        session['sequence'] = seqClean(form.vars.sequence.upper())
         X = ProteinAnalysis(session['sequence'])
         session['aa_count'] = X.count_amino_acids()
         session['percent_aa'] = X.get_amino_acids_percent()
@@ -127,10 +134,10 @@ def ncbiblast():
     if form.accepts(request.vars,session):
         from Bio.Blast.NCBIWWW import qblast
         from Bio.Blast import NCBIXML
-        sequence = fasta_to_raw(form.vars.sequence)
+        sequence = seqClean(fasta_to_raw(form.vars.sequence.upper()))
         rec = NCBIXML.parse(qblast(form.vars.program, 
                                    form.vars.database, 
-                                   form.vars.sequence,
+                                   sequence,
                                    matrix_name=form.vars.matrix)).next()
         session['sequence'] = sequence
         session['database'] = form.vars.database
