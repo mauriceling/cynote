@@ -1,10 +1,8 @@
 import Bio.Seq as Seq
 
 def seqClean(s):
-    if s.isspace() == False: return s
-    else:
-        import re
-        return re.sub('\s', '', s)
+    import re
+    return re.sub('\s', '', s)
     
 def dna_aa():
     if session.username == None: redirect(URL(r=request,f='../account/log_in'))
