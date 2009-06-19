@@ -5,51 +5,63 @@ def seqClean(s):
     return re.sub('\s', '', s)
     
 def dna_aa():
-    if session.username == None: redirect(URL(r=request,f='../account/log_in'))
+    if session.username == None:
+        redirect(URL(r=request, f='../account/log_in'))
     form = FORM(TABLE(TR("Sequence:  ", 
-                        TEXTAREA(_type="text",_name="sequence",requires=IS_NOT_EMPTY())),
+                        TEXTAREA(_type="text",
+                                 _name="sequence",
+                                 requires=IS_NOT_EMPTY())),
                       TR("Sequence Type: ", 
-                        SELECT("Raw Format", "FASTA",_name="seq_type")),
+                        SELECT("Raw Format", "FASTA",
+                               _name="seq_type")),
                       TR("Action: ", 
                         SELECT("Complementation", "Transcribe", "Translate", 
-                               "Back Transcribe", "Back Translate",_name="action")),
-                      TR("",INPUT(_type="submit",_value="SUBMIT"))))
+                               "Back Transcribe", "Back Translate",
+                               _name="action")),
+                      TR("", INPUT(_type="submit", _value="SUBMIT"))))
     if form.accepts(request.vars,session):
-        if form.vars.seq_type=="FASTA": 
-            session['sequence'] = seqClean(fasta_to_raw(form.vars.sequence.upper()))
+        if form.vars.seq_type == "FASTA": 
+            session['sequence'] = \
+                seqClean(fasta_to_raw(form.vars.sequence.upper()))
         else: session['sequence'] = seqClean(form.vars.sequence.upper())
-        if form.vars.action=="Complementation":
+        if form.vars.action == "Complementation":
            session['action'] = "Complementation"
            session['Complement'] = Seq.reverse_complement(session['sequence'])
-        if form.vars.action=="Transcribe": 
+        if form.vars.action == "Transcribe": 
             session['action'] = 'Transcribe'
             session['Transcribed RNA'] = Seq.transcribe(session['sequence'])
-        if form.vars.action=="Back Transcribe": 
+        if form.vars.action == "Back Transcribe": 
             session['action'] = 'Back Transcribe'
             session['DNA'] = Seq.back_transcribe(session['sequence'])
-        if form.vars.action=="Translate":
+        if form.vars.action == "Translate":
             session['action'] = 'Translate'
             session.update(translate(session['sequence']))
-        if form.vars.action=="Back Translate":
+        if form.vars.action == "Back Translate":
             session['action'] = 'Back Translate'
             session.update(back_translate(session['sequence']))
-        redirect(URL(r=request,f='dna_aa_output'))
+        redirect(URL(r=request, f='dna_aa_output'))
     return dict(form=form)
     
 def dna_aa_output():
     result = {}
     result['Input Sequence'] = session.pop('sequence', None)
     result['Action'] = session.pop('action', None)
-    if result['Action'] == 'Complementation': result['Complement'] = session.pop('Complement', None)
-    if result['Action'] == 'Transcribe': result['Transcribed RNA'] = session.pop('Transcribed RNA', None)
-    if result['Action'] == 'Back Transcribe': result['DNA'] = session.pop('DNA', None)
+    if result['Action'] == 'Complementation':
+        result['Complement'] = session.pop('Complement', None)
+    if result['Action'] == 'Transcribe':
+        result['Transcribed RNA'] = session.pop('Transcribed RNA', None)
+    if result['Action'] == 'Back Transcribe':
+        result['DNA'] = session.pop('DNA', None)
     if result['Action'] == 'Translate':
         result['First Frame'] = session.pop('First Frame', None)
         result['Second Frame'] = session.pop('Second Frame', None)
         result['Third Frame'] = session.pop('Third Frame', None)
-        result['Complement First Frame'] = session.pop('Complement First Frame', None)
-        result['Complement Second Frame'] = session.pop('Complement Second Frame', None)
-        result['Complement Third Frame'] = session.pop('Complement Third Frame', None)
+        result['Complement First Frame'] = \
+                           session.pop('Complement First Frame', None)
+        result['Complement Second Frame'] = \
+                           session.pop('Complement Second Frame', None)
+        result['Complement Third Frame'] = \
+                           session.pop('Complement Third Frame', None)
     #if result['Action'] == 'Back Translate':
     #    result['First Frame'] = session.pop('First Frame', None)
     #    result['Second Frame'] = session.pop('Second Frame', None)
@@ -83,9 +95,12 @@ def fasta_to_raw(fasta):
 def protein_analysis():
     if session.username == None: redirect(URL(r=request,f='../account/log_in'))
     from Bio.SeqUtils.ProtParam import ProteinAnalysis
-    form = FORM(TABLE(TR("Amino acid sequence:  ", 
-                        TEXTAREA(_type="text",_name="sequence",requires=IS_NOT_EMPTY())),
-                      TR("",INPUT(_type="submit",_value="SUBMIT"))))
+    form = FORM(
+        TABLE(
+            TR("Amino acid sequence:  ",
+               TEXTAREA(_type="text", _name="sequence",
+                        requires=IS_NOT_EMPTY())),
+            TR("", INPUT(_type="submit", _value="SUBMIT"))))
     if form.accepts(request.vars,session):
         session['sequence'] = seqClean(form.vars.sequence.upper())
         X = ProteinAnalysis(session['sequence'])
@@ -97,7 +112,7 @@ def protein_analysis():
         session['flexibility'] = X.flexibility()
         session['pI'] = X.isoelectric_point()
         session['sec_struct'] = X.secondary_structure_fraction()
-        redirect(URL(r=request,f='protein_analysis_output'))
+        redirect(URL(r=request, f='protein_analysis_output'))
     return dict(form=form)
     
 def protein_analysis_output():
@@ -152,14 +167,17 @@ genetic_code = {"Standard (1)" : 1,
                 "Thraustochytrium Mitochondria (23)" : 23}
 
 def ncbiblast():
-    if session.username == None: redirect(URL(r=request,f='../account/log_in'))
+    if session.username == None:
+        redirect(URL(r=request, f='../account/log_in'))
     form = FORM(TABLE(TR("Job Title: ", 
-                        INPUT(_type="text",_name="title")),
+                        INPUT(_type="text", _name="title")),
                       TR("Sequence:  ", 
-                        TEXTAREA(_type="text",_name="sequence",requires=IS_NOT_EMPTY())),
+                        TEXTAREA(_type="text", _name="sequence",
+                                 requires=IS_NOT_EMPTY())),
                       TR("Program: ", 
-                        SELECT("blastn", "blastp", "blastx", "tblastn", "tblastx", 
-                        _name="program")),
+                        SELECT("blastn", "blastp", "blastx", "tblastn",
+                               "tblastx",
+                               _name="program")),
                       TR("Database: ", 
                         SELECT("Non-redundant GenBank (nr)", 
                         "NCBI Reference Sequence (refseq)",
@@ -196,18 +214,20 @@ def ncbiblast():
                         "Chlorophycean Mitochondria (16)",
                         "Trematode Mitochondria (21)",
                         "Scenedesmus obliquus Mitochondria (22)",
-                        "Thraustochytrium Mitochondria (23)",_name="gcode")),
+                        "Thraustochytrium Mitochondria (23)",
+                            _name="gcode")),
                       TR("Matrix: ", 
                         SELECT("BLOSUM62", "BLOSUM80", "BLOSUM45", 
                         "PAM30", "PAM70",_name="matrix")),
                       TR("Maximum number of hits to return: ", 
-                        SELECT("50", "100", "200", "500", "1000", "2000", "5000",
-                        "10000", "20000", "50000",_name="hitlist_size")),
+                        SELECT("50", "100", "200", "500", "1000", "2000",
+                               "5000", "10000", "20000", "50000",
+                               _name="hitlist_size")),
                       TR("Number of random hits expected: ", 
-                        INPUT(_type="text",_name="expect", value=10)),
+                        INPUT(_type="text", _name="expect", value=10)),
                       TR("Word size: ", 
-                        INPUT(_type="text",_name="word_size", value=3)),
-                      TR("",INPUT(_type="submit",_value="SUBMIT"))))
+                        INPUT(_type="text", _name="word_size", value=3)),
+                      TR("",INPUT(_type="submit", _value="SUBMIT"))))
     if form.accepts(request.vars,session):
         from Bio.Blast.NCBIWWW import qblast
         from Bio.Blast import NCBIXML
