@@ -4,10 +4,11 @@ def new_account():
     # creating a new user account
     if userdb(userdb.user.username > 0).count() == 0:
         userdb.user.authorized.default = True
-    else: userdb.user.authorized.default = False
-    form=SQLFORM(userdb.user,fields=['username','password'])
+    else:
+        userdb.user.authorized.default = False
+    form = SQLFORM(userdb.user, fields=['username','password'])
     if form.accepts(request.vars,session):
-        redirect(URL(r=request,f='log_in'))
+        redirect(URL(r=request, f='log_in'))
     return dict(form=form)    
     
 def log_in():
@@ -15,16 +16,18 @@ def log_in():
     # compares the user login and password with userdb.user table
     # if login is successful, the username is stored in session.username
     # for further use. If login is not successful, session.username = None
-    form=FORM(TABLE(TR("Username:",INPUT(_name="username",requires=IS_NOT_EMPTY())),
+    form = FORM(TABLE(
+                    TR("Username:",INPUT(_name="username",
+                                         requires=IS_NOT_EMPTY())),
                     TR("Password:",INPUT(_name="password",_type='password',
                                          requires=[IS_NOT_EMPTY()])),
-                    TR("",INPUT(_type="submit",_value="login")))) 
+                    TR("",INPUT(_type="submit", _value="login")))) 
     if FORM.accepts(form,request.vars,session):
-        if userdb(userdb.user.username==form.vars.username)\
-        (userdb.user.password==form.vars.password)\
-        (userdb.user.authorized==True).count():
+        if userdb(userdb.user.username == form.vars.username) \
+           (userdb.user.password == form.vars.password) \
+           (userdb.user.authorized == True).count():
             session.username = form.vars.username
-            redirect(URL(r=request,f='logged'))
+            redirect(URL(r=request, f='logged'))
         else:
             session.username = None
             response.flash = "invalid username/password" 
