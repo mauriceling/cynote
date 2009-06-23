@@ -21,14 +21,14 @@ Posted on {{=entry.datetime}}</br></br>
 {{pass}}
 <a href = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=entry.file}}">
 {{=entry.file}}</a>
-<p style="font-family:courier; font-size:12px">{{=entry.description}}</p>
+<pre style="word-wrap:break-word; white-space:pre-wrap">{{=entry.description}}</pre>
 <h4>-------------------------------------------------------------------</h4>
 <h2>Comments</h2><p>
 {{for comment in records:}}
 <h3>{{=comment.author}} says </h3>
 <a href = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=comment.file}}">
 {{=comment.file}}</a><br>
-<p style="font-family:courier; font-size:12px">{{=comment.body}}</p>
+<pre style="word-wrap:break-word; white-space:pre-wrap">{{=comment.body}}</pre>
 {{if str(entry.file).split('.')[-1] in ['bmp', 'jpg', 'jpe', 'jpeg', 
                                         'tif', 'tiff', 'gif', 'png']:}}
 <img width='200' src = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=comment.file}}"><br>
