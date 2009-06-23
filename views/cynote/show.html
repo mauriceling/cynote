@@ -18,14 +18,14 @@ Posted on {{=entry.datetime}}</br></br>
 <img width='200' src = "../cynote/download/{{=entry.file}}">
 <a href = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=entry.file}}">
 {{=entry.file}}</a>
-<pre width=100>{{=entry.description}}</pre>
+<p style="font-family:courier; font-size:12px">{{=entry.description}}</p>
 <h4>-------------------------------------------------------------------</h4>
 <h2>Comments</h2><p>
 {{for comment in records:}}
 <h3>{{=comment.author}} says </h3>
 <a href = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=comment.file}}">
 {{=comment.file}}</a><br>
-<pre width=100>{{=comment.body}}</pre>
+<p style="font-family:courier; font-size:12px">{{=comment.body}}</p>
 <img width='200' src = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=comment.file}}"><br>
 <h5>Posted on {{=comment.datetime}}</h5>
 <h4>-------------------------------------------------------------------</h4>
