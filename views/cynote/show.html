@@ -15,7 +15,10 @@ Show all Results </a>]
 Posted on {{=entry.datetime}}</br></br>
 <h2>By:{{=entry.author}}</h2>
 <h2>{{=entry.keywords}}</h2>
+{{if str(entry.file).split('.')[-1] in ['bmp', 'jpg', 'jpe', 'jpeg', 
+                                        'tif', 'tiff', 'gif', 'png']:}}
 <img width='200' src = "../cynote/download/{{=entry.file}}">
+{{pass}}
 <a href = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=entry.file}}">
 {{=entry.file}}</a>
 <p style="font-family:courier; font-size:12px">{{=entry.description}}</p>
@@ -26,7 +29,10 @@ Posted on {{=entry.datetime}}</br></br>
 <a href = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=comment.file}}">
 {{=comment.file}}</a><br>
 <p style="font-family:courier; font-size:12px">{{=comment.body}}</p>
+{{if str(entry.file).split('.')[-1] in ['bmp', 'jpg', 'jpe', 'jpeg', 
+                                        'tif', 'tiff', 'gif', 'png']:}}
 <img width='200' src = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=comment.file}}"><br>
+{{pass}}
 <h5>Posted on {{=comment.datetime}}</h5>
 <h4>-------------------------------------------------------------------</h4>
 {{pass}}
