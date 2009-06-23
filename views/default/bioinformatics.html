@@ -1,0 +1,68 @@
+{{extend 'layout.html'}}&nbsp;<div class="center">
+<br>
+{{try:}}{{=H1(message)}}{{except:}}{{=BEAUTIFY(response._vars)}}{{pass}}
+</div>
+<div class="left">
+<br>
+<h2>Welcome to Cynote, {{=name}}</h2>
+<br>
+[ <a target="_blank" title="About CyNote" href="http://maurice.vodien.com/portfolio/RprojCyNote.html">
+About CyNote</a> ]
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
+Main Menu</a> ]
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/account/log_out"> 
+Logout</a> ]
+<br>
+{{for tab in tab_list:}}
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/{{=tab['module']}}/{{=tab['function']}}">
+{{=tab['name']}}</a> ]
+{{pass}}
+<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results">
+Orphaned Analysis Results</a> ]
+List of unsaved analysis results (once an analysis result is saved as an entry, it will disappear from here)<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/primer/primer_tm">
+Analyze Primers</a> ]
+Analyze a single primer or a pair of primers for annealing temperature and secondary structures<br><br>
+
+[ Primer Design ]
+Designing primer pairs from given DNA sequence<br><br>
+
+[ Search PubMed ]
+Performs literature search on NCBI PubMed<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/sequence/dna_aa">
+Basic Sequence Utilities</a> ]
+Given a sequence - Transcribes, Reverse transcribes, Translates<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/sequence/protein_analysis">
+Protein Analysis</a> ]
+Analyse amino acid sequence for amino acid distribution, pI, MW, aromaticity, instability, flexibility, and secondary<br> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; structure fractions.<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/sequence/ncbiblast">
+Similarity Search</a> ]
+Identify given sequences using different BLAST tools<br><br>
+
+[ Phylogenetics ]
+Multiple sequence alignment and phylogenetic analyses<br><br>
+
+[ Restriction Mapping ]
+Maps out the restriction endonuclease recognition sites of a sequence<br><br>
+
+<hr style="width: 100%; height: 2px;">
+<p>Copyright (c) 2008 <a target="_blank" title="CyNote @ SourceForge" href="http://www.sourceforge.net/projects/cynote">CyNote Development Team</a><br><br>
+CyNote is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version. This program is distributed in the hope that
+it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+the GNU General Public License for more details. You should have
+received a copy of the GNU General Public License along with this
+program. If not, see http://www.gnu.org/licenses</p><hr style="width: 100%; height: 2px;"><p><br></p>
+</div>

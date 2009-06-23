@@ -6,74 +6,44 @@
 <br>
 <h2>Welcome to Cynote, {{=name}}</h2>
 <br>
-[ <a target="_blank" title="About CyNote" href="http://maurice.vodien.com/portfolio/RprojCyNote.html">About CyNote</a> ]
-
+[ <a target="_blank" title="About CyNote" href="http://maurice.vodien.com/portfolio/RprojCyNote.html">
+About CyNote</a> ]
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/account/log_out"> 
 Logout</a> ]
-
+<br>
+{{for tab in tab_list:}}
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/{{=tab['module']}}/{{=tab['function']}}">
+{{=tab['name']}}</a> ]
+{{pass}}
 <br><br>
-<font size="4"><span style="text-decoration: underline;">Generic and Common Actions</span></font><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry">
 Create New Notebook Entry</a> ] 
-Create a new entry in one of the existing notebooks<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Create a new entry in one of the existing notebooks<br><br>
 
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook">
 Create New Notebook</a> ] 
-Create a new notebook to hold entries as every entry must be part of a notebook<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Create a new notebook to hold entries as every entry must be part of a notebook<br><br>
 
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries">
 List Entries by Notebook</a> ] 
-Show a list of entries for a particular notebook (Table of Contents)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Show a list of entries for a particular notebook (Table of Contents)<br><br>
 
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual">
 Notarize An Entry</a> ]
-Signing off a single entry as an individual<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Signing off a single entry as an individual<br><br>
 
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/savedatabase/form">
 Backup Notebooks</a> ] 
-Allows for backup of notebooks as separate files and to remote FTP sites<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Allows for backup of notebooks as separate files and to remote FTP sites<br><br>
 
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/archive_notebook">
 Archive Notebook(s)</a> ]
-Set notebook(s) for archiving<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Set notebook(s) for archiving<br><br>
 
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/unarchive_notebook">
 Un-Archive Notebook(s)</a> ]
 Release previously archived notebook(s) for use<br><br>
-
-<font style="text-decoration: underline;" size="4">Bioinformatics Analysis Actions</font><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-
-[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results">
-Orphaned Analysis Results</a> ]
-List of unsaved analysis results (once an analysis result is saved as an entry, it will disappear from here)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/primer/primer_tm">
-Analyze Primers</a> ]
-Analyze a single primer or a pair of primers for annealing temperature and secondary structures<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-[ Primer Design ]
-Designing primer pairs from given DNA sequence<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-[ Search PubMed ]
-Performs literature search on NCBI PubMed<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/sequence/dna_aa">
-Basic Sequence Utilities</a> ]
-Given a sequence - Transcribes, Reverse transcribes, Translates<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/sequence/protein_analysis">
-Protein Analysis</a> ]
-Analyse amino acid sequence for amino acid distribution, pI, MW, aromaticity, instability, flexibility, and secondary <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; structure fractions.<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/sequence/ncbiblast">
-Similarity Search</a> ]
-Identify given sequences using different BLAST tools<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-[ Phylogenetics ]
-Multiple sequence alignment and phylogenetic analyses<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-[ Restriction Mapping ]
-Maps out the restriction endonuclease recognition sites of a sequence<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 <hr style="width: 100%; height: 2px;">
 <p>Copyright (c) 2008 <a target="_blank" title="CyNote @ SourceForge" href="http://www.sourceforge.net/projects/cynote">CyNote Development Team</a><br><br>
