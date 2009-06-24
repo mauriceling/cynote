@@ -215,7 +215,9 @@ def unarchive_notebook():
     return dict(form=form)
 
 def my_exporter(): 
-    response.headers['Content-Type'] = 'text/x-csv' 
-    response.headers['Content-Disposition'] = 'attachment'
-    return str(cynotedb(cynotedb.notebook.name == 'test') \
-               .select(cynotedb.entry.ALL))
+    #response.headers['Content-Type'] = 'text/x-csv' 
+    #response.headers['Content-Disposition'] = 'attachment'
+    return [dict(x)
+            for x in (cynotedb(cynotedb.notebook.name == 'Manuscript Reviews') \
+               .select(cynotedb.entry.ALL))]
+
