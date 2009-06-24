@@ -1,0 +1,39 @@
+{{extend 'layout.html'}}&nbsp;<div class="center">
+<br>
+{{try:}}{{=H1(message)}}{{except:}}{{=BEAUTIFY(response._vars)}}{{pass}}
+</div>
+<div class="left">
+<br>
+<h2>Welcome to Cynote, {{=name}}</h2>
+<br>
+[ <a target="_blank" title="About CyNote" href="http://maurice.vodien.com/portfolio/RprojCyNote.html">
+About CyNote</a> ]
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
+Main Menu</a> ]
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/account/log_out"> 
+Logout</a> ]
+<br>
+{{for tab in tab_list:}}
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/{{=tab['module']}}/{{=tab['function']}}">
+{{=tab['name']}}</a> ]
+{{pass}}
+<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/statistics/input_SS">
+Single Sample Statistics</a> ]
+Calculates descriptive statistics for one sample<br><br>
+
+
+
+<hr style="width: 100%; height: 2px;">
+<p>Copyright (c) 2008 <a target="_blank" title="CyNote @ SourceForge" href="http://www.sourceforge.net/projects/cynote">CyNote Development Team</a><br><br>
+CyNote is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version. This program is distributed in the hope that
+it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+the GNU General Public License for more details. You should have
+received a copy of the GNU General Public License along with this
+program. If not, see http://www.gnu.org/licenses</p><hr style="width: 100%; height: 2px;"><p><br></p>
+</div>
