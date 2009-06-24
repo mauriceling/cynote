@@ -1,28 +1,43 @@
-from applications.init.modules.copads.SampleStatistics import MultiSample
+exec("""from applications.%s.modules.copads.SampleStatistics \
+import SingleSample""" % (request.application))
 
-def input_form():
+#######################################################################
+# Single Sample (SS)
+#######################################################################
+def input_SS():
     if session.username == None: 
         redirect(URL(r=request, f='../account/log_in'))
     form = FORM(
             TABLE(
                 TR("Data: ",
                     TEXTAREA(_name="data",
-                    value="""Enter the data, separated by commas, for analysis""")),
-                TR("Is the first row represents the Sample name? ",
-                   SELECT("YES", "NO", _name="sample_name")),
-                TR("Type of Analysis: ",
-                   SELECT("Descriptive Statistics",
-                          _name="analysis_type")),
+                    value="""Enter the data, separated by commas, for analysis.""")),   
                 TR("", INPUT(_type="submit", _value="SUBMIT"))))
     if form.accepts(request.vars,session):
-        if form.vars.sample_name == 'YES':
-            session.sample_name = 'YES'
-        else: session.sample_name = 'NO'
-        session.analysis_type = form.vars.analysis_type
-        session.data = parse_data(form.vars.data, session.sample_name)
-        redirect(URL(r=request, f='analysis'))
+        session.data = [float(x) for x in form.vars.data.split(',')]
+        redirect(URL(r=request, f='analyze_SS'))
     return dict(form=form)
+    
+def analyze_SS():
+    result = {}
+    result['data'] = session.pop('data', [])
+    sample = SingleSample(data=result['data'], name='')
+    #print sample
+    result['results'] = sample.summary
+    #These 2 lines inserts result dictionary into cynote.result table
+    #cynotedb.result.insert(testresult=result)
+    #cynotedb.commit()
+    return dict(result=result)
 
+def a1(vars): return 'trying'
+
+#######################################################################
+# Single Sample (SS) - End
+#######################################################################
+
+#######################################################################
+# Two Samples (TS)
+#######################################################################
 def parse_data(data, name):
     dataset = MultiSample()
     data = [x.split(',') for x in data.split('\r\n')]
@@ -35,18 +50,39 @@ def parse_data(data, name):
         dataset.addSample([float(row[index]) for row in data],
                           name = session.sample_name[index])
     return dataset
+    
+def two_samples_input():
+    if session.username == None: 
+        redirect(URL(r=request, f='../account/log_in'))
+    form = FORM(
+            TABLE(
+                TR("Data: ",
+                    TEXTAREA(_name="data",
+                    value="""Enter the data, separated by commas, for analysis.""")),
+                TR("Type of Analysis: ",
+                   SELECT('Paired Z-test',
+                          '2-sample Z-test',
+                          'Paired t-test',
+                          '2-sample t-test',
+                          "Pearson's Correlation",
+                          "Spearman's Correlation",
+                          'Linear regression',
+                          _name="analysis_type")),
+                TR("", INPUT(_type="submit", _value="SUBMIT"))))
+    if form.accepts(request.vars,session):
+        session.analysis_type = form.vars.analysis_type
+        session.data = [float(x) for x in form.vars.data.split(',')]
+        redirect(URL(r=request, f='analysis'))
+    return dict(form=form)
+    
+#######################################################################
+# Two Samples (TS) - End
+#######################################################################
 
-def analysis():
-    result = {}
-    result['data'] = str(session.pop('data', None))
-    result['sample_name'] = session.pop('sample_name', None)
-    result['analysis_type'] = session.pop('analysis_type', None)
-    result['results'] = a1(vars)
-    print result
-    print session
-    #These 2 lines inserts result dictionary into cynote.result table
-    #cynotedb.result.insert(testresult=result)
-    #cynotedb.commit()
-    return dict(result=result)
+#######################################################################
+# More than Two Samples (MS)
+#######################################################################
 
-def a1(vars): return 'trying'
+#######################################################################
+# More than Two Samples (MS) - End
+#######################################################################
