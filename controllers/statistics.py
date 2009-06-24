@@ -51,7 +51,7 @@ def parse_data(data, name):
                           name = session.sample_name[index])
     return dataset
     
-def two_samples_input():
+def input_TS():
     if session.username == None: 
         redirect(URL(r=request, f='../account/log_in'))
     form = FORM(
@@ -67,8 +67,9 @@ def two_samples_input():
                           "Pearson's Correlation",
                           "Spearman's Correlation",
                           'Linear regression',
-                          _name="analysis_type")),
-                TR("", INPUT(_type="submit", _value="SUBMIT"))))
+                          _name="analysis_type"),
+                   INPUT(_type="submit", _value="SUBMIT"))))
+                #TR("", INPUT(_type="submit", _value="SUBMIT"))))
     if form.accepts(request.vars,session):
         session.analysis_type = form.vars.analysis_type
         session.data = [float(x) for x in form.vars.data.split(',')]
