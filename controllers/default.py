@@ -1,8 +1,16 @@
+from ez_setup import use_setuptools
+use_setuptools()
+from setuptools.command.easy_install import main
+
 tabs = [{'module': 'default', 'function': 'bioinformatics', 'name': 'Bioinformatics Tools'},
         {'module': 'default', 'function': 'statistics', 'name': 'Statistical Analyses'},
         {'module': 'default', 'function': 'assistants', 'name': 'Assistants and Tutors'}, ]
 
+cynote_dependencies = ['biopython==1.50',
+                       'pil==1.1.6']
+
 def index():
+    main(cynote_dependencies)
     response.flash=T('Welcome to CyNote - A web-enabled notebook compliant with general research record-keeping standard')
     if session.username == None: 
         name = 'Guest'
