@@ -4,7 +4,8 @@ from setuptools.command.easy_install import main
 
 tabs = [{'module': 'default', 'function': 'bioinformatics', 'name': 'Bioinformatics Tools'},
         {'module': 'default', 'function': 'statistics', 'name': 'Statistical Analyses'},
-        {'module': 'default', 'function': 'assistants', 'name': 'Assistants and Tutors'}, ]
+        #{'module': 'default', 'function': 'assistants', 'name': 'Assistants and Tutors'}, 
+        ]
 
 cynote_dependencies = ['biopython==1.50',
                        'pil==1.1.6']
