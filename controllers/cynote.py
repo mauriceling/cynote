@@ -60,6 +60,10 @@ def show():
     # show a flash when comment is posted
     if comments.accepts(request.vars,session): 
          response.flash = "comment posted"
+         db.log.insert(event='New comment created. %s' % \
+                            (cynotedb(cynotedb.entry.id==id)\
+                            .select(cynotedb.entry.title)), 
+                      user=session.username)
          # refresh page after adding a comment by calling itself (show)
          redirect(URL(r=request, f='show', args=[id]))                 
     return dict(entry=entries[0],
@@ -77,6 +81,11 @@ def new_entry():
     form = SQLFORM(cynotedb.entry,
                    fields=['title','file','keywords','notebook','description'])
     if form.accepts(request.vars,session):
+        db.log.insert(event='New entry created. %s. Title = %s'% \
+                            (cynotedb(cynotedb.notebook.id==request.vars.notebook)\
+                            .select(cynotedb.notebook.name),
+                            request.vars.title), 
+                      user=session.username)
         redirect(URL(r=request, f='entries'))
     return dict(form=form)
     
@@ -88,6 +97,8 @@ def new_notebook():
         redirect(URL(r=request, f='../account/log_in'))
     form = SQLFORM(cynotedb.notebook, fields=['name','description'])
     if form.accepts(request.vars,session):
+        db.log.insert(event='New notebook created. Notebook = ' + request.vars.name, 
+                      user=session.username)
         redirect(URL(r=request,f='entries'))
     return dict(form=form)
     
@@ -220,4 +231,3 @@ def my_exporter():
     return [dict(x)
             for x in (cynotedb(cynotedb.notebook.name == 'Manuscript Reviews') \
                .select(cynotedb.entry.ALL))]
-
