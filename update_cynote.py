@@ -1,4 +1,6 @@
 # Script for updating CyNote and web2py
+# backup_cynote function was adapted from
+# http://mail.python.org/pipermail/python-list/2004-March/252709.html
 
 import os
 import zipfile
@@ -47,28 +49,19 @@ def old_to_new(old_cynote, new_cynote):
     print "Step 2.1 completed"
     print
 
-def backup_data(old_cynote, bdirectory):
+def backup_data(directory, zipFile):
     # Step 3.1: create backup file
-    zfile = bdirectory + os.sep + 'cynote_backup-' + \
-            str(int(time.time())) + '.zip'
-    z = zipfile.ZipFile(zfile, 'w')
+    z = zipfile.ZipFile(zipFile, 'w')
     print "Step 3.1: Backup file (%s) created" % (zfile)
-    # Step 3.2: backup database directory 
-    directory = os.sep.join([old_cynote, 'applications', 'init', 'databases'])
-    print "Step 3.2: Backup database files from %s to %s" % (directory, zfile)
-    os.chdir(directory)
-    print "Changed working directory to %s" % (directory)
-    for f in [t for t in os.walk(directory)][0][2]:
-        z.write(os.sep.join([directory, f]))
-        print "%s file backup to %s" % (f, zfile)
-    # Step 3.3: backup uploads directory 
-    directory = os.sep.join([old_cynote, 'applications', 'init', 'uploads'])
-    print "Step 3.3: Backup upload files from %s to %s" % (directory, zfile)
-    os.chdir(directory)
-    print "Changed working directory to %s" % (directory)
-    for f in [t for t in os.walk(directory)][0][2]:
-        z.write(os.sep.join([directory, f]))
-        print "%s file backup to %s" % (f, zfile)
+    print "Step 3.2: Backing up.................."
+    def walker(zip, directory, files, root=directory):
+        for file in files:
+            file = os.path.join(directory, file)
+            # yes, the +1 is hacky...
+            archiveName = file[len(os.path.commonprefix((root, file)))+1:]
+            zip.write( file, archiveName, zipfile.ZIP_DEFLATED )
+            print "Backing up: %s" % (file)
+    os.path.walk(directory, walker, z)
     z.close()
     print "Step 3 completed"
     print
@@ -142,6 +135,13 @@ if __name__ == '__main__':
     bdirectory = get_bdirectory()
     cleanup_new_cynote(new_cynote)
     old_to_new(old_cynote, new_cynote)
-    backup_data(old_cynote, bdirectory)
-    remove_old(old_cynote, new_cynote)
-    replace_cynote(old_cynote, new_cynote)
+    zfile = bdirectory + os.sep + 'cynote_backup-' + \
+            str(int(time.time())) + '.zip'
+    backup_data(old_cynote, zfile)
+    if os.path.isfile(zfile):
+        print "Backup file %s found" % (zfile)
+        print "Proceed to replace CyNote.............."
+        print
+        remove_old(old_cynote, new_cynote)
+        replace_cynote(old_cynote, new_cynote)
+    
