@@ -13,9 +13,10 @@ def entries():
             (cynotedb.entry.notebook == cynotedb.notebook.id) \
             (cynotedb.notebook.archived == False) \
             .select(cynotedb.entry.ALL, orderby = ~cynotedb.entry.id) 
-        form = SQLFORM(cynotedb.entry ,fields=['notebook'])
+        form = SQLFORM(cynotedb.entry, fields=['notebook'])
     return dict(form=form,
                 records=records)
+
 
 def archived_entries(): 
     # return the archived notebook itself - Table of contents
@@ -33,8 +34,7 @@ def archived_entries():
             (cynotedb.notebook.archived == True) \
             .select(cynotedb.entry.ALL, orderby = ~cynotedb.entry.id) 
         form = SQLFORM(cynotedb.entry, fields=['notebook'])
-    return dict(form=form,
-                records=records)
+    return dict(form=form, records=records)
         
 def show():
     # called to show one entry and its linked comments based on 
@@ -82,7 +82,8 @@ def new_entry():
                    fields=['title','file','keywords','notebook','description'])
     if form.accepts(request.vars,session):
         db.log.insert(event='New entry created. %s. Title = %s'% \
-                            (cynotedb(cynotedb.notebook.id==request.vars.notebook)\
+                            (cynotedb(
+                            cynotedb.notebook.id==request.vars.notebook)\
                             .select(cynotedb.notebook.name),
                             request.vars.title), 
                       user=session.username)
@@ -177,8 +178,10 @@ def show_results():
     # to generate a form to save the result as a new entry
     # the result will be deleted after a new entry had been created
     option_checked = session.option_checked
-    if len(option_checked) == 0: id = 0 
-    else: id = option_checked[0]
+    if len(option_checked) == 0: 
+        id = 0 
+    else: 
+        id = option_checked[0]
     test = cynotedb(cynotedb.result.id == id).select()
     #the author is set to username
     cynotedb.entry.author.default = session.username    
@@ -204,7 +207,10 @@ def archive_notebook():
                     .select(cynotedb.notebook.name)] + \
             [TR("",INPUT(_type="submit", _value="Archive"))]))    
     if form.accepts(request.vars,session):
-        for notebook in form.vars.keys():
+        option_checked = [id['name']
+                          for id['name'] in form.vars.keys()
+                          if form.vars[id['name']]]
+        for notebook in option_checked:
             cynotedb(cynotedb.notebook.name == notebook).update(archived=True)
         redirect(URL(r=request, f='archive_notebook'))
     return dict(form=form)
