@@ -42,7 +42,7 @@ def show():
     """
     Called to show one entry and its linked comments based on the entry.id
     Called by TOC (entries or archived_entries) in order to provide an entry.id
-    """"
+    """
     if session.username == None: 
         redirect(URL(r=request, f='../account/log_in'))
     else: 
@@ -80,7 +80,7 @@ def new_entry():
     Possible to have duplicate titles
     The author is set to username
     Event is logged in db.log table as "New entry created."
-    """"
+    """
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
     cynotedb.entry.author.default = session.username
@@ -191,9 +191,11 @@ def results():
                 form=form)
     
 def show_results(): 
-    # called by results() function to show a specific result and 
-    # to generate a form to save the result as a new entry
-    # the result will be deleted after a new entry had been created
+    """
+    Called by results() function to show a specific result and 
+    to generate a form to save the result as a new entry
+    the result will be deleted after a new entry had been created.
+    """
     option_checked = session.option_checked
     if len(option_checked) == 0: 
         id = 0 
@@ -263,6 +265,32 @@ def unarchive_notebook():
 def my_exporter(): 
     #response.headers['Content-Type'] = 'text/x-csv' 
     #response.headers['Content-Disposition'] = 'attachment'
-    return [dict(x)
-            for x in (cynotedb(cynotedb.notebook.name == 'Manuscript Reviews') \
-               .select(cynotedb.entry.file, cynotedb.entry.datetime))]
+    entry = [{'id' : x['id'],
+              'title' : x['title'],
+              'author' : x['author'],
+              'file' : x['file'],
+              'filename' : x['filename'],
+              'keywords' : x['keywords'],
+              'datetime' : x['datetime'],
+              'description' : x['description']}
+            for x in cynotedb().select(cynotedb.entry.ALL)]
+    comment = [{'e_id' : x['entry']['id'],
+                'e_title' : x['entry']['title'],
+                'e_datetime' : x['entry']['datetime'],
+                'c_id' : x['comment']['id'],
+                'c_author' : x['comment']['author'],
+                'c_file' : x['comment']['file'],
+                'c_filename' : x['comment']['filename'],
+                'c_datetime' : x['comment']['datetime'],
+                'c_body' : x['comment']['body']}
+            for x in cynotedb(cynotedb.entry.id==cynotedb.comment.entry_id) \
+            .select(cynotedb.entry.id,
+                    cynotedb.entry.title,
+                    cynotedb.entry.datetime,
+                    cynotedb.comment.id,
+                    cynotedb.comment.author,
+                    cynotedb.comment.file,
+                    cynotedb.comment.filename,
+                    cynotedb.comment.datetime,
+                    cynotedb.comment.body)]
+    return dict(entry=entry, comment=comment)
