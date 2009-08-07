@@ -86,6 +86,7 @@ def comment_export(notebook, filename):
     commentfile = open(filename, 'w')
     marshal.dump(comment, commentfile)
     
+    
 def online():
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))    
