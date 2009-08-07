@@ -1,11 +1,12 @@
 def entries(): 
-    # return the notebook itself - Table of contents
-    # This function re-runs itself. At the first run, records is None;
-    # hence, does not show the records, only show the form.
-    # When a notebook was selected, this function will repeat itself
-    # to give the TOC
-    # "records" needs to run before SQLFORM in order to list the 
-    # notebooks available
+    """
+    Return the notebook itself - Table of contents
+    This function re-runs itself. At the first run, records is None;
+    hence, does not show the records, only show the form.
+    When a notebook was selected, this function will repeat itself
+    to give the TOC "records" needs to run before SQLFORM in order to 
+    list the notebooks available.
+    """
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
     else:
@@ -19,13 +20,14 @@ def entries():
 
 
 def archived_entries(): 
-    # return the archived notebook itself - Table of contents
-    # This function re-runs itself. At the first run, records is None;
-    # hence, does not show the records, only show the form.
-    # When a notebook was selected, this function will repeat itself
-    # to give the TOC
-    # "records" needs to run before SQLFORM in order to list the 
-    # notebooks available
+    """
+    Return the archived notebook itself - Table of contents
+    This function re-runs itself. At the first run, records is None;
+    hence, does not show the records, only show the form.
+    When a notebook was selected, this function will repeat itself
+    to give the TOC "records" needs to run before SQLFORM in order to 
+    list the notebooks available.
+    """
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
     else:
@@ -37,9 +39,10 @@ def archived_entries():
     return dict(form=form, records=records)
         
 def show():
-    # called to show one entry and its linked comments based on 
-    # the entry.id
-    # called by TOC in order to provide an entry.id
+    """
+    Called to show one entry and its linked comments based on the entry.id
+    Called by TOC (entries or archived_entries) in order to provide an entry.id
+    """"
     if session.username == None: 
         redirect(URL(r=request, f='../account/log_in'))
     else: 
@@ -71,10 +74,13 @@ def show():
                 records=records)
     
 def new_entry():
-    # create a new entry, if successful, it will redirect to the TOC
-    # page (entries function).
-    # Possible to have duplicate titles
-    #the author is set to username
+    """
+    Create a new entry, if successful, it will redirect to the TOC page 
+    (entries function).
+    Possible to have duplicate titles
+    The author is set to username
+    Event is logged in db.log table as "New entry created."
+    """"
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
     cynotedb.entry.author.default = session.username
@@ -91,23 +97,28 @@ def new_entry():
     return dict(form=form)
     
 def new_notebook():
-    # create a new notebook, if successful, it will redirect to the TOC
-    # page (entries function).
-    # Not possible to have duplicate notebook titles
+    """
+    Create a new notebook, if successful, it will redirect to the TOC page 
+    (entries function).
+    Event is logged in db.log table as "New notebook created."
+    """
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
     form = SQLFORM(cynotedb.notebook, fields=['name','description'])
     if form.accepts(request.vars,session):
-        db.log.insert(event='New notebook created. Notebook = ' + request.vars.name, 
-                      user=session.username)
+        db.log.insert(event='New notebook created. Notebook = ' + 
+                    request.vars.name, 
+                    user=session.username)
         redirect(URL(r=request,f='entries'))
     return dict(form=form)
     
 def download():
-    # called by cynote.show() function
-    # used to stream a file from uploads directory 
-    # request.args[0] given by an entry (entry.filename) 
-    # or a comment (comment.filename)
+    """
+    Called by cynote.show() function
+    Used to stream a file from uploads directory 
+    request.args[0] given by an entry (entry.filename) or a comment 
+    (comment.filename)
+    """
     import os
     import gluon.contenttype
     filename = request.args[0]
@@ -115,9 +126,11 @@ def download():
     file = os.path.join(request.folder, 'uploads/',  filename)
     return response.stream(file)
       
-def notarize_bysystem(username=None):
-    # function to bulk notarize all entries by inserting a notarization comment
-    # for each entry
+def notarize_bysystem():
+    """
+    Function to bulk notarize all entries by inserting a notarization comment
+    for each entry.
+    """
     session.username = username
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
@@ -129,9 +142,11 @@ def notarize_bysystem(username=None):
     cynotedb.commit()
     
 def notarize_bymanual():
-    # user to notarize one entry
-    # user identified during login
-    # redirected to TOC page (entries function)
+    """
+    User to notarize one entry
+    User identified during login
+    Redirected to TOC page (entries function)
+    """
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
     cynotedb.comment.body.default = 'Notarize'
@@ -143,10 +158,12 @@ def notarize_bymanual():
     return dict(comments=comments)
 
 def results(): 
-    # show the contents of cynotedb.result table
-    # cynotedb.result table stores results from analysis functions
-    # generates a form to allow user to show a specific result for 
-    # saving into a new entry
+    """
+    Show the contents of cynotedb.result table 
+    cynotedb.result table stores results from analysis functions
+    Generates a form to allow user to show a specific result for saving into a 
+    new entry
+    """
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
     records = cynotedb(cynotedb.result.id == cynotedb.result.id) \
@@ -196,7 +213,11 @@ def show_results():
                 form=form)
     #return dict(option_checked=option_checked)
 
-def archive_notebook():   
+def archive_notebook(): 
+    """
+    Function to archive one or more notebooks.
+    Event is logged in db.log table as "Notebook archived."
+    """  
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))          
     form = FORM(
@@ -211,11 +232,17 @@ def archive_notebook():
                           for id['name'] in form.vars.keys()
                           if form.vars[id['name']]]
         for notebook in option_checked:
+            db.log.insert(event='Notebook archived. Notebook = ' + notebook, 
+                          user=session.username)
             cynotedb(cynotedb.notebook.name == notebook).update(archived=True)
         redirect(URL(r=request, f='archive_notebook'))
     return dict(form=form)
 
 def unarchive_notebook():  
+    """
+    Function to unarchive one or more previously notebooks.
+    Event is logged in db.log table as "Notebook unarchived."
+    """ 
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))           
     form = FORM(
@@ -227,6 +254,8 @@ def unarchive_notebook():
             [TR("",INPUT(_type="submit", _value="Unarchive"))]))    
     if form.accepts(request.vars,session):
         for notebook in form.vars.keys():
+            db.log.insert(event='Notebook unarchived. Notebook = ' + notebook, 
+                          user=session.username)
             cynotedb(cynotedb.notebook.name == notebook).update(archived=False)
         redirect(URL(r=request, f='unarchive_notebook'))
     return dict(form=form)
@@ -236,4 +265,4 @@ def my_exporter():
     #response.headers['Content-Disposition'] = 'attachment'
     return [dict(x)
             for x in (cynotedb(cynotedb.notebook.name == 'Manuscript Reviews') \
-               .select(cynotedb.entry.ALL))]
+               .select(cynotedb.entry.file, cynotedb.entry.datetime))]
