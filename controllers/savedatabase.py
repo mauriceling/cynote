@@ -4,7 +4,89 @@ from ftplib import FTP
 
 now = datetime.datetime.utcnow()
 
-def form():
+def export_notebook():
+    form = FORM(
+            TABLE(*[TR(""+str(id['name']), 
+                INPUT(_type="checkbox", _name=str(id['name']),
+                      value=False, _value='on'))
+            for id in cynotedb(cynotedb.notebook.archived == "False") \
+                    .select(cynotedb.notebook.name)] + \
+            [TR("Directory to export to", 
+                INPUT(_type="text", _name="directory"))] + \
+            [TR("", INPUT(_type="submit", _value="Export Notebook"))]))    
+    if form.accepts(request.vars,session):
+        import time
+        import os
+        notebook = [id['name']
+                    for id['name'] in form.vars.keys()
+                    if form.vars[id['name']]]
+        #print option_checked
+        #print request.vars.directory
+        now = datetime.datetime.utcnow()
+        entryfile = ''.join([os.sep.join([request.vars.directory, 
+                        notebook[0]]), 'entry', str(int(time.time())), '.bak'])
+        commentfile = ''.join([os.sep.join([request.vars.directory, 
+                    notebook[0]]), 'comment', str(int(time.time())), '.bak'])
+        print entryfile
+        print commentfile
+        entry_export(notebook, entryfile)
+        #comment_export(notebook, commentfile)
+    return dict(form=form)
+        
+def entry_export(notebook, filename): 
+    #response.headers['Content-Type'] = 'text/x-csv' 
+    #response.headers['Content-Disposition'] = 'attachment'
+    entry = [[str(x['id']), str(x['title']), str(x['author']), str(x['file']),
+              str(x['filename']), str(x['keywords']), str(x['datetime']),
+              str(x['description'])]
+            for x in cynotedb(cynotedb.notebook.name=='Goals Journal')
+                            (cynotedb.notebook.id==cynotedb.entry.notebook)\
+                            .select(cynotedb.entry.ALL)]
+    print entry
+    entryfile = open(filename, 'w')
+    entryfile.write('\t'.join(['id', 'title', 'author', 'file', 
+                                'filename', 'keywords', 'datetime', 
+                                'description', '\n']))
+    for e in entry:
+        id = e[0]
+        entryfile.writelines(id + '_title///' + e[1]) 
+        entryfile.writelines(id + '_author//' + e[2]) 
+        entryfile.writelines(id + '_file////' + e[3]) 
+        entryfile.writelines(id + '_filena/' + e[4])
+        entryfile.writelines(id + '_keywor//' + e[5])
+        entryfile.writelines(id + '_dateti//' + e[6])
+        entryfile.writelines(id + '_descrp//' + e[2])
+    entryfile.close()
+            
+def comment_export(notebook, filename): 
+    #response.headers['Content-Type'] = 'text/x-csv' 
+    #response.headers['Content-Disposition'] = 'attachment'
+    import marshal
+    comment = [{'e_id' : x['entry']['id'],
+                'e_title' : x['entry']['title'],
+                'e_datetime' : x['entry']['datetime'],
+                'c_id' : x['comment']['id'],
+                'c_author' : x['comment']['author'],
+                'c_file' : x['comment']['file'],
+                'c_filename' : x['comment']['filename'],
+                'c_datetime' : x['comment']['datetime'],
+                'c_body' : x['comment']['body']}
+            for x in cynotedb(cynotedb.notebook.name=='Goals Journal')\
+                            (cynotedb.notebook.id==cynotedb.entry.notebook)\
+                            (cynotedb.entry.id==cynotedb.comment.entry_id)\
+            .select(cynotedb.entry.id,
+                    cynotedb.entry.title,
+                    cynotedb.entry.datetime,
+                    cynotedb.comment.id,
+                    cynotedb.comment.author,
+                    cynotedb.comment.file,
+                    cynotedb.comment.filename,
+                    cynotedb.comment.datetime,
+                    cynotedb.comment.body)]
+    commentfile = open(filename, 'w')
+    marshal.dump(comment, commentfile)
+    
+def online():
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))    
     form = FORM(TABLE(TR("FTP Server: ", 
