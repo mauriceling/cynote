@@ -274,7 +274,8 @@ def entry_export():
               'datetime' : x['datetime'],
               'description' : x['description']}
             for x in cynotedb(cynotedb.notebook.name=='Goals Journal')
-                            (cynotedb.notebook.id==cynotedb.entry.notebook).select(cynotedb.entry.ALL)]
+                            (cynotedb.notebook.id==cynotedb.entry.notebook)\
+                            .select(cynotedb.entry.ALL)]
     return dict(entry=entry)
             
 def comment_export(): 
