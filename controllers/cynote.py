@@ -262,7 +262,7 @@ def unarchive_notebook():
         redirect(URL(r=request, f='unarchive_notebook'))
     return dict(form=form)
 
-def my_exporter(): 
+def entry_export(): 
     #response.headers['Content-Type'] = 'text/x-csv' 
     #response.headers['Content-Disposition'] = 'attachment'
     entry = [{'id' : x['id'],
@@ -273,7 +273,13 @@ def my_exporter():
               'keywords' : x['keywords'],
               'datetime' : x['datetime'],
               'description' : x['description']}
-            for x in cynotedb().select(cynotedb.entry.ALL)]
+            for x in cynotedb(cynotedb.notebook.name=='Goals Journal')
+                            (cynotedb.notebook.id==cynotedb.entry.notebook).select(cynotedb.entry.ALL)]
+    return dict(entry=entry)
+            
+def comment_export(): 
+    #response.headers['Content-Type'] = 'text/x-csv' 
+    #response.headers['Content-Disposition'] = 'attachment'
     comment = [{'e_id' : x['entry']['id'],
                 'e_title' : x['entry']['title'],
                 'e_datetime' : x['entry']['datetime'],
@@ -283,7 +289,9 @@ def my_exporter():
                 'c_filename' : x['comment']['filename'],
                 'c_datetime' : x['comment']['datetime'],
                 'c_body' : x['comment']['body']}
-            for x in cynotedb(cynotedb.entry.id==cynotedb.comment.entry_id) \
+            for x in cynotedb(cynotedb.notebook.name=='Goals Journal')\
+                            (cynotedb.notebook.id==cynotedb.entry.notebook)\
+                            (cynotedb.entry.id==cynotedb.comment.entry_id)\
             .select(cynotedb.entry.id,
                     cynotedb.entry.title,
                     cynotedb.entry.datetime,
@@ -293,4 +301,4 @@ def my_exporter():
                     cynotedb.comment.filename,
                     cynotedb.comment.datetime,
                     cynotedb.comment.body)]
-    return dict(entry=entry, comment=comment)
+    return dict(comment=comment)
