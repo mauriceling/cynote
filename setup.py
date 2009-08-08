@@ -7,8 +7,8 @@ setup(name='cynote',
       version='1.0.1',
       description='Cyber Laboratory Notebook',
       long_description='Laboratory notebook using version control system for \
-backups and independent date-time stamping (which may be a form of \
-notarization), in order to ensure record accountability and auditing.',
+      backups and independent date-time stamping (which may be a form of \
+      notarization), in order to ensure record accountability and auditing.',
       author='Maurice HT Ling',
       author_email='mauriceling@acm.org',
       url='http://cynote.sourceforge.net',
