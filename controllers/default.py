@@ -12,8 +12,9 @@ cynote_dependencies = ['biopython==1.50',
 
 def index():
     for dependency in cynote_dependencies:
-        try: main(dependency)
-        except: print dependency + "installation error"
+        try: main([dependency])
+        except KeyError: print dependency + " installation error"
+        except: print dependency + " generic error (please inform Maurice Ling)"
     response.flash=T('Welcome to CyNote - A web-enabled notebook compliant with general research record-keeping standard')
     if session.username == None: 
         name = 'Guest'
