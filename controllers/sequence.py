@@ -132,12 +132,14 @@ def protein_analysis_output():
 
 ncbi_db = {"Non-redundant GenBank (nr)" : "nr",
            "NCBI Reference Sequence (refseq)" : "refseq",
-           "SWISS-PROT protein sequence (last update) (swissprot)" : "swissprot",
+           "SWISS-PROT protein sequence (last update) (swissprot)" : \
+                "swissprot",
            "Patent division of GenPept (pat)" : "pat",
            "Protein Data Bank (pdb)" : "pdb",
            "Protein - environmental samples (env_nr)" : "env_nr",
            "RNA - NCBI Reference Sequence (refseq_rna)" : "refseq_rna",
-           "Genomic - NCBI Reference Sequence (refseq_genomic)" : "refseq_genomic",
+           "Genomic - NCBI Reference Sequence (refseq_genomic)" : \
+                "refseq_genomic",
            "ESTs - GenBank + EMBL + DDBJ (est)" : "est",
            "Mouse subset of ESTs (est_mouse)" : "est_mouse",
            "Human subset of ESTs (est_human)" : "est_human",
@@ -249,10 +251,10 @@ def ncbiblast():
         session['hitsize'] = form.vars.hitlist_size
         session['expect'] = form.vars.expect
         session['word_size'] = form.vars.word_size
-        session['data'] = [{'Title':row.title, 'Score':str(row.score), 'E-value':str(row.e)} 
+        session['data'] = [{'Title':row.title, 'Score':str(row.score), 
+                            'E-value':str(row.e)} 
                            for row in rec.descriptions]
-            
-        redirect(URL(r=request,f='ncbiblast_output'))
+        redirect(URL(r=request, f='ncbiblast_output'))
     return dict(form=form)
 
 def ncbiblast_output():
@@ -279,3 +281,53 @@ def ncbiblast_output():
                 Hitlist_size=result['Maximum hits'],
                 Expect=result['Expect'],
                 Result=result['Output'])
+
+def restriction_digest():
+    if session.username == None:
+        redirect(URL(r=request, f='../account/log_in'))
+    form = FORM(TABLE(TR("Sequence:  ", 
+                        TEXTAREA(_type="text",
+                                 _value="Enter your DNA sequence in plain form",
+                                 _name="sequence",
+                                 requires=IS_NOT_EMPTY())),
+                      TR("DNA Type: ", 
+                        SELECT("Linear", "Circular",
+                               _name="dna_type")),
+                      TR("Show Fragments: ", 
+                        SELECT("No", "Yes",
+                               _name="show_frag")),
+                      TR("", INPUT(_type="submit", _value="Digest DNA"))))
+    if form.accepts(request.vars,session):
+        from Bio import Restriction as R
+        from Bio.Seq import Seq
+        from Bio.Alphabet import IUPAC
+        if request.vars.dna_type == 'Linear':
+            dna_type = 'True'
+        else:
+            dna_type = 'False'
+        seq = Seq(request.vars.sequence, IUPAC.unambiguous_dna)
+        results = {}
+        nocut = []
+        for enzyme in R.RestrictionBatch([], suppliers = ['F', 'N', 'R']):
+            digest = enzyme.search(seq, linear=dna_type)
+            digest.sort()
+            fragment = [digest[x+1] - digest[x]
+                        for x in range(len(digest) - 1)]
+            fragment.sort()
+            d = {}
+            if len(fragment) == 0:
+                nocut.append(str(enzyme))
+            else:
+                d['Restriction site'] = enzyme.site
+                d['Number of fragments'] = str(len(fragment))
+                if request.vars.show_frag == 'Yes':
+                    d['Fragment Size'] = str(fragment)
+                results[str(enzyme)] = d
+        results['Enzymes that do not cut'] = nocut
+        session['result'] = results
+        redirect(URL(r=request, f='restriction_digest_output'))
+    return dict(form=form)
+    
+def restriction_digest_output():
+    result = session.pop('result', None)
+    return dict(result)
