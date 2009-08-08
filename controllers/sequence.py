@@ -334,6 +334,8 @@ def restriction_digest():
     
 def restriction_digest_output():
     result = session.pop('result', None)
+    cynotedb.result.insert(testresult=result)
+    cynotedb.commit()
     sequence = result.pop('sequence', None)
     uncut = result.pop('Enzymes that do not cut', None)
     uncut.sort()
