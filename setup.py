@@ -4,7 +4,7 @@ use_setuptools()
 from setuptools import setup, find_packages
 
 setup(name='cynote',
-      version='1.0.1',
+      version='1.1',
       description='Cyber Laboratory Notebook',
       long_description='Laboratory notebook using version control system for \
       backups and independent date-time stamping (which may be a form of \
