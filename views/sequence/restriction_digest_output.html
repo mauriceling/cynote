@@ -1,0 +1,24 @@
+{{extend 'layout.html'}}
+[<a href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
+Back to Menu </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry"> 
+Create New Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook"> 
+Create New Notebook </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries"> 
+List all Entries </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual"> 
+Notarize an Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
+Show all Results </a>]
+<br><br>
+<h1>Result for Restriction Endonuclease Digestion<br></h1>
+<br>
+<b>Input sequence ({{=len(sequence)}} nucleotides):</b> <br> 
+<pre style="word-wrap:break-word; white-space:pre-wrap">{{=sequence}}</pre>
+<br><br>
+<b>{{=len(uncut)}} enzymes do not cut the sequence:</b> <br> 
+<pre style="word-wrap:break-word; white-space:pre-wrap">{{='\t'.join(uncut)}}</pre>
+<br>
+<b>{{=len(result)}} enzymes cut the sequence:</b><br>
+{{=BEAUTIFY(result)}}

@@ -308,20 +308,24 @@ def restriction_digest():
         seq = Seq(request.vars.sequence, IUPAC.unambiguous_dna)
         results = {}
         nocut = []
+        results['sequence'] = seq
         for enzyme in R.RestrictionBatch([], suppliers = ['F', 'N', 'R']):
             digest = enzyme.search(seq, linear=dna_type)
             digest.sort()
-            fragment = [digest[x+1] - digest[x]
-                        for x in range(len(digest) - 1)]
-            fragment.sort()
+            #fragment = [digest[x+1] - digest[x]
+            #            for x in range(len(digest) - 1)]
+            #fragment.sort()
             d = {}
-            if len(fragment) == 0:
+            if len(digest) == 0:
                 nocut.append(str(enzyme))
             else:
                 d['Restriction site'] = enzyme.site
-                d['Number of fragments'] = str(len(fragment))
+                if dna_type == 'True':
+                    d['Number of fragments'] = str(len(digest) + 1)
+                else:
+                    d['Number of fragments'] = str(len(digest))
                 if request.vars.show_frag == 'Yes':
-                    d['Fragment Size'] = str(fragment)
+                    d['Cut positions'] = str(digest)
                 results[str(enzyme)] = d
         results['Enzymes that do not cut'] = nocut
         session['result'] = results
@@ -330,4 +334,7 @@ def restriction_digest():
     
 def restriction_digest_output():
     result = session.pop('result', None)
-    return dict(result)
+    sequence = result.pop('sequence', None)
+    uncut = result.pop('Enzymes that do not cut', None)
+    uncut.sort()
+    return dict(sequence=sequence, result=result, uncut=uncut)
