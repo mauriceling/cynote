@@ -125,7 +125,7 @@ def protein_analysis_output():
     result['Aromaticity'] = session.pop('aromaticity', None)
     result['Instability index'] = session.pop('instability', None)
     result['Flexibility'] = session.pop('flexibility', None)
-    result['Secondary struction fraction'] = session.pop('sec_struct', None)
+    result['Secondary structure fraction'] = session.pop('sec_struct', None)
     cynotedb.result.insert(testresult=result)
     cynotedb.commit()
     return dict(result=result)

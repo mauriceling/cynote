@@ -14,4 +14,43 @@ Show all Results </a>]
 <br>
 <h1>Result from Protein Analysis<br></h1>
 <br>
-{{=BEAUTIFY(response._vars)}}
+<b>Input sequence ({{=len(result['Sequence'])}} nucleotides):</b> <br> 
+<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['Sequence']}}</pre>
+<b>Molecular weight:</b>{{=result['Molecular weight']}} Daltons<br><br>
+<b>Isoelectric point:</b>{{=result['Isoelectric point']}}<br><br>
+<b>Instability index (Guruprassad et al., 1990. Protein Engineering 4:155; Value > 40 means short half-life):</b>
+{{=result['Instability index']}}<br><br>
+<b>Aromaticity (Lobry, 1994):</b>{{=result['Aromaticity']}}<br><br>
+<b>Secondary structure fractions:</b><br>
+<i>Helix:</i>{{=result['Secondary structure fraction'][0]*100}}%<br>
+<i>Turn:</i>{{=result['Secondary structure fraction'][1]*100}}%<br>
+<i>Sheet:</i>{{=result['Secondary structure fraction'][2]*100}}%<br><br>
+<b>Amino acid count:</b><br><pre style="word-wrap:break-word; white-space:pre-wrap">
+Amino acid		Count		Percentage
+Glycine:		{{=result['Amino acid count']['G']}}		{{=result['Amino acid proportion']['G']*100}}
+Alanine:		{{=result['Amino acid count']['A']}}		{{=result['Amino acid proportion']['A']*100}}
+Valine:			{{=result['Amino acid count']['V']}}		{{=result['Amino acid proportion']['V']*100}}
+Leucine:		{{=result['Amino acid count']['L']}}		{{=result['Amino acid proportion']['L']*100}}
+Isoleucine:		{{=result['Amino acid count']['I']}}		{{=result['Amino acid proportion']['I']*100}}
+Methionine:		{{=result['Amino acid count']['M']}}		{{=result['Amino acid proportion']['M']*100}}
+Phenylalanine:		{{=result['Amino acid count']['F']}}		{{=result['Amino acid proportion']['F']*100}}
+Tryptophan:		{{=result['Amino acid count']['W']}}		{{=result['Amino acid proportion']['W']*100}}
+Proline:		{{=result['Amino acid count']['P']}}		{{=result['Amino acid proportion']['P']*100}}
+Serine:			{{=result['Amino acid count']['S']}}		{{=result['Amino acid proportion']['S']*100}}
+Threonine:		{{=result['Amino acid count']['T']}}		{{=result['Amino acid proportion']['T']*100}}
+Cysteine:		{{=result['Amino acid count']['C']}}		{{=result['Amino acid proportion']['C']*100}}
+Tyrosine:		{{=result['Amino acid count']['Y']}}		{{=result['Amino acid proportion']['Y']*100}}
+Asparagine:		{{=result['Amino acid count']['N']}}		{{=result['Amino acid proportion']['N']*100}}
+Glutamine:		{{=result['Amino acid count']['Q']}}		{{=result['Amino acid proportion']['Q']*100}}
+Aspartic acid:		{{=result['Amino acid count']['D']}}		{{=result['Amino acid proportion']['D']*100}}
+Glutamic acid:		{{=result['Amino acid count']['E']}}		{{=result['Amino acid proportion']['E']*100}}
+Lysine:			{{=result['Amino acid count']['K']}}		{{=result['Amino acid proportion']['K']*100}}
+Arginine:		{{=result['Amino acid count']['R']}}		{{=result['Amino acid proportion']['R']*100}}
+Histidine:		{{=result['Amino acid count']['H']}}		{{=result['Amino acid proportion']['H']*100}}
+</pre>
+<!--
+<b>Flexibility between each amino acid (Vihinen et al., 1994, Proteins 19(2):141):</b><br>
+{{for index in range(len(result['Flexibility'])):}}
+	Amino acid {{=index}}: {{=result['Flexibility'][index]}}<br>
+{{pass}}
+-->

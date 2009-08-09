@@ -13,7 +13,7 @@ setup(name='cynote',
       author_email='mauriceling@acm.org',
       url='http://cynote.sourceforge.net',
       download_url='http://sourceforge.net/projects/cynote/files/CyNote/ \
-      cynote1_0_1.zip/download',
+      cynote1_1.zip/download',
       license = 'GNU General Public License version 3',
       platform = 'OS independent',
       package_dir = {},
