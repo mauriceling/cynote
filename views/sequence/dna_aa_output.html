@@ -14,4 +14,31 @@ Show all Results </a>]
 <br><br>
 <h1>Result for DNA &lt;---&gt; RNA &lt;---&gt; Protein<br></h1>
 <br>
-{{=BEAUTIFY(response._vars)}}
+<b>Input sequence ({{=len(result['Sequence'])}} nucleotides):</b> <br> 
+<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['Sequence']}}</pre>
+{{if result['Action'] == 'Complementation':}}
+	Complement: 
+	<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['Complement']}}</pre>
+	{{pass}}
+{{if result['Action'] == 'Transcribe':}}
+	Transcribed RNA: 
+	<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['Transcribed RNA']}}</pre>
+	{{pass}}
+{{if result['Action'] == 'Back Transcribe':}}
+	DNA: 
+	<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['DNA']}}</pre>
+	{{pass}}
+{{if result['Action'] == 'Translate':}}
+	First Frame: 
+	<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['First Frame']}}</pre>
+	Second Frame: 
+	<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['Second Frame']}}</pre>
+	Second Frame: 
+	<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['Third Frame']}}</pre>
+	Complement First Frame: 
+	<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['Complement First Frame']}}</pre>
+	Complement Second Frame: 
+	<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['Complement Second Frame']}}</pre>
+	Complement Second Frame: 
+	<pre style="word-wrap:break-word; white-space:pre-wrap">{{=result['Complement Third Frame']}}</pre>
+	{{pass}}

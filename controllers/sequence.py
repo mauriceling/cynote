@@ -44,7 +44,7 @@ def dna_aa():
     
 def dna_aa_output():
     result = {}
-    result['Input Sequence'] = session.pop('sequence', None)
+    result['Sequence'] = session.pop('sequence', None)
     result['Action'] = session.pop('action', None)
     if result['Action'] == 'Complementation':
         result['Complement'] = session.pop('Complement', None)
