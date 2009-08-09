@@ -7,23 +7,24 @@ def seqClean(s):
 def dna_aa():
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
-    form = FORM(TABLE(TR("Sequence:  ", 
+    form = FORM(TABLE(TR("Sequence (raw format):  ", 
                         TEXTAREA(_type="text",
                                  _name="sequence",
                                  requires=IS_NOT_EMPTY())),
-                      TR("Sequence Type: ", 
-                        SELECT("Raw Format", "FASTA",
-                               _name="seq_type")),
+                      #TR("Sequence Type: ", 
+                      #  SELECT("Raw Format", "FASTA",
+                      #         _name="seq_type")),
                       TR("Action: ", 
                         SELECT("Complementation", "Transcribe", "Translate", 
                                "Back Transcribe", "Back Translate",
                                _name="action")),
                       TR("", INPUT(_type="submit", _value="SUBMIT"))))
     if form.accepts(request.vars,session):
-        if form.vars.seq_type == "FASTA": 
-            session['sequence'] = \
-                seqClean(fasta_to_raw(form.vars.sequence.upper()))
-        else: session['sequence'] = seqClean(form.vars.sequence.upper())
+        #if form.vars.seq_type == "FASTA": 
+        #    session['sequence'] = \
+        #        seqClean(fasta_to_raw(form.vars.sequence.upper()))
+        #else: 
+        session['sequence'] = seqClean(form.vars.sequence.upper())
         if form.vars.action == "Complementation":
            session['action'] = "Complementation"
            session['Complement'] = Seq.reverse_complement(session['sequence'])
