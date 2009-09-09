@@ -11,6 +11,8 @@ cynote_dependencies = ['biopython==1.50',
                        'pil==1.1.6']
 
 def index():
+    try: session['dependencies']
+    except KeyError: session['dependencies'] = 'NOT DONE'
     if session['dependencies'] != 'DONE':
         for dependency in cynote_dependencies:
             try: main([dependency])
