@@ -1,0 +1,15 @@
+{{extend 'layout.html'}} 
+[<A href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
+Back to Menu </A>| 
+<A href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry">
+Create New Entry </A>| 
+<A href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook">
+Create New Notebook </A>| 
+<A href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries">
+List all Entries </A>| 
+<A href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual">
+Notarize an Entry </A>| 
+<A href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results">
+Show all Results </A>] <BR><BR>
+<H1>Multi-Samples Statistical Analysis</H1>
+{{=form}}
