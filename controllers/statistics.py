@@ -1,8 +1,3 @@
-exec("""from applications.%s.modules.copads.SampleStatistics \
-import SingleSample""" % (request.application))
-exec("""from applications.%s.modules.copads.SampleStatistics \
-import MultiSample""" % (request.application))
-
 #######################################################################
 # Single Sample (SS)
 #######################################################################
@@ -21,9 +16,11 @@ def input_SS():
     return dict(form=form)
     
 def analyze_SS():
+    exec("""from applications.%s.modules.copads.SampleStatistics \
+    import SingleSample""" % (request.application))
     result = {}
     result['data'] = session.pop('data', [])
-    sample = SingleSample(data=result['data'], name='')
+    sample = SingleSample(result['data'], '')
     #print sample
     result['results'] = sample.summary
     #These 2 lines inserts result dictionary into cynote.result table
@@ -61,18 +58,17 @@ def input_TS():
                           _name='analysis_type'),
                    INPUT(_type='submit', _value='SUBMIT'))))
     if form.accepts(request.vars,session):
+        exec("""from applications.%s.modules.copads.SampleStatistics \
+        import TwoSample""" % (request.application))
         if form.vars.name1 == '': form.vars.name1 = 'Sample 1'
         if form.vars.name2 == '': form.vars.name2 = 'Sample 2'
         session.analysis_type = form.vars.analysis_type
-        data = MultiSample()
         form.vars.data1 = [float(x) for x in form.vars.data1.split(',')
                            if x.strip() != '']
         form.vars.data2 = [float(x) for x in form.vars.data2.split(',')
                            if x.strip() != '']
-        data = MultiSample()
-        data.addSample(form.vars.data1, name=form.vars.name1)
-        data.addSample(form.vars.data2, name=form.vars.name2)
-        session.data = data
+        session.data = TwoSample(form.vars.data1, name=form.vars.name1,
+                                 form.vars.data2, name=form.vars.name2)
         redirect(URL(r=request, f='analyse_TS'))
     return dict(form=form)
     
@@ -104,6 +100,8 @@ def analyze_TS():
 # More than Two Samples (MS)
 #######################################################################
 def parse_data(data, name):
+    exec("""from applications.%s.modules.copads.SampleStatistics \
+    import MultiSample""" % (request.application))
     dataset = MultiSample()
     datalist = [sample for sample in data.split('\r\n')]
     if name == 'NO':
