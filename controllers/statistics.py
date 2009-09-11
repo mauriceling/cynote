@@ -61,22 +61,36 @@ def input_TS():
                           _name='analysis_type'),
                    INPUT(_type='submit', _value='SUBMIT'))))
     if form.accepts(request.vars,session):
+        if form.vars.name1 == '': form.vars.name1 = 'Sample 1'
+        if form.vars.name2 == '': form.vars.name2 = 'Sample 2'
         session.analysis_type = form.vars.analysis_type
-        session.data1 = [float(x) for x in form.vars.data1.split(',')
-                         if x.strip() != '']
-        session.data2 = [float(x) for x in form.vars.data2.split(',')
-                         if x.strip() != '']
-        session.name1 = form.vars.name1
-        session.name2 = form.vars.name2
+        data = MultiSample()
+        form.vars.data1 = [float(x) for x in form.vars.data1.split(',')
+                           if x.strip() != '']
+        form.vars.data2 = [float(x) for x in form.vars.data2.split(',')
+                           if x.strip() != '']
+        data = MultiSample()
+        data.addSample(form.vars.data1, name=form.vars.name1)
+        data.addSample(form.vars.data2, name=form.vars.name2)
+        session.data = data
         redirect(URL(r=request, f='analyse_TS'))
     return dict(form=form)
     
 def analyze_TS():
     result = {}
     result['data'] = session.pop('data', [])
-    sample = SingleSample(data=result['data'], name='')
+    result['analysis_type'] = session.pop('analysis_type', '')
+    analysis_results = {}
+    if result['analysis_type'] == 'Paired Z-test': pass
+    if result['analysis_type'] == '2-sample Z-test': pass
+    if result['analysis_type'] == 'Paired t-test': pass
+    if result['analysis_type'] == '2-sample t-test': pass
+    if result['analysis_type'] == "Pearson's Correlation": pass
+    if result['analysis_type'] == "Spearman's Correlation": pass
+    if result['analysis_type'] == 'Linear regression': pass
+    if result['analysis_type'] == 'Distance measure': pass
     #print sample
-    result['results'] = sample.summary
+    result['results'] = analysis_results
     #These 2 lines inserts result dictionary into cynote.result table
     #cynotedb.result.insert(testresult=result)
     #cynotedb.commit()
@@ -118,16 +132,20 @@ def input_MS():
                    SELECT("Pearson's Correlation Matrix",
                           _name='analysis_type'),
                    INPUT(_type='submit', _value='SUBMIT'))))
-    if form.accepts(request.vars,session):       
+    if form.accepts(request.vars,session):
+        session.analysis_type = form.vars.analysis_type
+        session.data = parse_data(form.vars.data, form.vars.sample_w_name)       
         redirect(URL(r=request, f='analyze_MS'))
     return dict(form=form)
     
 def analyze_MS():
     result = {}
     result['data'] = session.pop('data', [])
-    sample = SingleSample(data=result['data'], name='')
+    result['analysis_type'] = session.pop('analysis_type', '')
+    analysis_results = {}
+    if result['analysis_type'] == "Pearson's Correlation Matrix": pass
     #print sample
-    result['results'] = sample.summary
+    result['results'] = analysis_results
     #These 2 lines inserts result dictionary into cynote.result table
     #cynotedb.result.insert(testresult=result)
     #cynotedb.commit()
