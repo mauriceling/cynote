@@ -15,7 +15,8 @@ def input_SS():
                     value='Enter the data, separated by commas')),   
                 INPUT(_type='submit', _value='SUBMIT')))
     if form.accepts(request.vars,session):
-        session.data = [float(x) for x in form.vars.data.split(',')]
+        session.data = [float(x) for x in form.vars.data.split(',')
+                        if x.strip() != '']
         redirect(URL(r=request, f='analyze_SS'))
     return dict(form=form)
     
@@ -61,8 +62,10 @@ def input_TS():
                    INPUT(_type='submit', _value='SUBMIT'))))
     if form.accepts(request.vars,session):
         session.analysis_type = form.vars.analysis_type
-        session.data1 = [float(x) for x in form.vars.data1.split(',')]
-        session.data2 = [float(x) for x in form.vars.data2.split(',')]
+        session.data1 = [float(x) for x in form.vars.data1.split(',')
+                         if x.strip() != '']
+        session.data2 = [float(x) for x in form.vars.data2.split(',')
+                         if x.strip() != '']
         session.name1 = form.vars.name1
         session.name2 = form.vars.name2
         redirect(URL(r=request, f='analyse_TS'))
@@ -112,7 +115,7 @@ def input_MS():
                 TR('Data containing sample names? ',
                    SELECT('YES', 'NO', _name='sample_w_name')),
                 TR('Type of Analysis: ',
-                   SELECT('Distance Matrix',
+                   SELECT("Pearson's Correlation Matrix",
                           _name='analysis_type'),
                    INPUT(_type='submit', _value='SUBMIT'))))
     if form.accepts(request.vars,session):       
