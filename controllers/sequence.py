@@ -7,18 +7,17 @@ def seqClean(s):
 def dna_aa():
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
-    form = FORM(TABLE(TR("Sequence (raw format):  ", 
-                        TEXTAREA(_type="text",
-                                 _name="sequence",
+    form = FORM(TABLE(TR('Sequence (raw format):  ', 
+                        TEXTAREA(_type='text', _name='sequence',
                                  requires=IS_NOT_EMPTY())),
                       #TR("Sequence Type: ", 
                       #  SELECT("Raw Format", "FASTA",
                       #         _name="seq_type")),
-                      TR("Action: ", 
-                        SELECT("Complementation", "Transcribe", "Translate", 
-                               "Back Transcribe", "Back Translate",
-                               _name="action")),
-                      TR("", INPUT(_type="submit", _value="SUBMIT"))))
+                      TR('Action: ', 
+                        SELECT('Complementation', 'Transcribe', 'Translate', 
+                               'Back Transcribe', 'Back Translate',
+                               _name='action'),
+                      INPUT(_type='submit', _value='SUBMIT'))))
     if form.accepts(request.vars,session):
         #if form.vars.seq_type == "FASTA": 
         #    session['sequence'] = \
@@ -96,12 +95,11 @@ def fasta_to_raw(fasta):
 def protein_analysis():
     if session.username == None: redirect(URL(r=request,f='../account/log_in'))
     from Bio.SeqUtils.ProtParam import ProteinAnalysis
-    form = FORM(
-        TABLE(
+    form = FORM(TABLE(
             TR("Amino acid sequence:  ",
                TEXTAREA(_type="text", _name="sequence",
                         requires=IS_NOT_EMPTY())),
-            TR("", INPUT(_type="submit", _value="SUBMIT"))))
+            INPUT(_type="submit", _value="SUBMIT")))
     if form.accepts(request.vars,session):
         session['sequence'] = seqClean(form.vars.sequence.upper())
         X = ProteinAnalysis(session['sequence'])

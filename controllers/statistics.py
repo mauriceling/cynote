@@ -41,12 +41,12 @@ def input_TS():
         redirect(URL(r=request, f='../account/log_in'))
     form = FORM(
             TABLE(
-                TR('Name #1: ', INPUT(_name='name1', value='Enter name')),
-                TR('Data #1: ', TEXTAREA(_name='data1',
-                    value='Enter the data, separated by commas')),
-                TR('Name #2: ', INPUT(_name='name2', value='Enter name')),
-                TR('Data #2: ', TEXTAREA(_name='data2',
-                    value='Enter the data, separated by commas')),
+                TR('Name #1: ', INPUT(_name='name1', value='Enter name'),
+                   'Data #1: ', TEXTAREA(_name='data1',
+                                value='Enter the data, separated by commas')),
+                TR('Name #2: ', INPUT(_name='name2', value='Enter name'),
+                   'Data #2: ', TEXTAREA(_name='data2',
+                                value='Enter the data, separated by commas')),
                 TR('Type of Analysis: ',
                    SELECT('Paired Z-test',
                           '2-sample Z-test',
@@ -56,7 +56,7 @@ def input_TS():
                           "Spearman's Correlation",
                           'Linear regression',
                           'Distance measure',
-                          _name='analysis_type'),
+                          _name='analysis_type'), '',
                    INPUT(_type='submit', _value='SUBMIT'))))
     if form.accepts(request.vars,session):
         exec("""from applications.%s.modules.copads.SampleStatistics \
