@@ -22,6 +22,7 @@ def analyze_SS():
     result['data'] = session.pop('data', [])
     sample = SingleSample(result['data'], '')
     #print sample
+    sample.fullSummary()
     result['results'] = sample.summary
     #These 2 lines inserts result dictionary into cynote.result table
     #cynotedb.result.insert(testresult=result)
