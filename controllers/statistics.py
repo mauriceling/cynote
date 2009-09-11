@@ -67,8 +67,8 @@ def input_TS():
                            if x.strip() != '']
         form.vars.data2 = [float(x) for x in form.vars.data2.split(',')
                            if x.strip() != '']
-        session.data = TwoSample(form.vars.data1, name=form.vars.name1,
-                                 form.vars.data2, name=form.vars.name2)
+        session.data = TwoSample(form.vars.data1, form.vars.name1,
+                                 form.vars.data2, form.vars.name2)
         redirect(URL(r=request, f='analyse_TS'))
     return dict(form=form)
     
