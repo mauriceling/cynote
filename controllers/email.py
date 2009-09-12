@@ -10,3 +10,6 @@ def form():
     elif form.errors:
        response.flash='please check the form and try again'
     return dict(top_message=TOP_MESSAGE,form=form)
+
+
+    

@@ -17,26 +17,6 @@ def entries():
         form = SQLFORM(cynotedb.entry, fields=['notebook'])
     return dict(form=form,
                 records=records)
-
-
-def archived_entries(): 
-    """
-    Return the archived notebook itself - Table of contents
-    This function re-runs itself. At the first run, records is None;
-    hence, does not show the records, only show the form.
-    When a notebook was selected, this function will repeat itself
-    to give the TOC "records" needs to run before SQLFORM in order to 
-    list the notebooks available.
-    """
-    if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
-    else:
-        records = cynotedb(cynotedb.entry.notebook == request.vars.notebook) \
-            (cynotedb.entry.notebook == cynotedb.notebook.id) \
-            (cynotedb.notebook.archived == True) \
-            .select(cynotedb.entry.ALL, orderby = ~cynotedb.entry.id) 
-        form = SQLFORM(cynotedb.entry, fields=['notebook'])
-    return dict(form=form, records=records)
         
 def show():
     """
@@ -77,21 +57,58 @@ def new_entry():
     """
     Create a new entry, if successful, it will redirect to the TOC page 
     (entries function).
+    Only allow new entry creation in unarchived notebooks.
     Possible to have duplicate titles
     The author is set to username
     Event is logged in db.log table as "New entry created."
     """
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
-    cynotedb.entry.author.default = session.username
-    form = SQLFORM(cynotedb.entry,
-                   fields=['title','file','keywords','notebook','description'])
+    # get unarchived notebooks
+    notebook = [notebook['name'] 
+                for notebook in cynotedb(cynotedb.notebook.archived == False).\
+                    select(cynotedb.notebook.name)]
+    notebook.sort()
+    form = FORM(TABLE(
+            TR('Title: ', INPUT(_type='text', _name='title', _size=80)),
+            TR('File: ', INPUT(_type='file', _name='uploadfile')),
+            TR('Keywords: ', INPUT(_type='text', _name='keywords', _size=80)),
+            TR('Notebook: ', SELECT(notebook, _name='notebook')),
+            TR('Description: ', TEXTAREA(_type='text', _name='description'),
+            TR('',INPUT(_type='submit', _name='SUBMIT')))))
     if form.accepts(request.vars,session):
+        # get notebook.id from notebook.name
+        notebook_id=cynotedb(cynotedb.notebook.name == form.vars.notebook).\
+                select(cynotedb.notebook.id).as_list()[0]['id']
+        if form.vars.uploadfile != '':
+            # if there is file to upload
+            import os, random, shutil
+            upload_dir = os.sep.join([os.getcwd(), 'applications', 
+                                    request.application, 'uploads'])
+            sourcefile = form.vars.uploadfile.filename
+            newfile = upload_dir + os.sep + 'entry.file.' + \
+                    str(int(random.random()*10000000000000)) + \
+                    os.path.splitext(sourcefile)[-1]
+            shutil.copy2(sourcefile, newfile)
+            cynotedb.entry.insert(title=form.vars.title,
+                              author=session.username,
+                              notebook=notebook_id,
+                              file=newfile.split(os.sep)[-1],
+                              filename=newfile.split(os.sep)[-1],
+                              description=form.vars.description)
+        else:
+            # no file to upload 
+            cynotedb.entry.insert(title=form.vars.title,
+                              author=session.username,
+                              notebook=notebook_id,
+                              file='',
+                              filename='',
+                              description=form.vars.description)
         db.log.insert(event='New entry created. %s. Title = %s'% \
                             (cynotedb(
-                            cynotedb.notebook.id==request.vars.notebook)\
+                            cynotedb.notebook.id==notebook_id)\
                             .select(cynotedb.notebook.name),
-                            request.vars.title), 
+                            form.vars.title), 
                       user=session.username)
         redirect(URL(r=request, f='entries'))
     return dict(form=form)
