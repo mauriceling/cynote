@@ -27,9 +27,9 @@ def index():
             try: 
                 main([dependency])
             except KeyError: 
-                print dependency + ' installation error
+                print dependency + ' installation error'
             except: 
-                print dependency + ' generic error (please inform Maurice Ling)''
+                print dependency + ' generic error (please inform Maurice Ling)'
             session['dependencies'] = 'DONE'
     response.flash = T('Welcome to CyNote - A web-enabled notebook compliant \
     with general research record-keeping standard')
