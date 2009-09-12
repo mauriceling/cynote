@@ -34,7 +34,7 @@ def show():
     # form to post new comments
     #the author is set to username
     cynotedb.comment.author.default = session.username
-    comments = SQLFORM(cynotedb.comment, fields=['file','body'])
+    comments = SQLFORM(cynotedb.comment, fields=['file', 'body'])
     # give entry.id for comment output
     comments.vars.entry_id = id;
     # return the comment that is listed with the entry id 
@@ -76,7 +76,7 @@ def new_entry():
             TR('Notebook: ', SELECT(notebook, _name='notebook')),
             TR('Description: ', TEXTAREA(_type='text', _name='description'),
             TR('',INPUT(_type='submit', _name='SUBMIT')))))
-    if form.accepts(request.vars,session):
+    if form.accepts(request.vars, session):
         # get notebook.id from notebook.name
         notebook_id=cynotedb(cynotedb.notebook.name == form.vars.notebook).\
                 select(cynotedb.notebook.id).as_list()[0]['id']
@@ -121,12 +121,12 @@ def new_notebook():
     """
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
-    form = SQLFORM(cynotedb.notebook, fields=['name','description'])
+    form = SQLFORM(cynotedb.notebook, fields=['name', 'description'])
     if form.accepts(request.vars,session):
         db.log.insert(event='New notebook created. Notebook = ' + 
                     request.vars.name, 
                     user=session.username)
-        redirect(URL(r=request,f='entries'))
+        redirect(URL(r=request, f='entries'))
     return dict(form=form)
     
 def download():
@@ -140,7 +140,7 @@ def download():
     import gluon.contenttype
     filename = request.args[0]
     response.headers['Content-Type'] = gluon.contenttype.contenttype(filename)
-    file = os.path.join(request.folder, 'uploads/',  filename)
+    file = os.path.join(request.folder, 'uploads/', filename)
     return response.stream(file)
       
 def notarize_bysystem():
@@ -188,24 +188,22 @@ def results():
               .select(orderby = cynotedb.result.id)
     form = FORM(
             TABLE(
-                *[TR("Result "+str(id['id']),
-                     INPUT(_type="checkbox",
-                           _name=str(id['id']),
-                           value=False,_value='on'))
+                *[TR('Result ' + str(id['id']),
+                     INPUT(_type='checkbox', _name=str(id['id']),
+                           value=False, _value='on'))
                   for id in cynotedb(cynotedb.result.author == \
                                      session.username) \
                                     .select(cynotedb.result.id)] + \
-             [TR("",INPUT(_type="submit", _value="SUBMIT"))]))       
+             [TR('', INPUT(_type='submit', _value='SUBMIT'))]))       
     id_list = []
-    if form.accepts(request.vars,session):
+    if form.accepts(request.vars, session):
         session['form_vars'] = form.vars
         option_checked = [id['id']
                           for id['id']in form.vars.keys()
                           if form.vars[id['id']]]
         session.option_checked = option_checked
         redirect(URL(r=request, f='show_results')) 
-    return dict(records=records,
-                form=form)
+    return dict(records=records, form=form)
     
 def show_results(): 
     """
@@ -231,7 +229,7 @@ def show_results():
             TR('Notebook: ', SELECT(notebook, _name='notebook')),
             TR('Description: ', TEXTAREA(_type='text', _name='description'),
             TR('',INPUT(_type='submit', _name='SUBMIT')))))
-    if form.accepts(request.vars,session):
+    if form.accepts(request.vars, session):
         # get notebook.id from notebook.name
         notebook_id=cynotedb(cynotedb.notebook.name == form.vars.notebook).\
                 select(cynotedb.notebook.id).as_list()[0]['id']
@@ -279,13 +277,13 @@ def archive_notebook():
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))          
     form = FORM(
-            TABLE(*[TR(""+str(id['name']), 
-                INPUT(_type="checkbox", _name=str(id['name']),
-                      value=False, _value='on'))
-            for id in cynotedb(cynotedb.notebook.archived == "False") \
+            TABLE(*[TR('' + str(id['name']), 
+                    INPUT(_type='checkbox', _name=str(id['name']),
+                          value=False, _value='on'))
+            for id in cynotedb(cynotedb.notebook.archived == 'False') \
                     .select(cynotedb.notebook.name)] + \
-            [TR("",INPUT(_type="submit", _value="Archive"))]))    
-    if form.accepts(request.vars,session):
+            [TR('', INPUT(_type='submit', _value='Archive'))]))    
+    if form.accepts(request.vars, session):
         option_checked = [id['name']
                           for id['name'] in form.vars.keys()
                           if form.vars[id['name']]]
@@ -304,13 +302,13 @@ def unarchive_notebook():
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))           
     form = FORM(
-            TABLE(*[TR(""+str(id['name']), 
-                INPUT(_type="checkbox", _name=str(id['name']),
+            TABLE(*[TR('' + str(id['name']), 
+                    INPUT(_type='checkbox', _name=str(id['name']),
                       value=False, _value='on'))
-            for id in cynotedb(cynotedb.notebook.archived == "True") \
+            for id in cynotedb(cynotedb.notebook.archived == 'True') \
                     .select(cynotedb.notebook.name)] + \
-            [TR("",INPUT(_type="submit", _value="Unarchive"))]))    
-    if form.accepts(request.vars,session):
+            [TR('', INPUT(_type='submit', _value='Unarchive'))]))    
+    if form.accepts(request.vars, session):
         option_checked = [id['name']
                           for id['name'] in form.vars.keys()
                           if form.vars[id['name']]]

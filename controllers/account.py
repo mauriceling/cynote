@@ -21,11 +21,11 @@ def log_in():
     for further use. If login is not successful, session.username = None
     """
     form = FORM(TABLE(
-                    TR("Username:",INPUT(_name="username",
-                                         requires=IS_NOT_EMPTY())),
-                    TR("Password:",INPUT(_name="password",_type='password',
-                                         requires=[IS_NOT_EMPTY()])),
-                    TR("",INPUT(_type="submit", _value="login")))) 
+                TR('Username:', INPUT(_name='username',
+                                    requires=IS_NOT_EMPTY())),
+                TR('Password:', INPUT(_name='password', _type='password',
+                                    requires=[IS_NOT_EMPTY()])),
+                TR('', INPUT(_type='submit', _value='login')))) 
     if FORM.accepts(form,request.vars,session):
         if userdb(userdb.user.username == form.vars.username) \
            (userdb.user.password == form.vars.password) \
@@ -34,7 +34,7 @@ def log_in():
             redirect(URL(r=request, f='logged'))
         else:
             session.username = None
-            response.flash = "invalid username/password" 
+            response.flash = 'invalid username/password' 
     return dict(form=form)
 
 def logged():
@@ -53,12 +53,12 @@ def auth_new_user():
     if session.username == None:
         redirect(URL(r=request, f='log_in'))          
     form = FORM(
-            TABLE(*[TR(""+str(id['username']), 
-                INPUT(_type="checkbox", _name=str(id['username']),
-                      value=False, _value='on'))
-            for id in userdb(userdb.user.authorized == "False") \
+            TABLE(*[TR('' + str(id['username']), 
+                    INPUT(_type='checkbox', _name=str(id['username']),
+                          value=False, _value='on'))
+            for id in userdb(userdb.user.authorized == 'False') \
                     .select(userdb.user.username)] + \
-            [TR("",INPUT(_type="submit", _value="Authorize User"))])) 
+            [TR('', INPUT(_type='submit', _value='Authorize User'))])) 
     if form.accepts(request.vars,session):
         option_checked = [id['name']
                           for id['name'] in form.vars.keys()
@@ -76,12 +76,12 @@ def deauth_user():
     if session.username == None:
         redirect(URL(r=request, f='log_in'))          
     form = FORM(
-            TABLE(*[TR(""+str(id['username']), 
-                INPUT(_type="checkbox", _name=str(id['username']),
-                      value=False, _value='on'))
-            for id in userdb(userdb.user.authorized == "True") \
+            TABLE(*[TR('' + str(id['username']), 
+                    INPUT(_type='checkbox', _name=str(id['username']),
+                          value=False, _value='on'))
+            for id in userdb(userdb.user.authorized == 'True') \
                     .select(userdb.user.username)] + \
-            [TR("",INPUT(_type="submit", _value="De-authorize User"))])) 
+            [TR('', INPUT(_type='submit', _value='De-authorize User'))])) 
     if form.accepts(request.vars,session):
         option_checked = [id['name']
                           for id['name'] in form.vars.keys()
