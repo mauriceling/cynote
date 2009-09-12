@@ -45,7 +45,35 @@ def archived_entries():
             .select(cynotedb.entry.ALL, orderby = ~cynotedb.entry.id) 
         form = SQLFORM(cynotedb.entry, fields=['notebook'])
     return dict(form=form, records=records)
-    
+
+def show_results():
+    # from cynote.py 
+    """
+    Called by results() function to show a specific result and 
+    to generate a form to save the result as a new entry
+    the result will be deleted after a new entry had been created.
+    """
+    option_checked = session.option_checked
+    if len(option_checked) == 0: 
+        id = 0 
+    else: 
+        id = option_checked[0]
+    test = cynotedb(cynotedb.result.id == id).select()
+    #the author is set to username
+    cynotedb.entry.author.default = session.username    
+    form = SQLFORM(cynotedb.entry,
+                   fields = ['title','file','keywords',
+                             'notebook','description'])
+    if form.accepts(request.vars,session):
+        cynotedb(cynotedb.result.id == id).delete()
+        redirect(URL(r=request, f='entries'))
+    return dict(result=session['form_vars'],
+                test=test,
+                form=form)
+    #return dict(option_checked=option_checked)
+        
+
+
 def test():
     form = FORM(
             INPUT(_type='file', _name='uploadfile'),
