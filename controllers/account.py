@@ -6,24 +6,28 @@ def new_account():
     """
     Creating a new user account
     """
-    if userdb(userdb.user.username > 0).count() == 0:
-        authorized = True
+    if userdb(userdb.user.username > 0).count() == 0: authorized = True
     else: authorized = False
-        # userdb.user.authorized.default = True
-    # else:
-        # userdb.user.authorized.default = False
-    #form = SQLFORM(userdb.user, fields=['username','password'])
     form = FORM(TABLE(
                 TR('Username:', INPUT(_name='username',
                                     requires=IS_NOT_EMPTY())),
                 TR('Password:', INPUT(_name='password', _type='password',
                                     requires=[IS_NOT_EMPTY()])),
+                TR('Re-enter Password:', INPUT(_name='password2', 
+                                    _type='password',
+                                    requires=[IS_NOT_EMPTY()])),
                 TR('', INPUT(_type='submit', _value='login')))) 
     if form.accepts(request.vars, session):
-        userdb.user.insert(username=form.vars.username,
-                           password=h(form.vars.password).hexdigest(),
-                           authorized=authorized)
-        redirect(URL(r=request, f='log_in'))
+        if form.vars.password != form.vars.password2:
+            response.flash = 'Passwords do not match'
+        else:
+            userdb.user.insert(username=form.vars.username,
+                               password=h(form.vars.password).hexdigest(),
+                               authorized=authorized)
+            db.user_event.insert(event='New account created. %s' % \
+                                 form.vars.username, 
+                                 user='system')
+            redirect(URL(r=request, f='log_in'))
     return dict(form=form)    
     
 def log_in():
@@ -62,7 +66,7 @@ def log_in():
     return dict(form=form)
 
 def logged():
-    """edirection when login is successful"""
+    """redirection when login is successful"""
     return dict(name=session.username)
 
 def log_out():
