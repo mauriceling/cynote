@@ -9,7 +9,7 @@ def new_account():
     else:
         userdb.user.authorized.default = False
     form = SQLFORM(userdb.user, fields=['username','password'])
-    if form.accepts(request.vars,session):
+    if form.accepts(request.vars, session):
         redirect(URL(r=request, f='log_in'))
     return dict(form=form)    
     
@@ -26,7 +26,7 @@ def log_in():
                 TR('Password:', INPUT(_name='password', _type='password',
                                     requires=[IS_NOT_EMPTY()])),
                 TR('', INPUT(_type='submit', _value='login')))) 
-    if FORM.accepts(form,request.vars,session):
+    if form.accepts(request.vars, session):
         if userdb(userdb.user.username == form.vars.username) \
            (userdb.user.password == form.vars.password) \
            (userdb.user.authorized == True).count():
@@ -65,7 +65,7 @@ def auth_new_user():
             for id in userdb(userdb.user.authorized == 'False') \
                     .select(userdb.user.username)] + \
             [TR('', INPUT(_type='submit', _value='Authorize User'))])) 
-    if form.accepts(request.vars,session):
+    if form.accepts(request.vars, session):
         option_checked = [id['name']
                           for id['name'] in form.vars.keys()
                           if form.vars[id['name']]]
@@ -88,7 +88,7 @@ def deauth_user():
             for id in userdb(userdb.user.authorized == 'True') \
                     .select(userdb.user.username)] + \
             [TR('', INPUT(_type='submit', _value='De-authorize User'))])) 
-    if form.accepts(request.vars,session):
+    if form.accepts(request.vars, session):
         option_checked = [id['name']
                           for id['name'] in form.vars.keys()
                           if form.vars[id['name']]]
