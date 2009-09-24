@@ -83,3 +83,14 @@ def test():
         print dir(form.vars.uploadfile)
         print form.vars.uploadfile.filename
     return dict(form=form)
+    
+def twobuttonform(): 
+    form=FORM(INPUT(_type='hidden',_name='action',_id='action',_value='undefined'), 
+              INPUT(_type='button',_value='Do something',
+                    _onclick='''this.form.action.value=1;this.form.submit();''',), 
+              INPUT(_type='button',_value='Do something else',
+                    _onclick='''this.form.action.value=2;this.form.submit();''',), 
+            ) 
+    if form.accepts(request.vars): 
+        response.flash='You clicked button %s'%request.vars.action 
+    return dict(form=form)
