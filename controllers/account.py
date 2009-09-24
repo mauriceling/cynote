@@ -1,15 +1,28 @@
 #still on testing..
 
+from hashlib import sha512 as h
+
 def new_account():
     """
     Creating a new user account
     """
     if userdb(userdb.user.username > 0).count() == 0:
-        userdb.user.authorized.default = True
-    else:
-        userdb.user.authorized.default = False
-    form = SQLFORM(userdb.user, fields=['username','password'])
+        authorized = True
+    else: authorized = False
+        # userdb.user.authorized.default = True
+    # else:
+        # userdb.user.authorized.default = False
+    #form = SQLFORM(userdb.user, fields=['username','password'])
+    form = FORM(TABLE(
+                TR('Username:', INPUT(_name='username',
+                                    requires=IS_NOT_EMPTY())),
+                TR('Password:', INPUT(_name='password', _type='password',
+                                    requires=[IS_NOT_EMPTY()])),
+                TR('', INPUT(_type='submit', _value='login')))) 
     if form.accepts(request.vars, session):
+        userdb.user.insert(username=form.vars.username,
+                           password=h(form.vars.password).hexdigest(),
+                           authorized=authorized)
         redirect(URL(r=request, f='log_in'))
     return dict(form=form)    
     
@@ -31,7 +44,15 @@ def log_in():
            (userdb.user.password == form.vars.password) \
            (userdb.user.authorized == True).count():
             session.username = form.vars.username
-            db.user_event.insert(event='Login. %s' % \
+            db.user_event.insert(event='Login (plain text password). %s' % \
+                                 session.username, 
+                                 user='system')
+            redirect(URL(r=request, f='logged'))
+        elif userdb(userdb.user.username == form.vars.username) \
+             (userdb.user.password == h(form.vars.password).hexdigest()) \
+             (userdb.user.authorized == True).count():
+            session.username = form.vars.username
+            db.user_event.insert(event='Login (hashed password). %s' % \
                                  session.username, 
                                  user='system')
             redirect(URL(r=request, f='logged'))
