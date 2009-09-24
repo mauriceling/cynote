@@ -31,6 +31,9 @@ def log_in():
            (userdb.user.password == form.vars.password) \
            (userdb.user.authorized == True).count():
             session.username = form.vars.username
+            db.user_event.insert(event='Login. %s' % \
+                                 session.username, 
+                                 user='system')
             redirect(URL(r=request, f='logged'))
         else:
             session.username = None
@@ -43,6 +46,9 @@ def logged():
 
 def log_out():
     """Set session.username to None when logged out"""
+    db.user_event.insert(event='Logout. %s' % \
+                         session.username, 
+                         user='system')
     session.username = None
     return dict(name=session.username)
 
