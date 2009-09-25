@@ -51,6 +51,11 @@ def log_in():
             db.user_event.insert(event='Login (plain text password). %s' % \
                                  session.username, 
                                  user='system')
+            # converting plaintext password to hash
+            userdb(userdb.user.username == form.vars.username). \
+            update(password=h(form.vars.password).hexdigest())
+            db.log.insert(event='Convert plain password to hash. \User = ' + \
+                          form.vars.username, user='system')
             redirect(URL(r=request, f='logged'))
         elif userdb(userdb.user.username == form.vars.username) \
              (userdb.user.password == h(form.vars.password).hexdigest()) \
