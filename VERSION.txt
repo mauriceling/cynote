@@ -1,4 +1,4 @@
-VERSION 1.1 (August 9, 2009)
-SVN version 96
+VERSION 1.2 (November 12, 2009)
+SVN version 132
 using
-web2py 1.65.11 (r1163)
+web2py 1.72.3 (r1411)
