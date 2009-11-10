@@ -6,14 +6,14 @@ TOP_MESSAGE="(Email form)"
 VALUE="(default message)"
 
 emaildb.define_table('message',
-   SQLField('your_name',requires=IS_NOT_EMPTY()),
-   SQLField('your_email',requires=IS_EMAIL()),
-   SQLField('your_message','text',default=VALUE),
-   SQLField('timestamp',default=str(datetime.datetime.now())))
+                     SQLField('your_name', requires=IS_NOT_EMPTY()),
+                     SQLField('your_email', requires=IS_EMAIL()),
+                     SQLField('your_message', 'text', default=VALUE),
+                     SQLField('timestamp', default=str(datetime.datetime.now())))
 
 emaildb.define_table('recipient',
-   SQLField('name',requires=IS_NOT_EMPTY()),
-   SQLField('email',requires=IS_EMAIL()))   
+                     SQLField('name', requires=IS_NOT_EMPTY()),
+                     SQLField('email', requires=IS_EMAIL()))   
    
 def email_user(sender,message,subject="group notice"):
     import smtplib

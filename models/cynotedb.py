@@ -1,26 +1,28 @@
-import datetime; now=datetime.datetime.utcnow()
+import datetime
+
+now=datetime.datetime.utcnow()
 
 cynotedb=SQLDB('sqlite://cynotedb.db')
 
 #the notebook table
 cynotedb.define_table('notebook',
-                SQLField('name'),
-                SQLField('description','text'),
-                SQLField('archived','boolean',default=False))
+                SQLField('name', 'text'),
+                SQLField('description', 'text'),
+                SQLField('archived', 'boolean', default=False))
 
 #the new entry table
 #file upload
 #link to notebook table
 #using datetime
 cynotedb.define_table('entry',
-                SQLField('title'),
+                SQLField('title', 'text'),
                 SQLField('author'),
-                SQLField('file','upload'),
+                SQLField('file', 'upload'),
                 SQLField('filename'),
-                SQLField('keywords',length=256),
-                SQLField('notebook',cynotedb.notebook),
-                SQLField('datetime','datetime',default=now),
-                SQLField('description','text'))
+                SQLField('keywords', length=256),
+                SQLField('notebook', cynotedb.notebook),
+                SQLField('datetime', 'datetime', default=now),
+                SQLField('description', 'text'))
 
 #the comment table
 #entry_id link to entry table
@@ -29,11 +31,11 @@ cynotedb.define_table('comment',
                 SQLField('file','upload'),
                 SQLField('filename'),
                 SQLField('body', 'text'),
-                SQLField('datetime','datetime',default=now),
-                SQLField('entry_id',cynotedb.entry))
+                SQLField('datetime', 'datetime', default=now),
+                SQLField('entry_id', cynotedb.entry))
                 
 cynotedb.define_table('result',
-                SQLField('author',default=session.username),
+                SQLField('author', default=session.username),
                 SQLField('testresult','text'))  
          
 #most of the text requires to be type and can't be empty
