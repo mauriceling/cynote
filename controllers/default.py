@@ -32,7 +32,7 @@ def index():
                 print dependency + ' generic error (please inform Maurice Ling)'
             session['dependencies'] = 'DONE'
     response.flash = T('Welcome to CyNote - A web-enabled notebook compliant \
-    with general research record-keeping standard')
+    with general research record-keeping standard (US FDA 21 CFR Part 11)')
     if session.username == None: 
         name = 'Guest'
         redirect(URL(r=request, f='../account/log_in'))
@@ -42,7 +42,7 @@ def index():
     
 def bioinformatics():
     response.flash = T('Welcome to CyNote - A web-enabled notebook compliant \
-    with general research record-keeping standard')
+    with general research record-keeping standard (US FDA 21 CFR Part 11)')
     if session.username == None: 
         name = 'Guest'
         redirect(URL(r=request, f='../account/log_in'))
@@ -53,7 +53,7 @@ def bioinformatics():
 
 def statistics():
     response.flash = T('Welcome to CyNote - A web-enabled notebook compliant \
-    with general research record-keeping standard')
+    with general research record-keeping standard (US FDA 21 CFR Part 11)')
     if session.username == None: 
         name = 'Guest'
         redirect(URL(r=request, f='../account/log_in'))
@@ -64,7 +64,7 @@ def statistics():
 
 def assistants():
     response.flash = T('Welcome to CyNote - A web-enabled notebook compliant \
-    with general research record-keeping standard')
+    with general research record-keeping standard (US FDA 21 CFR Part 11)')
     if session.username == None: 
         name = 'Guest'
         redirect(URL(r=request, f='../account/log_in'))
