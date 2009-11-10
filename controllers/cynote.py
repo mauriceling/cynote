@@ -319,3 +319,36 @@ def unarchive_notebook():
         redirect(URL(r=request, f='unarchive_notebook'))
     return dict(form=form)
 
+def generate_hash():
+    import hashlib as h
+    entry = [[e['entry']['id'], str(e['entry']['datetime']), 
+              e['entry']['title'],
+              '|'.join([h.sha1(e['entry']['description']).hexdigest(),
+                        h.md5(e['entry']['description']).hexdigest(),
+                        h.sha224(e['entry']['description']).hexdigest(),
+                        h.sha256(e['entry']['description']).hexdigest(),
+                        h.sha384(e['entry']['description']).hexdigest(),
+                        h.sha512(e['entry']['description']).hexdigest()])]
+              for e in cynotedb(cynotedb.entry.id>0).select(cynotedb.entry.id, 
+                  cynotedb.entry.title, cynotedb.entry.datetime, 
+                  cynotedb.entry.description).records]
+    comment = [[e['comment']['id'], str(e['comment']['datetime']), 
+                e['comment']['entry_id'],
+                '|'.join([h.sha1(e['comment']['body']).hexdigest(),
+                          h.md5(e['comment']['body']).hexdigest(),
+                          h.sha224(e['comment']['body']).hexdigest(),
+                          h.sha256(e['comment']['body']).hexdigest(),
+                          h.sha384(e['comment']['body']).hexdigest(),
+                          h.sha512(e['comment']['body']).hexdigest()])]
+                for e in cynotedb(cynotedb.comment.id>0).select(cynotedb.comment.id, 
+                    cynotedb.comment.entry_id, cynotedb.comment.datetime, 
+                    cynotedb.comment.body).records]
+    for e in entry:
+        db.entry_hash.insert(eid=e[0], edatetime=e[1], etitle=e[2], ehash=e[3])
+    for c in comment:
+        db.comment_hash.insert(cid=c[0], cdatetime=c[1], eid=c[2], chash=c[3])
+    db.log.insert(event='Entry hash generation. n=' + str(len(entry)), 
+                  user=session.username)
+    db.log.insert(event='Comment hash generation. n=' + str(len(comment)), 
+                  user=session.username)
+    return dict(entry=entry, comment=comment)
