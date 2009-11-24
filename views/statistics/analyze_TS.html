@@ -12,17 +12,16 @@ Notarize an Entry </a>|
 <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
 Show all Results </a>]
 <br>
-<h1>Single Sample Statistics Results<br></h1>
-<h3>Data: {{=result['data']}}</h3>
-<br><br>
+<h1>Two Sample Statistics Results<br></h1>
+<h3>Data: </h3>
+&nbsp;&nbsp;&nbsp; {{=name[0]}}: <pre>{{=result['data'][name[0]]}}</pre>
+&nbsp;&nbsp;&nbsp; {{=name[1]}}: <pre>{{=result['data'][name[1]]}}</pre><br><br>
 <h2>Statistics:</h2>
-<br>
-<b>Arithmetic Mean: </b> {{=result['results']['aMean']}}<br><br>
-<b>Geometric Mean: </b> {{=result['results']['gMean']}}<br><br>
-<b>Harmonic Mean: </b> {{=result['results']['hMean']}}<br><br>
-<b>Kurtosis: </b> {{=result['results']['kurtosis']}}<br><br>
-<b>Skew: </b> {{=result['results']['skew']}}<br><br>
-<b>Median: </b> {{=result['results']['median']}}<br><br>
-<b>Range: </b> {{=result['results']['range']}}<br><br>
-<b>Standard Deviation: </b> {{=result['results']['stdev']}}<br><br>
-<b>Variance: </b> {{=result['results']['variance']}}<br><br>
+{{if result['analysis_type'] == "Pearson's Correlation":}}
+<b>Pearson's product-moment correlation: </b>{{=result['results']}}
+{{pass}}
+{{if result['analysis_type'] == 'Linear regression':}}
+<b>Linear regression equation: </b>
+{{=name[1]}} = ({{=result['results']['LM']['gradient']}} * {{=name[0]}}) + 
+({{=result['results']['LM']['intercept']}})
+{{pass}}

@@ -41,19 +41,19 @@ def input_TS():
         redirect(URL(r=request, f='../account/log_in'))
     form = FORM(
             TABLE(
-                TR('Name #1: ', INPUT(_name='name1', value='Enter name'),
+                TR('Name #1: ', INPUT(_name='name1', value='Enter name #1'),
                    'Data #1: ', TEXTAREA(_name='data1',
                                 value='Enter the data, separated by commas')),
-                TR('Name #2: ', INPUT(_name='name2', value='Enter name'),
+                TR('Name #2: ', INPUT(_name='name2', value='Enter name #2'),
                    'Data #2: ', TEXTAREA(_name='data2',
                                 value='Enter the data, separated by commas')),
                 TR('Type of Analysis: ',
-                   SELECT('Paired Z-test',
-                          '2-sample Z-test',
-                          'Paired t-test',
-                          '2-sample t-test',
-                          "Pearson's Correlation",
-                          "Spearman's Correlation",
+                   SELECT(#'Paired Z-test',
+                          #'2-sample Z-test',
+                          #'Paired t-test',
+                          #'2-sample t-test',
+                          #"Pearson's Correlation",
+                          #"Spearman's Correlation",
                           'Linear regression',
                           'Distance measure',
                           _name='analysis_type'), '',
@@ -70,12 +70,16 @@ def input_TS():
                            if x.strip() != '']
         session.data = TwoSample(form.vars.data1, form.vars.name1,
                                  form.vars.data2, form.vars.name2)
-        redirect(URL(r=request, f='analyse_TS'))
+        session.data_name = (form.vars.name1, form.vars.name2)
+        redirect(URL(r=request, f='analyze_TS'))
     return dict(form=form)
     
 def analyze_TS():
     result = {}
-    result['data'] = session.pop('data', [])
+    data = session.pop('data', [])
+    data_name = session.pop('data_name', [])
+    result['data'] = {str(data_name[0]): data.getSample(data_name[0]),
+                      str(data_name[1]): data.getSample(data_name[1])}
     result['analysis_type'] = session.pop('analysis_type', '')
     analysis_results = {}
     if result['analysis_type'] == 'Paired Z-test': pass
@@ -84,14 +88,17 @@ def analyze_TS():
     if result['analysis_type'] == '2-sample t-test': pass
     if result['analysis_type'] == "Pearson's Correlation": pass
     if result['analysis_type'] == "Spearman's Correlation": pass
-    if result['analysis_type'] == 'Linear regression': pass
+    if result['analysis_type'] == 'Linear regression':
+        temp = data.linear_regression()
+        analysis_results['LM'] = {'gradient': temp[0],
+                                          'intercept': temp[1]}
     if result['analysis_type'] == 'Distance measure': pass
     #print sample
     result['results'] = analysis_results
     #These 2 lines inserts result dictionary into cynote.result table
     #cynotedb.result.insert(testresult=result)
     #cynotedb.commit()
-    return dict(result=result)
+    return dict(result=result, name=data_name)
     
 #######################################################################
 # Two Samples (TS) - End
