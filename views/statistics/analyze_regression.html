@@ -12,16 +12,15 @@ Notarize an Entry </a>|
 <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
 Show all Results </a>]
 <br>
-<h1>Two Sample Statistics Results<br></h1>
+<h1>Regression Analysis Results<br></h1>
 <h3>Data: </h3>
 &nbsp;&nbsp;&nbsp; {{=name[0]}}: <pre>{{=result['data'][name[0]]}}</pre>
 &nbsp;&nbsp;&nbsp; {{=name[1]}}: <pre>{{=result['data'][name[1]]}}</pre><br><br>
 <h2>Statistics:</h2>
-{{if result['analysis_type'] == "Pearson's Correlation":}}
-<b>Pearson's product-moment correlation: </b>{{=result['results']}}
-{{pass}}
 {{if result['analysis_type'] == 'Linear regression':}}
 <b>Linear regression equation: </b>
 {{=name[1]}} = ({{=result['results']['LM']['gradient']}} * {{=name[0]}}) + 
 ({{=result['results']['LM']['intercept']}})
+<br><br>
+<b>Pearson's Product-Moment Coefficient of Correlation (r): </b>{{=result['results']['pearson']}}
 {{pass}}

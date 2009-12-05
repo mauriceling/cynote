@@ -34,9 +34,9 @@ def analyze_SS():
 #######################################################################
 
 #######################################################################
-# Two Samples (TS)
+# Regression Analysis
 #######################################################################
-def input_TS():
+def regression():
     if session.username == None: 
         redirect(URL(r=request, f='../account/log_in'))
     form = FORM(
@@ -55,7 +55,7 @@ def input_TS():
                           #"Pearson's Correlation",
                           #"Spearman's Correlation",
                           'Linear regression',
-                          'Distance measure',
+                          #'Distance measure',
                           _name='analysis_type'), '',
                    INPUT(_type='submit', _value='SUBMIT'))))
     if form.accepts(request.vars,session):
@@ -71,10 +71,10 @@ def input_TS():
         session.data = TwoSample(form.vars.data1, form.vars.name1,
                                  form.vars.data2, form.vars.name2)
         session.data_name = (form.vars.name1, form.vars.name2)
-        redirect(URL(r=request, f='analyze_TS'))
+        redirect(URL(r=request, f='analyze_regression'))
     return dict(form=form)
     
-def analyze_TS():
+def analyze_regression():
     result = {}
     data = session.pop('data', [])
     data_name = session.pop('data_name', [])
@@ -82,16 +82,11 @@ def analyze_TS():
                       str(data_name[1]): data.getSample(data_name[1])}
     result['analysis_type'] = session.pop('analysis_type', '')
     analysis_results = {}
-    if result['analysis_type'] == 'Paired Z-test': pass
-    if result['analysis_type'] == '2-sample Z-test': pass
-    if result['analysis_type'] == 'Paired t-test': pass
-    if result['analysis_type'] == '2-sample t-test': pass
-    if result['analysis_type'] == "Pearson's Correlation": pass
-    if result['analysis_type'] == "Spearman's Correlation": pass
     if result['analysis_type'] == 'Linear regression':
         temp = data.linear_regression()
         analysis_results['LM'] = {'gradient': temp[0],
-                                          'intercept': temp[1]}
+                                  'intercept': temp[1]}
+        analysis_results['pearson'] = data.pearson()
     if result['analysis_type'] == 'Distance measure': pass
     #print sample
     result['results'] = analysis_results
@@ -101,7 +96,7 @@ def analyze_TS():
     return dict(result=result, name=data_name)
     
 #######################################################################
-# Two Samples (TS) - End
+# Regression - End
 #######################################################################
 
 #######################################################################
