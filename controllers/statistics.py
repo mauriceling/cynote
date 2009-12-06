@@ -1,4 +1,67 @@
 #######################################################################
+# 2x2 Contingency Table
+#######################################################################
+def ttcontingency():
+    if session.username == None: 
+        redirect(URL(r=request, f='../account/log_in'))
+    form = FORM(
+            TABLE(
+                TR('', 
+                    INPUT(_name='outcome1', value='Outcome 1'), 
+                    INPUT(_name='outcome2', value='Outcome 2')),
+                TR(INPUT(_name='group1', value='Group 1'), 
+                    INPUT(_name='o1g1'), 
+                    INPUT(_name='o2g1')),
+                TR(INPUT(_name='group2', value='Group 2'), 
+                    INPUT(_name='o1g2'), 
+                    INPUT(_name='o2g2')),
+                TR('Type of Analysis: ',
+                   SELECT('Z test - Correlated Proportions',
+                          _name='analysis')),
+                INPUT(_type='submit', _value='SUBMIT')))
+    if form.accepts(request.vars,session):
+        session.outcome1 = str(form.vars.outcome1)
+        session.outcome2 = str(form.vars.outcome2)
+        session.group1 = str(form.vars.group1)
+        session.group2 = str(form.vars.group2)
+        if form.vars.o1g1 == '': session.o1g1 = 0.0
+        else: session.o1g1 = float(form.vars.o1g1)
+        if form.vars.o1g2 == '': session.o1g2 = 0.0
+        else: session.o1g2 = float(form.vars.o1g2)
+        if form.vars.o2g1 == '': session.o2g1 = 0.0
+        else: session.o2g1 = float(form.vars.o2g1)
+        if form.vars.o2g2 == '': session.o2g2 = 0.0
+        else: session.o2g2 = float(form.vars.o2g2)
+        session.analysis = form.vars.analysis
+        redirect(URL(r=request, f='analyze_ttcontingency'))
+    return dict(form=form)
+    
+def analyze_ttcontingency():
+    result = {}
+    result['outcome1'] = session.pop('outcome1', 'outcome1')
+    result['outcome2'] = session.pop('outcome2', 'outcome2')
+    result['group1'] = session.pop('group1', 'group1')
+    result['group2'] = session.pop('group2', 'group2')
+    result['o1g1'] = session.pop('o1g1', 0)
+    result['o1g2'] = session.pop('o1g2', 0)
+    result['o2g1'] = session.pop('o2g1', 0)
+    result['o2g2'] = session.pop('o2g2', 0)
+    result['analysis'] = session.pop('analysis', '')
+    if result['analysis'] == 'Z test - Correlated Proportions':
+        exec("""from applications.%s.modules.copads.HypothesisTest \
+        import ZCorrProportion""" % (request.application))
+        exec("""from applications.%s.modules.copads.StatisticsDistribution \
+        import NormalDistribution""" % (request.application))
+        stat = ZCorrProportion(ssize=result['o1g1']+result['o2g1'],
+                               ny=result['o2g1'], yn=result['o1g2'], 
+                               confidence=0.975)
+        result['pvalue'] = 1.0 - NormalDistribution().CDF(stat[2])
+    return dict(result=result)
+#######################################################################
+# 2x2 Contingency Table - End
+#######################################################################
+
+#######################################################################
 # Single Sample (SS)
 #######################################################################
 def input_SS():
