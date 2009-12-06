@@ -47,6 +47,9 @@ def regression():
                 TR('Name #2: ', INPUT(_name='name2', value='Enter name #2'),
                    'Data #2: ', TEXTAREA(_name='data2',
                                 value='Enter the data, separated by commas')),
+                TR('Correlation to be statistically', 
+                ' tested the correlation from data', ' : ',
+                    INPUT(_name='pcorr', value=0.0)),
                 TR('Type of Analysis: ',
                    SELECT(#'Paired Z-test',
                           #'2-sample Z-test',
@@ -71,6 +74,7 @@ def regression():
         session.data = TwoSample(form.vars.data1, form.vars.name1,
                                  form.vars.data2, form.vars.name2)
         session.data_name = (form.vars.name1, form.vars.name2)
+        session.pcorr = float(form.vars.pcorr)
         redirect(URL(r=request, f='analyze_regression'))
     return dict(form=form)
     
@@ -78,16 +82,26 @@ def analyze_regression():
     result = {}
     data = session.pop('data', [])
     data_name = session.pop('data_name', [])
+    
     result['data'] = {str(data_name[0]): data.getSample(data_name[0]),
                       str(data_name[1]): data.getSample(data_name[1])}
     result['analysis_type'] = session.pop('analysis_type', '')
     analysis_results = {}
     if result['analysis_type'] == 'Linear regression':
+        exec("""from applications.%s.modules.copads.HypothesisTest \
+        import ZPearsonCorrelation""" % (request.application))
+        exec("""from applications.%s.modules.copads.StatisticsDistribution \
+        import NormalDistribution""" % (request.application))
+        analysis_results['pcorr'] = session.pop('pcorr', 0.0)
         temp = data.linear_regression()
         analysis_results['LM'] = {'gradient': temp[0],
                                   'intercept': temp[1]}
         analysis_results['pearson'] = data.pearson()
-    if result['analysis_type'] == 'Distance measure': pass
+        test = ZPearsonCorrelation(sr=analysis_results['pearson'], 
+                                   pr=analysis_results['pcorr'],
+                                   ssize=len(result['data'][str(data_name[0])]),
+                                   confidence=0.975)
+        analysis_results['pvalue'] = 1.0 - NormalDistribution().CDF(test[2])
     #print sample
     result['results'] = analysis_results
     #These 2 lines inserts result dictionary into cynote.result table

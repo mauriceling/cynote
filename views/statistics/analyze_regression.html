@@ -22,5 +22,7 @@ Show all Results </a>]
 {{=name[1]}} = ({{=result['results']['LM']['gradient']}} * {{=name[0]}}) + 
 ({{=result['results']['LM']['intercept']}})
 <br><br>
-<b>Pearson's Product-Moment Coefficient of Correlation (r): </b>{{=result['results']['pearson']}}
+The Pearson's Product-Moment Correlation of Coefficient (r) from data is <b>{{=result['results']['pearson']}}</b>, <br>
+which is statistically tested against the given correlation, <b>{{=result['results']['pcorr']}}</b>, <br>
+with a p-value of <b>{{=result['results']['pvalue']}}</b>.
 {{pass}}
