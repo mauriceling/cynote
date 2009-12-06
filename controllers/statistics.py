@@ -17,6 +17,9 @@ def ttcontingency():
                     INPUT(_name='o2g2')),
                 TR('Type of Analysis: ',
                    SELECT('Z test - Correlated Proportions',
+                          'P1 - P2',
+                          'Relative Risk',
+                          'Odds Ratio',
                           _name='analysis')),
                 INPUT(_type='submit', _value='SUBMIT')))
     if form.accepts(request.vars,session):
@@ -55,7 +58,20 @@ def analyze_ttcontingency():
         stat = ZCorrProportion(ssize=result['o1g1']+result['o2g1'],
                                ny=result['o2g1'], yn=result['o1g2'], 
                                confidence=0.975)
-        result['pvalue'] = 1.0 - NormalDistribution().CDF(stat[2])
+        result['value'] = 1.0 - NormalDistribution().CDF(stat[2])
+    if result['analysis'] == 'P1 - P2':
+        result['value'] = (result['o1g1'] / \
+                            float(result['o1g1'] + result['o2g1'])) - \
+                          (result['o1g2'] / \
+                            float(result['o1g2'] + result['o2g2']))
+    if result['analysis'] == 'Relative Risk':
+        result['value'] = (result['o1g1'] / \
+                            float(result['o1g1'] + result['o2g1'])) / \
+                          (result['o1g2'] / \
+                            float(result['o1g2'] + result['o2g2']))
+    if result['analysis'] == 'Odds Ratio':
+        result['value'] = (result['o1g1'] / float(result['o2g1'])) / \
+                          (result['o1g2'] / float(result['o2g2']))
     return dict(result=result)
 #######################################################################
 # 2x2 Contingency Table - End

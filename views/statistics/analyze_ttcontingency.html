@@ -37,5 +37,9 @@ Show all Results </a>]
 </table><br><b>Analysis: </b>{{=result['analysis']}}
 <p>&nbsp;</p>
 <h2>Statistics:</h2>
-<b>p-value: </b>{{=result['pvalue']}}
+<br>
+{{if result['analysis'] == 'Z test - Correlated Proportions':}}<b>p-value: </b>{{=result['value']}}{{pass}}
+{{if result['analysis'] == 'P1 - P2':}}<b>P1 - P2: </b>{{=result['value']}}{{pass}}
+{{if result['analysis'] == 'Relative Risk':}}<b>Relative Risk: </b>{{=result['value']}}{{pass}}
+{{if result['analysis'] == 'Odds Ratio':}}<b>Odds Ratio: </b>{{=result['value']}}{{pass}}
 <br><br>
