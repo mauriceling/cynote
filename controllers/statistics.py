@@ -1,3 +1,79 @@
+exec("""from applications.%s.modules.copads.StatisticsDistribution \
+    import ChiSquareDistribution""" % (request.application))
+exec("""from applications.%s.modules.copads.StatisticsDistribution \
+    import NormalDistribution""" % (request.application))
+    
+#######################################################################
+# Categorical Data
+#######################################################################
+def categorical():
+    if session.username == None: 
+        redirect(URL(r=request, f='../account/log_in'))
+    form = FORM(
+            TABLE(
+                TR('Idenifier: ', 
+                    TEXTAREA(_name='identifier',
+                        value='Enter the data identifiers, separated by commas')),
+                TR('Observed values: ', 
+                    TEXTAREA(_name='observed',
+                             value='Enter the data, separated by commas')),
+                TR('Expected Values: ', 
+                    TEXTAREA(_name='expected',
+                             value='Enter the data, separated by commas')),
+                TR('Expected value type: ', 
+                    SELECT('Counts', 'Percentage', _name='etype')),
+                TR('Type of Analysis: ',
+                   SELECT('Chi-square test',
+                          _name='analysis')),
+                TR(INPUT(_type='submit', _value='SUBMIT'))))
+    if form.accepts(request.vars, session):
+        session.identifier = [x for x in form.vars.identifier.split(',')
+                                if x != '']
+        session.observed = [float(x) for x in form.vars.observed.split(',')
+                                        if x != '']
+        session.analysis = form.vars.analysis
+        if form.vars.etype == 'Percentage':
+            total = sum(session.observed)
+            session.expected = [(float(x) * total) / 100
+                                for x in form.vars.expected.split(',')
+                                    if x != '']
+        else:
+            session.expected = [float(x) for x in form.vars.expected.split(',')
+                                            if x != '']
+        if len(session.expected) > len(session.observed):
+            session.expected = session.expected[:len(session.observed)]
+            session.warning = 'Expected counts more than observed counts. \
+            Expected counts is truncated to observed counts.'
+        elif len(session.expected) < len(session.observed):
+            session.observed = session.observed[:len(session.expected)]
+            session.warning = 'Observed counts more than expected counts. \
+            Observed counts is truncated to expected counts.'
+        else: session.warning = 'None'
+        if len(session.identifier) > len(session.observed):
+            session.identifier = session.identifier[:len(session.observed)]
+        if len(session.identifier) < len(session.observed):
+            session.identifier = session.identifier + \
+                [''] * (len(session.observed) - len(session.identifier))
+        redirect(URL(r=request, f='analyze_categorical'))
+    return dict(form=form)
+    
+def analyze_categorical():
+    result = {}
+    result['observed'] = session.pop('observed', [])
+    result['expected'] = session.pop('expected', [])
+    result['identifier'] = session.pop('identifier', [])
+    result['analysis'] = session.pop('analysis', '')
+    if result['analysis'] == 'Chi-square test':
+        stat = sum([(result['observed'][index] - result['expected'][index]) ** 2 / \
+                        result['expected'][index]
+                    for index in range(len(result['observed']))])
+        result['value'] = 1.0 - ChiSquareDistribution(len(result['observed'])).CDF(stat)
+        print stat, result['value']
+    return dict(result=result)
+#######################################################################
+# Categorical Data - End
+#######################################################################
+    
 #######################################################################
 # 2x2 Contingency Table
 #######################################################################
@@ -71,16 +147,12 @@ def analyze_ttcontingency():
     if result['analysis'] == 'Z test - Correlated Proportions':
         exec("""from applications.%s.modules.copads.HypothesisTest \
         import ZCorrProportion""" % (request.application))
-        exec("""from applications.%s.modules.copads.StatisticsDistribution \
-        import NormalDistribution""" % (request.application))
         stat = ZCorrProportion(ssize=N, ny=result['o2g1'], yn=result['o1g2'], 
                                confidence=0.975)
         p = NormalDistribution().CDF(stat[2])
         if p < 0.5: result['value'] = p
         else: result['value'] = 1.0 - p
     if result['analysis'] == "Chi-square test with Yate's correction":
-        exec("""from applications.%s.modules.copads.StatisticsDistribution \
-        import ChiSquareDistribution""" % (request.application))
         stat = (N * (abs((result['o1g1'] * result['o2g2']) - \
                          (result['o1g2'] * result['o2g1'])) - \
                      (0.5 * N)) ** 2) / \
@@ -90,8 +162,6 @@ def analyze_ttcontingency():
                 (result['o2g1'] + result['o2g2']))
         result['value'] = 1.0 - ChiSquareDistribution(2).CDF(stat)
     if result['analysis'] == "Chi-square test without Yate's correction":
-        exec("""from applications.%s.modules.copads.StatisticsDistribution \
-        import ChiSquareDistribution""" % (request.application))
         stat = (N * (((result['o1g1'] * result['o2g2']) - \
                       (result['o1g2'] * result['o2g1'])) ** 2)) / \
                ((result['o1g1'] + result['o2g1']) * \
@@ -100,14 +170,10 @@ def analyze_ttcontingency():
                 (result['o2g1'] + result['o2g2']))
         result['value'] = 1.0 - ChiSquareDistribution(2).CDF(stat)
     if result['analysis'] == "McNemar's test with Yate's correction":
-        exec("""from applications.%s.modules.copads.StatisticsDistribution \
-        import ChiSquareDistribution""" % (request.application))
         stat = ((abs(result['o1g1'] - result['o2g2']) - 1) ** 2) / \
                (result['o1g1'] + result['o2g2'])
         result['value'] = 1.0 - ChiSquareDistribution(2).CDF(stat)
     if result['analysis'] == "McNemar's test without Yate's correction":
-        exec("""from applications.%s.modules.copads.StatisticsDistribution \
-        import ChiSquareDistribution""" % (request.application))
         stat = ((result['o1g1'] - result['o2g2']) ** 2) / \
                (result['o1g1'] + result['o2g2'])
         result['value'] = 1.0 - ChiSquareDistribution(2).CDF(stat)
@@ -221,8 +287,6 @@ def analyze_regression():
     if result['analysis_type'] == 'Linear regression':
         exec("""from applications.%s.modules.copads.HypothesisTest \
         import ZPearsonCorrelation""" % (request.application))
-        exec("""from applications.%s.modules.copads.StatisticsDistribution \
-        import NormalDistribution""" % (request.application))
         analysis_results['pcorr'] = session.pop('pcorr', 0.0)
         temp = data.linear_regression()
         analysis_results['LM'] = {'gradient': temp[0],
