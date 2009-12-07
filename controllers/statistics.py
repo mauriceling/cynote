@@ -75,7 +75,9 @@ def analyze_ttcontingency():
         import NormalDistribution""" % (request.application))
         stat = ZCorrProportion(ssize=N, ny=result['o2g1'], yn=result['o1g2'], 
                                confidence=0.975)
-        result['value'] = 1.0 - NormalDistribution().CDF(stat[2])
+        p = NormalDistribution().CDF(stat[2])
+        if p < 0.5: result['value'] = p
+        else: result['value'] = 1.0 - p
     if result['analysis'] == "Chi-square test with Yate's correction":
         exec("""from applications.%s.modules.copads.StatisticsDistribution \
         import ChiSquareDistribution""" % (request.application))
