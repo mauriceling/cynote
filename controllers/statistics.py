@@ -55,6 +55,12 @@ def analyze_ttcontingency():
     result['o2g2'] = session.pop('o2g2', 0)
     result['analysis'] = session.pop('analysis', '')
     N = result['o1g1'] + result['o2g1'] + result['o1g2'] + result['o2g2']
+    result['phi'] = ((result['o1g1'] * result['o2g2']) - \
+                      (result['o1g2'] * result['o2g1'])) / \
+                    (((result['o1g1'] + result['o2g1']) * \
+                      (result['o1g2'] + result['o2g2']) * \
+                      (result['o1g1'] + result['o1g2']) * \
+                      (result['o2g1'] + result['o2g2'])) ** 0.5)
     if result['analysis'] == 'Z test - Correlated Proportions':
         exec("""from applications.%s.modules.copads.HypothesisTest \
         import ZCorrProportion""" % (request.application))
