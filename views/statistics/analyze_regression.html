@@ -18,11 +18,14 @@ Show all Results </a>]
 &nbsp;&nbsp;&nbsp; {{=name[1]}}: <pre>{{=result['data'][name[1]]}}</pre><br><br>
 <h2>Statistics:</h2>
 {{if result['analysis_type'] == 'Linear regression':}}
-<b>Linear regression equation: </b>
-{{=name[1]}} = ({{=result['results']['LM']['gradient']}} * {{=name[0]}}) + 
-({{=result['results']['LM']['intercept']}})
-<br><br>
-The Pearson's Product-Moment Correlation of Coefficient (r) from data is <b>{{=result['results']['pearson']}}</b>, <br>
-which is statistically tested against the given correlation, <b>{{=result['results']['pcorr']}}</b>, <br>
-with a p-value of <b>{{=result['results']['pvalue']}}</b>.
+	<b>Linear regression equation: </b>
+	{{=name[1]}} = ({{=result['results']['LM']['gradient']}} * {{=name[0]}}) + 
+	({{=result['results']['LM']['intercept']}})
+	<br><br>
+	The Pearson's Product-Moment Correlation of Coefficient (r) from data is <b>{{=result['results']['pearson']}}</b>, <br>
+	which is statistically tested against the given correlation, <b>{{=result['results']['pcorr']}}</b>, <br>
+	with a p-value of <b>{{=result['results']['pvalue']}}</b>.
+	<br><br>
+	<b>{{=result['results']['pearson']*result['results']['pearson']*100}}</b>% of the variations in 
+	<b>{{=name[1]}}</b> can be explained by <b>{{=name[0]}}</b>.
 {{pass}}
