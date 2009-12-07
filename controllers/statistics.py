@@ -61,6 +61,13 @@ def analyze_ttcontingency():
                       (result['o1g2'] + result['o2g2']) * \
                       (result['o1g1'] + result['o1g2']) * \
                       (result['o2g1'] + result['o2g2'])) ** 0.5)
+    Po = (result['o1g1'] + result['o2g2']) / \
+         (result['o1g1'] + result['o2g1'] + result['o1g2'] + result['o2g2'])
+    Pe = ((((result['o1g1'] + result['o2g1']) * \
+            (result['o1g1'] + result['o1g2'])) / N) + \
+          (((result['o1g2'] + result['o2g2']) * \
+            (result['o2g1'] + result['o2g2'])) / N)) / N
+    result['kappa'] = (Po - Pe) / (1 - Pe)
     if result['analysis'] == 'Z test - Correlated Proportions':
         exec("""from applications.%s.modules.copads.HypothesisTest \
         import ZCorrProportion""" % (request.application))
