@@ -19,6 +19,8 @@ def ttcontingency():
                    SELECT('Z test - Correlated Proportions',
                           "Chi-square test with Yate's correction",
                           "Chi-square test without Yate's correction",
+                          "McNemar's test with Yate's correction",
+                          "McNemar's test without Yate's correction",
                           'P1 - P2',
                           'Relative Risk',
                           'Odds Ratio',
@@ -81,6 +83,18 @@ def analyze_ttcontingency():
                 (result['o1g2'] + result['o2g2']) * \
                 (result['o1g1'] + result['o1g2']) * \
                 (result['o2g1'] + result['o2g2']))
+        result['value'] = 1.0 - ChiSquareDistribution(2).CDF(stat)
+    if result['analysis'] == "McNemar's test with Yate's correction":
+        exec("""from applications.%s.modules.copads.StatisticsDistribution \
+        import ChiSquareDistribution""" % (request.application))
+        stat = ((abs(result['o1g1'] - result['o2g2']) - 1) ** 2) / \
+               (result['o1g1'] + result['o2g2'])
+        result['value'] = 1.0 - ChiSquareDistribution(2).CDF(stat)
+    if result['analysis'] == "McNemar's test without Yate's correction":
+        exec("""from applications.%s.modules.copads.StatisticsDistribution \
+        import ChiSquareDistribution""" % (request.application))
+        stat = ((result['o1g1'] - result['o2g2']) ** 2) / \
+               (result['o1g1'] + result['o2g2'])
         result['value'] = 1.0 - ChiSquareDistribution(2).CDF(stat)
     if result['analysis'] == 'P1 - P2':
         result['value'] = (result['o1g1'] / \
