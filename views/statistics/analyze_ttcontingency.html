@@ -39,6 +39,8 @@ Show all Results </a>]
 <h2>Statistics:</h2>
 <br>
 {{if result['analysis'] == 'Z test - Correlated Proportions':}}<b>p-value: </b>{{=result['value']}}{{pass}}
+{{if result['analysis'] == "Chi-square test with Yate's correction":}}<b>p-value: </b>{{=result['value']}}{{pass}}
+{{if result['analysis'] == "Chi-square test without Yate's correction":}}<b>p-value: </b>{{=result['value']}}{{pass}}
 {{if result['analysis'] == 'P1 - P2':}}<b>P1 - P2: </b>{{=result['value']}}{{pass}}
 {{if result['analysis'] == 'Relative Risk':}}<b>Relative Risk: </b>{{=result['value']}}{{pass}}
 {{if result['analysis'] == 'Odds Ratio':}}<b>Odds Ratio: </b>{{=result['value']}}{{pass}}

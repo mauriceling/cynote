@@ -17,6 +17,8 @@ def ttcontingency():
                     INPUT(_name='o2g2')),
                 TR('Type of Analysis: ',
                    SELECT('Z test - Correlated Proportions',
+                          "Chi-square test with Yate's correction",
+                          "Chi-square test without Yate's correction",
                           'P1 - P2',
                           'Relative Risk',
                           'Odds Ratio',
@@ -50,15 +52,36 @@ def analyze_ttcontingency():
     result['o2g1'] = session.pop('o2g1', 0)
     result['o2g2'] = session.pop('o2g2', 0)
     result['analysis'] = session.pop('analysis', '')
+    N = result['o1g1'] + result['o2g1'] + result['o1g2'] + result['o2g2']
     if result['analysis'] == 'Z test - Correlated Proportions':
         exec("""from applications.%s.modules.copads.HypothesisTest \
         import ZCorrProportion""" % (request.application))
         exec("""from applications.%s.modules.copads.StatisticsDistribution \
         import NormalDistribution""" % (request.application))
-        stat = ZCorrProportion(ssize=result['o1g1']+result['o2g1'],
-                               ny=result['o2g1'], yn=result['o1g2'], 
+        stat = ZCorrProportion(ssize=N, ny=result['o2g1'], yn=result['o1g2'], 
                                confidence=0.975)
         result['value'] = 1.0 - NormalDistribution().CDF(stat[2])
+    if result['analysis'] == "Chi-square test with Yate's correction":
+        exec("""from applications.%s.modules.copads.StatisticsDistribution \
+        import ChiSquareDistribution""" % (request.application))
+        stat = (N * (abs((result['o1g1'] * result['o2g2']) - \
+                         (result['o1g2'] * result['o2g1'])) - \
+                     (0.5 * N)) ** 2) / \
+               ((result['o1g1'] + result['o2g1']) * \
+                (result['o1g2'] + result['o2g2']) * \
+                (result['o1g1'] + result['o1g2']) * \
+                (result['o2g1'] + result['o2g2']))
+        result['value'] = 1.0 - ChiSquareDistribution(2).CDF(stat)
+    if result['analysis'] == "Chi-square test without Yate's correction":
+        exec("""from applications.%s.modules.copads.StatisticsDistribution \
+        import ChiSquareDistribution""" % (request.application))
+        stat = (N * (((result['o1g1'] * result['o2g2']) - \
+                      (result['o1g2'] * result['o2g1'])) ** 2)) / \
+               ((result['o1g1'] + result['o2g1']) * \
+                (result['o1g2'] + result['o2g2']) * \
+                (result['o1g1'] + result['o1g2']) * \
+                (result['o2g1'] + result['o2g2']))
+        result['value'] = 1.0 - ChiSquareDistribution(2).CDF(stat)
     if result['analysis'] == 'P1 - P2':
         result['value'] = (result['o1g1'] / \
                             float(result['o1g1'] + result['o2g1'])) - \
