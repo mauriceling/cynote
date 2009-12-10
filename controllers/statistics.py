@@ -2,7 +2,7 @@ exec("""from applications.%s.modules.copads.StatisticsDistribution \
     import ChiSquareDistribution""" % (request.application))
 exec("""from applications.%s.modules.copads.StatisticsDistribution \
     import NormalDistribution""" % (request.application))
-    
+
 #######################################################################
 # Categorical Data
 #######################################################################
@@ -196,6 +196,55 @@ def analyze_ttcontingency():
 #######################################################################
 
 #######################################################################
+# 2xC Contingency Table
+#######################################################################
+def tccontingency():
+    if session.username == None: 
+        redirect(URL(r=request, f='../account/log_in'))
+    form = FORM(
+            TABLE(
+                TR('Name #1: ', INPUT(_name='name1', value='Enter name #1'),
+                   'Data #1: ', TEXTAREA(_name='data1',
+                                value='Enter the data, separated by commas')),
+                TR('Name #2: ', INPUT(_name='name2', value='Enter name #2'),
+                   'Data #2: ', TEXTAREA(_name='data2',
+                                value='Enter the data, separated by commas')),
+                INPUT(_type='submit', _value='SUBMIT')))
+    if form.accepts(request.vars, session):
+        if form.vars.name1 == '': form.vars.name1 = 'Sample 1'
+        if form.vars.name2 == '': form.vars.name2 = 'Sample 2'
+        session.analysis_type = form.vars.analysis_type
+        form.vars.data1 = [float(x) for x in form.vars.data1.split(',')
+                           if x.strip() != '']
+        form.vars.data2 = [float(x) for x in form.vars.data2.split(',')
+                           if x.strip() != '']
+        session.data_name = (form.vars.name1, form.vars.name2)
+        session.data = (form.vars.data1, form.vars.data2)
+        redirect(URL(r=request, f='analyze_tccontingency'))
+    return dict(form=form)
+    
+def con_discordance(a, b):
+    p = [a[i] * sum(b[i+1:]) for i in range(len(a) - 1)]
+    q = [a[i] * sum(b[:i]) for i in range(len(a)-1, 0, -1)]
+    return (sum(p), sum(q))
+    
+def analyze_tccontingency():
+    result = {}
+    data = session.pop('data', ([], []))
+    name = session.pop('data_name')
+    pq = con_discordance(data[0], data[1])
+    N = sum(data[0]) + sum(data[1])
+    result['gamma'] = float(pq[0] - pq[1]) / float(pq[0] + pq[1])
+    result['tau_a'] = float(pq[0] - pq[1]) / \
+                      ((N * (N - 1)) / 2)
+    result['tau_c'] = float(pq[0] - pq[1]) * \
+                      (4 / (N * N))
+    return dict(result=result, data=data, name=name)
+#######################################################################
+# 2xC Contingency Table - End
+#######################################################################
+
+#######################################################################
 # Single Sample (SS)
 #######################################################################
 def input_SS():
@@ -252,7 +301,6 @@ def regression():
                           #'2-sample Z-test',
                           #'Paired t-test',
                           #'2-sample t-test',
-                          #"Pearson's Correlation",
                           #"Spearman's Correlation",
                           'Linear regression',
                           #'Distance measure',
@@ -279,7 +327,6 @@ def analyze_regression():
     result = {}
     data = session.pop('data', [])
     data_name = session.pop('data_name', [])
-    
     result['data'] = {str(data_name[0]): data.getSample(data_name[0]),
                       str(data_name[1]): data.getSample(data_name[1])}
     result['analysis_type'] = session.pop('analysis_type', '')
