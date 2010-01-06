@@ -5,22 +5,17 @@ import sys
 from shutil import rmtree, copytree, copy2, ignore_patterns
 
 def cleanup_cynote(new_cynote):
-    # Step 1.1: remove contents of CyNote's database directory
-    directory = os.sep.join([new_cynote, 'applications', 'init', 'databases'])
-    print "Step 1.1: remove contents of %s's database directory" % new_cynote
-    for f in [t for t in os.walk(directory)][0][2]:
-        os.remove(os.sep.join([directory, f]))
-        print '%s in %s removed.' % (f, directory)
-    print "Step 1.1 completed"
-    print
-    # Step 1.2: remove contents of CyNote's uploads directory
-    directory = os.sep.join([new_cynote, 'applications', 'init', 'uploads'])
-    print "Step 1.2: remove contents of %s's uploads directory" % new_cynote
-    for f in [t for t in os.walk(directory)][0][2]:
-        os.remove(os.sep.join([directory, f]))
-        print '%s in %s removed.' % (f, directory)
-    print "Step 1.2 completed"
-    print
+    step = 1
+    for part in ['databases', 'uploads', 'sessions', 'errors']:
+        # Step 1.1: remove contents of CyNote's database directory
+        directory = os.sep.join([new_cynote, 'applications', 'init', part])
+        print "Step 1.%s: remove contents of %s's %s directory" % (int(step), new_cynote, part)
+        for f in [t for t in os.walk(directory)][0][2]:
+            os.remove(os.sep.join([directory, f]))
+            print '%s in %s removed.' % (f, directory)
+        print "Step 1.%s completed" % int(step)
+        step = step + 1
+        print
     
 def copy_cynote(release, new_cynote):
     # Step 2: Copy CyNote to release directory
