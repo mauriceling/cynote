@@ -37,6 +37,8 @@ def log_in():
     If login is successful, the username is stored in session.username
     for further use. If login is not successful, session.username = None
     """
+    # i = 0
+    # while i < 3:
     form = FORM(TABLE(
                 TR('Username:', INPUT(_name='username',
                                     requires=IS_NOT_EMPTY())),
@@ -66,8 +68,13 @@ def log_in():
                                  user='system')
             redirect(URL(r=request, f='logged'))
         else:
-            session.username = None
-            response.flash = 'invalid username/password' 
+            #session.username = form.vars.username
+            session.username = none
+            response.flash = 'invalid username/password'
+            # i = i + 1
+      #if i > 2
+      #    userdb(session.username == user).update(authorized=False)      
+             
     return dict(form=form)
 
 def logged():
