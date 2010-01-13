@@ -19,6 +19,8 @@ tabs = [{'module': 'default', 'function': 'bioinformatics',
 cynote_dependencies = ['biopython==1.50',
                        'pil==1.1.6']
 
+if not session.has_key('login_count'): session.login_count = 0
+
 def index():
     try: session['dependencies']
     except KeyError: session['dependencies'] = 'NOT DONE'

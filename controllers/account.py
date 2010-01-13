@@ -37,8 +37,6 @@ def log_in():
     If login is successful, the username is stored in session.username
     for further use. If login is not successful, session.username = None
     """
-    # i = 0
-    # while i < 3:
     form = FORM(TABLE(
                 TR('Username:', INPUT(_name='username',
                                     requires=IS_NOT_EMPTY())),
@@ -58,6 +56,7 @@ def log_in():
             update(password=h(form.vars.password).hexdigest())
             db.log.insert(event='Convert plain password to hash. \User = ' + \
                           form.vars.username, user='system')
+            session.login_count = 1
             redirect(URL(r=request, f='logged'))
         elif userdb(userdb.user.username == form.vars.username) \
              (userdb.user.password == h(form.vars.password).hexdigest()) \
@@ -66,15 +65,21 @@ def log_in():
             db.user_event.insert(event='Login (hashed password). %s' % \
                                  session.username, 
                                  user='system')
+            session.login_count = 1
             redirect(URL(r=request, f='logged'))
         else:
-            #session.username = form.vars.username
-            session.username = none
+            db.user_event.insert(event='Login error. Username used = %s. \
+            Password used = %s. Login count = %s' % 
+            (form.vars.username, form.vars.password, str(session.login_count)), 
+            user='system')
+            session.username = None
             response.flash = 'invalid username/password'
-            # i = i + 1
-      #if i > 2
-      #    userdb(session.username == user).update(authorized=False)      
-             
+            session.login_count = session.login_count + 1
+            # if session.login_count == 5:
+                # db.user_event.insert(event='5 times login error. All users are \
+                # deauthorized by system.', user='system')
+                # [userdb(userdb.user.username == name).update(authorized=False)
+                 # for name in userdb(userdb.user.authorized==True).select(userdb.user.username)]
     return dict(form=form)
 
 def logged():
