@@ -21,6 +21,11 @@ cynote_dependencies = ['biopython==1.50',
 
 if not session.has_key('login_count'): session.login_count = 0
 
+def password_aging(username):
+    import time
+    current_time = time.time()
+    return True
+
 def index():
     try: session['dependencies']
     except KeyError: session['dependencies'] = 'NOT DONE'
@@ -38,6 +43,8 @@ def index():
     if session.username == None: 
         name = 'Guest'
         redirect(URL(r=request, f='../account/log_in'))
+    elif password_aging(session.username) == True:
+        redirect(URL(r=request, f='../account/forced_password_change'))
     else: 
         name = session.username
     return dict(tab_list=tabs, name=name, message=T('CyNote Main Menu'))

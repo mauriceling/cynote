@@ -81,7 +81,55 @@ def log_in():
                 # [userdb(userdb.user.username == name).update(authorized=False)
                  # for name in userdb(userdb.user.authorized==True).select(userdb.user.username)]
     return dict(form=form)
-
+    
+def forced_password_change():
+    """Force user to change password due to password aging"""
+    pass
+    
+def change_password():
+    """Allows a user to change password"""
+    if session.username == None:
+        redirect(URL(r=request, f='log_in'))
+    form = FORM(TABLE(
+                TR('Username:', INPUT(_name='username',
+                                    requires=IS_NOT_EMPTY())),
+                TR('Current Password: ', INPUT(_name='oldpwd', _type='password', 
+                                            requires=[IS_NOT_EMPTY()])),
+                TR('New Password: ',INPUT(_name='newpwd', _type='password',
+                                            requires=[IS_NOT_EMPTY()])),
+                TR('Re-enter New Password: ', INPUT(_name='newpwd2',
+                                _type='password', requires=[IS_NOT_EMPTY()])),
+                TR('',INPUT(_type='submit', _name='submit'))))
+    if form.accepts(request.vars, session):
+        if userdb(userdb.user.username == form.vars.username) \
+             (userdb.user.password == h(form.vars.oldpwd).hexdigest()) \
+             (userdb.user.authorized == True).count():
+            db.user_event.insert(event='Change password initiated. %s' % \
+                                 form.vars.username, 
+                                 user='system')
+            if form.vars.newpwd == form.vars.newpwd2:            
+                 userdb(userdb.user.username == session.username) \
+                 .update(password=h(form.vars.newpwd).hexdigest())
+                 db.user_event.insert(event='Change password successful. %s' % \
+                                 form.vars.username, 
+                                 user='system')
+                 response.flash = 'Password change SUCCESSFUL'
+            else:
+                db.user_event.insert(event='Change password unsuccessful. \
+                New passwords do not match. %s' % \
+                                 form.vars.username, 
+                                 user='system')
+                response.flash = 'Password change UNSUCCESSFUL - New passwords \
+                do not match'
+        else:
+            db.user_event.insert(event='Change password unsuccessful. \
+            Current password does not match. %s' % \
+                                 form.vars.username, 
+                                 user='system')
+            response.flash = 'Password change UNSUCCESSFUL - Current password \
+            does not match'
+    return dict(form=form)
+ 
 def logged():
     """redirection when login is successful"""
     return dict(name=session.username)
