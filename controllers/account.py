@@ -1,5 +1,5 @@
 #still on testing..
-
+from time import time
 from hashlib import sha512 as h
 
 def new_account():
@@ -23,6 +23,7 @@ def new_account():
         else:
             userdb.user.insert(username=form.vars.username,
                                password=h(form.vars.password).hexdigest(),
+                               aging=time(),
                                authorized=authorized)
             db.user_event.insert(event='New account created. %s' % \
                                  form.vars.username, 
@@ -82,14 +83,12 @@ def log_in():
                  # for name in userdb(userdb.user.authorized==True).select(userdb.user.username)]
     return dict(form=form)
     
-def forced_password_change():
-    """Force user to change password due to password aging"""
-    pass
-    
 def change_password():
     """Allows a user to change password"""
     if session.username == None:
         redirect(URL(r=request, f='log_in'))
+    if session.pwdaged:
+        response.flash = 'Current password is older than 30 days. Please change'
     form = FORM(TABLE(
                 TR('Username:', INPUT(_name='username',
                                     requires=IS_NOT_EMPTY())),
@@ -110,6 +109,8 @@ def change_password():
             if form.vars.newpwd == form.vars.newpwd2:            
                  userdb(userdb.user.username == session.username) \
                  .update(password=h(form.vars.newpwd).hexdigest())
+                 userdb(userdb.user.username == session.username) \
+                 .update(aging=time())
                  db.user_event.insert(event='Change password successful. %s' % \
                                  form.vars.username, 
                                  user='system')

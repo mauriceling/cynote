@@ -16,15 +16,27 @@ tabs = [{'module': 'default', 'function': 'bioinformatics',
         #    'name': 'Assistants and Tutors'}, 
         ]
 
+password_age = 30   # 30 days
+
 cynote_dependencies = ['biopython==1.50',
                        'pil==1.1.6']
 
 if not session.has_key('login_count'): session.login_count = 0
 
-def password_aging(username):
+def password_aging(username, password_age=password_age):
     import time
-    current_time = time.time()
-    return True
+    current_time = int(time.time())
+    last_password_change = userdb(userdb.user.username == username) \
+                           .select(userdb.user.aging)[0]['aging']
+    print current_time, last_password_change
+    if last_password_change == None or \
+    last_password_change + (password_age * 24 * 3600) < current_time:
+        db.user_event.insert(event='Password aged > 30 days. %s' % \
+            session.username, 
+            user='system')
+        return True
+    else: 
+        return False
 
 def index():
     try: session['dependencies']
@@ -42,9 +54,11 @@ def index():
     with general research record-keeping standard (US FDA 21 CFR Part 11)')
     if session.username == None: 
         name = 'Guest'
+        session.pwdaged = False
         redirect(URL(r=request, f='../account/log_in'))
     elif password_aging(session.username) == True:
-        redirect(URL(r=request, f='../account/forced_password_change'))
+        session.pwdaged = True
+        redirect(URL(r=request, f='../account/change_password'))
     else: 
         name = session.username
     return dict(tab_list=tabs, name=name, message=T('CyNote Main Menu'))
