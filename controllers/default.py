@@ -28,7 +28,7 @@ def password_aging(username, password_age=password_age):
     current_time = int(time.time())
     last_password_change = userdb(userdb.user.username == username) \
                            .select(userdb.user.aging)[0]['aging']
-    print current_time, last_password_change
+    # print current_time, last_password_change
     if last_password_change == None or \
     last_password_change + (password_age * 24 * 3600) < current_time:
         db.user_event.insert(event='Password aged > 30 days. %s' % \
