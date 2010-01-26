@@ -2,6 +2,11 @@ from ez_setup import use_setuptools
 use_setuptools()
 from setuptools.command.easy_install import main
 
+password_age = 30
+
+cynote_header = T('Welcome to CyNote - A web-enabled notebook compliant \
+    with general research record-keeping standard (US FDA 21 CFR Part 11)')
+
 tabs = [{'module': 'default', 'function': 'bioinformatics', 
             'name': 'Bioinformatics Tools'},
         {'module': 'default', 'function': 'statistics', 
@@ -15,8 +20,6 @@ tabs = [{'module': 'default', 'function': 'bioinformatics',
         #{'module': 'default', 'function': 'assistants', 
         #    'name': 'Assistants and Tutors'}, 
         ]
-
-password_age = 30   # 30 days
 
 cynote_dependencies = ['biopython==1.50',
                        'pil==1.1.6']
@@ -38,6 +41,14 @@ def password_aging(username, password_age=password_age):
     else: 
         return False
 
+def check_login(session=session):
+    if session.username == None: 
+        name = 'Guest'
+        redirect(URL(r=request, f='../account/log_in'))
+    else: 
+        name = session.username
+    return name
+
 def index():
     try: session['dependencies']
     except KeyError: session['dependencies'] = 'NOT DONE'
@@ -50,48 +61,27 @@ def index():
             except: 
                 print dependency + ' generic error (please inform Maurice Ling)'
             session['dependencies'] = 'DONE'
-    response.flash = T('Welcome to CyNote - A web-enabled notebook compliant \
-    with general research record-keeping standard (US FDA 21 CFR Part 11)')
-    if session.username == None: 
-        name = 'Guest'
-        session.pwdaged = False
-        redirect(URL(r=request, f='../account/log_in'))
-    elif password_aging(session.username) == True:
+    response.flash = cynote_header
+    name = check_login()
+    if password_aging(session.username) == True:
         session.pwdaged = True
         redirect(URL(r=request, f='../account/change_password'))
-    else: 
-        name = session.username
     return dict(tab_list=tabs, name=name, message=T('CyNote Main Menu'))
     
 def bioinformatics():
-    response.flash = T('Welcome to CyNote - A web-enabled notebook compliant \
-    with general research record-keeping standard (US FDA 21 CFR Part 11)')
-    if session.username == None: 
-        name = 'Guest'
-        redirect(URL(r=request, f='../account/log_in'))
-    else: 
-        name = session.username
+    response.flash = cynote_header
+    name = check_login()
     return dict(tab_list=tabs, name=name, 
                 message=T('CyNote - Bioinformatics Menu'))
 
 def statistics():
-    response.flash = T('Welcome to CyNote - A web-enabled notebook compliant \
-    with general research record-keeping standard (US FDA 21 CFR Part 11)')
-    if session.username == None: 
-        name = 'Guest'
-        redirect(URL(r=request, f='../account/log_in'))
-    else: 
-        name = session.username
+    response.flash = cynote_header
+    name = check_login()
     return dict(tab_list=tabs, name=name, 
                 message=T('CyNote - Statistics Menu'))
 
 def assistants():
-    response.flash = T('Welcome to CyNote - A web-enabled notebook compliant \
-    with general research record-keeping standard (US FDA 21 CFR Part 11)')
-    if session.username == None: 
-        name = 'Guest'
-        redirect(URL(r=request, f='../account/log_in'))
-    else: 
-        name = session.username
+    response.flash = cynote_header
+    name = check_login()
     return dict(tab_list=tabs, name=name, 
                 message=T('CyNote - Assistants and Tutors'))
