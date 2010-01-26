@@ -1,8 +1,10 @@
+import time
 from ez_setup import use_setuptools
 use_setuptools()
 from setuptools.command.easy_install import main
 
-password_age = 30
+password_age = 90 # password expiry = 90 days
+login_expiry = 24 # login expiry = 24 hours
 
 cynote_header = T('Welcome to CyNote - A web-enabled notebook compliant \
     with general research record-keeping standard (US FDA 21 CFR Part 11)')
@@ -27,7 +29,6 @@ cynote_dependencies = ['biopython==1.50',
 if not session.has_key('login_count'): session.login_count = 0
 
 def password_aging(username, password_age=password_age):
-    import time
     current_time = int(time.time())
     last_password_change = userdb(userdb.user.username == username) \
                            .select(userdb.user.aging)[0]['aging']
@@ -42,12 +43,13 @@ def password_aging(username, password_age=password_age):
         return False
 
 def check_login(session=session):
-    if session.username == None: 
-        name = 'Guest'
+    if session.login_time == None: 
+        session.login_time = 0
+    if session.username == None or \
+        session.login_time + login_expiry * 3600 < int(time.time()): 
         redirect(URL(r=request, f='../account/log_in'))
     else: 
-        name = session.username
-    return name
+        return session.username
 
 def index():
     try: session['dependencies']

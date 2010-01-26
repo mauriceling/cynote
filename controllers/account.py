@@ -133,6 +133,7 @@ def change_password():
  
 def logged():
     """redirection when login is successful"""
+    session.login_time = time()
     return dict(name=session.username)
 
 def log_out():
