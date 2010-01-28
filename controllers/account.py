@@ -88,7 +88,7 @@ def change_password():
     if session.username == None:
         redirect(URL(r=request, f='log_in'))
     if session.pwdaged:
-        response.flash = 'Current password is older than 30 days. Please change'
+        response.flash = 'Current password is older than 90 days. Please change'
     form = FORM(TABLE(
                 TR('Username:', INPUT(_name='username',
                                     requires=IS_NOT_EMPTY())),
