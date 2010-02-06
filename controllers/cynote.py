@@ -352,3 +352,61 @@ def generate_hash():
     db.log.insert(event='Comment hash generation. n=' + str(len(comment)), 
                   user=session.username)
     return dict(entry=entry, comment=comment)
+
+def ntp_stamp():
+    if session.username == None: 
+        redirect(URL(r=request, f='../account/log_in'))
+    form = FORM(
+            TABLE(
+                TR('Network Time Servers: ',
+                   SELECT('asia.pool.ntp.org',
+                          'europe.pool.ntp.org',
+                          'oceania.pool.ntp.org',
+                          'north-america.pool.ntp.org',
+                          'south-america.pool.ntp.org',
+                          'africa-america.pool.ntp.org',
+                          _name='server')),
+                TR(INPUT(_type='submit', _value='Stamp'))))
+    if form.accepts(request.vars, session):
+        from time import ctime
+        import ntplib
+        client = ntplib.NTPClient()
+        try:
+            response = client.request(form.vars.server, version=3)
+            results = ['Network time server: ' + form.vars.server,
+                       'Offset : %f' % response.offset,
+                       'Stratum : %s (%d)' % (ntplib.stratum_to_text(response.stratum),
+                            response.stratum),
+                       'Precision : %d' % response.precision,
+                       'Root delay : %f ' % response.root_delay,
+                       'Root dispersion : %f' % response.root_dispersion,
+                       'Delay : %f' % response.delay,
+                       'Leap indicator : %s (%d)' % (ntplib.leap_to_text(response.leap),
+                            response.leap),
+                       'Poll : %d' % response.poll,
+                       'Mode : %s (%d)' % (ntplib.mode_to_text(response.mode), 
+                            response.mode),
+                       'Reference clock identifier : ' + \
+                            ntplib.ref_id_to_text(response.ref_id,
+                            response.stratum), 
+                       'Original timestamp : ' + ctime(response.orig_time),
+                       'Receive timestamp : ' + ctime(response.recv_time),
+                       'Transmit timestamp : ' + ctime(response.tx_time),
+                       'Destination timestamp : ' + ctime(response.dest_time)]
+            db.log.insert(event='NTP timestamp. ' + ' | '.join(results), 
+                      user=session.username)
+            db.user_event.insert(event='NTP timestamp. ' + ' | '.join(results), 
+                      user=session.username)
+            db.entry_hash.insert(eid='NTP', edatetime='NTP', etitle='NTP', 
+                        ehash='NTP timestamp. ' + ' | '.join(results))
+            db.comment_hash.insert(cid='NTP', cdatetime='NTP', eid='NTP', 
+                        chash='NTP timestamp. ' + ' | '.join(results))
+        except: 
+            results = 'Failure to connect to network time server or there is \
+            an internet error. Please try again later.'
+        session.result = results
+        redirect(URL(r=request, f='ntp_stamp_output'))
+    return dict(form=form)
+  
+def ntp_stamp_output():
+    return dict(result=session.pop('result', ''))
