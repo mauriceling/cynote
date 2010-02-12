@@ -6,6 +6,8 @@ from setuptools.command.easy_install import main
 password_age = 90 # password expiry = 90 days
 login_expiry = 24 # login expiry = 24 hours
 
+version = 1.4
+
 cynote_header = T('Welcome to CyNote - A web-enabled notebook compliant \
     with general research record-keeping standard (US FDA 21 CFR Part 11)')
 
@@ -68,7 +70,8 @@ def index():
     if password_aging(session.username) == True:
         session.pwdaged = True
         redirect(URL(r=request, f='../account/change_password'))
-    return dict(tab_list=tabs, name=name, message=T('CyNote Main Menu'))
+    return dict(tab_list=tabs, name=name, version=version,
+                message=T('CyNote Main Menu'))
     
 def bioinformatics():
     response.flash = cynote_header
