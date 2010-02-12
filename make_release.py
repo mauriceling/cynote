@@ -21,7 +21,7 @@ def copy_cynote(release, new_cynote):
     # Step 2: Copy CyNote to release directory
     print "Step 2: Copy %s to release directory: %s" % (new_cynote, release)
     copytree(new_cynote, release,
-             ignore = ignore_patterns('.svn', '*.pyc'))
+             ignore = ignore_patterns('.svn', '.hg', '*.pyc'))
     print "Step 2 completed"
     print
     

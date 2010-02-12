@@ -78,7 +78,7 @@ def replace_cynote(old_cynote, new_cynote):
     # Step 5: Copy new cynote to replace deleted old cynote
     print "Step 5: Copy %s to replace deleted %s" % (new_cynote, old_cynote)
     copytree(new_cynote, old_cynote,
-             ignore = ignore_patterns('.svn', '*.pyc'))
+             ignore = ignore_patterns('.svn', '.hg', '*.pyc'))
     print "Step 5 completed"
     print
     
