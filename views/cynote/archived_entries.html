@@ -1,3 +1,25 @@
 {{extend 'layout.html'}}
-<h1>This is the cynote/archived_entries.html template</h1>
-{{=BEAUTIFY(form)}}
+[<a href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
+Back to Menu </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry"> 
+Create New Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook"> 
+Create New Notebook </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries"> 
+List all Entries </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual"> 
+Notarize an Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
+Show all Results </a>]
+<h1>List all Archived Entries</h1>
+This page lists all entries of a particular archived notebook as "inverse Table of Contents" (newest entry to oldest entry) for navigation.<br><br>{{=form}}
+<table>
+{{for entry in records:}}
+<tbody><tr>
+<td>{{=A(entry.title,_href=URL(r=request, f='show', args=[entry.id]))}}</td>
+<td><br></td>
+<td>{{=entry.datetime}}</td>
+</tr>
+{{pass}}
+
+</tbody></table>

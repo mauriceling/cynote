@@ -4,7 +4,7 @@
 </div>
 <div class="left">
 <br>
-<h2>Welcome to Cynote, {{=name}}</h2>
+<h2>Welcome to CyNote, {{=name}}</h2>
 <br>
 [ <a target="_blank" title="About CyNote" href="http://maurice.vodien.com/portfolio/RprojCyNote.html">
 About CyNote</a> ]
@@ -27,10 +27,11 @@ Create a new notebook to hold entries as every entry must be part of a notebook<
 
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries">
 List Entries by Notebook</a> ] 
-Show a list of entries for a particular notebook (Table of Contents)<br><br>
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/archived_entries">
+List Archived Entries by Notebook</a> ] Show a list of entries for a particular notebook (Table of Contents)<br><br>
 
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual">
-Notarize An Entry</a> ]
+Notarize an Entry</a> ]
 Signing off a single entry as an individual<br><br>
 
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/savedatabase/online">

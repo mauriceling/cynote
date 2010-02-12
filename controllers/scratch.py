@@ -25,26 +25,6 @@ def new_entry():
                       user=session.username)
         redirect(URL(r=request, f='entries'))
     return dict(form=form)
-    
-def archived_entries(): 
-    # from cynote.py
-    """
-    Return the archived notebook itself - Table of contents
-    This function re-runs itself. At the first run, records is None;
-    hence, does not show the records, only show the form.
-    When a notebook was selected, this function will repeat itself
-    to give the TOC "records" needs to run before SQLFORM in order to 
-    list the notebooks available.
-    """
-    if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
-    else:
-        records = cynotedb(cynotedb.entry.notebook == request.vars.notebook) \
-            (cynotedb.entry.notebook == cynotedb.notebook.id) \
-            (cynotedb.notebook.archived == True) \
-            .select(cynotedb.entry.ALL, orderby = ~cynotedb.entry.id) 
-        form = SQLFORM(cynotedb.entry, fields=['notebook'])
-    return dict(form=form, records=records)
 
 def show_results():
     # from cynote.py 

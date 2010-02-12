@@ -13,11 +13,30 @@ def entries():
         records = cynotedb(cynotedb.entry.notebook == request.vars.notebook) \
             (cynotedb.entry.notebook == cynotedb.notebook.id) \
             (cynotedb.notebook.archived == False) \
-            .select(cynotedb.entry.ALL, orderby = ~cynotedb.entry.id) 
+            .select(cynotedb.entry.ALL, orderby = ~cynotedb.entry.datetime) 
         form = SQLFORM(cynotedb.entry, fields=['notebook'])
     return dict(form=form,
                 records=records)
-        
+
+def archived_entries(): 
+    """
+    Return the archived notebook itself - Table of contents
+    This function re-runs itself. At the first run, records is None;
+    hence, does not show the records, only show the form.
+    When a notebook was selected, this function will repeat itself
+    to give the TOC "records" needs to run before SQLFORM in order to 
+    list the notebooks available.
+    """
+    if session.username == None:
+        redirect(URL(r=request, f='../account/log_in'))
+    else:
+        records = cynotedb(cynotedb.entry.notebook == request.vars.notebook) \
+            (cynotedb.entry.notebook == cynotedb.notebook.id) \
+            (cynotedb.notebook.archived == True) \
+            .select(cynotedb.entry.ALL, orderby = ~cynotedb.entry.datetime) 
+        form = SQLFORM(cynotedb.entry, fields=['notebook'])
+    return dict(form=form, records=records)
+    
 def show():
     """
     Called to show one entry and its linked comments based on the entry.id
@@ -39,7 +58,7 @@ def show():
     comments.vars.entry_id = id;
     # return the comment that is listed with the entry id 
     records = cynotedb(cynotedb.comment.entry_id == id) \
-              .select(orderby = cynotedb.comment.entry_id)
+              .select(orderby = cynotedb.comment.datetime)
     # show a flash when comment is posted
     if comments.accepts(request.vars,session): 
          response.flash = "comment posted"
