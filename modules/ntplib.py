@@ -167,7 +167,7 @@ class NTPClient(object):
         """make a NTP request to a server - return a NTPStats object"""
         # create the socket - let the application handle (unlikely) exceptions
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.settimeout(5)
+        s.settimeout(30)
         
         try:
             # lookup server address
