@@ -3,13 +3,7 @@ from ez_setup import use_setuptools
 use_setuptools()
 from setuptools.command.easy_install import main
 
-password_age = 90 # password expiry = 90 days
-login_expiry = 24 # login expiry = 24 hours
-
-version = 1.4
-
-cynote_header = T('Welcome to CyNote - A web-enabled notebook compliant \
-    with general research record-keeping standard (US FDA 21 CFR Part 11)')
+exec('from applications.%s.controllers.option import *' % (request.application))
 
 tabs = [{'module': 'default', 'function': 'bioinformatics', 
             'name': 'Bioinformatics Tools'},
@@ -24,10 +18,7 @@ tabs = [{'module': 'default', 'function': 'bioinformatics',
         #{'module': 'default', 'function': 'assistants', 
         #    'name': 'Assistants and Tutors'}, 
         ]
-
-cynote_dependencies = ['biopython==1.50',
-                       'pil==1.1.6']
-
+        
 if not session.has_key('login_count'): session.login_count = 0
 
 def password_aging(username, password_age=password_age):
