@@ -5,13 +5,13 @@ from setuptools.command.easy_install import main
 
 exec('from applications.%s.controllers.option import *' % (request.application))
 
-tabs = [{'function': 'bioinformatics', 'name': 'Bioinformatics Tools'},
-        {'function': 'statistics', 'name': 'Statistical Analyses'},
-        #{'function': 'citation', 'name': 'Citations'},
-        #{'function': 'projects', 'name': 'Projects and Resources'},
-        #{'function': 'goals', 'name': 'Personal Goals'},
-        #{'function': 'assistants', 'name': 'Assistants and Tutors'}, 
-        ]
+tabs = {'bioinformatics': 'Bioinformatics Tools',
+        'statistics': 'Statistical Analysis',
+        #'citation': 'Citations',
+        #'projects': 'Projects and Resources',
+        #'goals': 'Personal Goals',
+        #'assistants': 'Assistants and Tutors', 
+        }
         
 if not session.has_key('login_count'): session.login_count = 0
 

@@ -13,9 +13,9 @@ Main Menu</a> ]
 [ <a href="http://{{=request.env.http_host}}/{{=request.application}}/account/log_out"> 
 Logout</a> ]
 <br>
-{{for tab in tab_list:}}
-[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/{{=module}}/{{=tab['function']}}">
-{{=tab['name']}}</a> ]
+{{for tab in tab_list.keys():}}
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/{{=module}}/{{=tab}}">
+{{=tab_list[tab]}}</a> ]
 {{pass}}
 <br><br>
 
