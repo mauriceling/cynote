@@ -14,7 +14,7 @@ Main Menu</a> ]
 Logout</a> ]
 <br>
 {{for tab in tab_list:}}
-[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/{{=tab['module']}}/{{=tab['function']}}">
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/{{=module}}/{{=tab['function']}}">
 {{=tab['name']}}</a> ]
 {{pass}}
 <br><br>

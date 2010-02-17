@@ -5,18 +5,12 @@ from setuptools.command.easy_install import main
 
 exec('from applications.%s.controllers.option import *' % (request.application))
 
-tabs = [{'module': 'default', 'function': 'bioinformatics', 
-            'name': 'Bioinformatics Tools'},
-        {'module': 'default', 'function': 'statistics', 
-            'name': 'Statistical Analyses'},
-        #{'module': 'default', 'function': 'citation', 
-        #    'name': 'Citations Manager'},
-        #{'module': 'default', 'function': 'projects', 
-        #    'name': 'Project Tools'},
-        #{'module': 'default', 'function': 'goals', 
-        #    'name': 'Personal Goals'},
-        #{'module': 'default', 'function': 'assistants', 
-        #    'name': 'Assistants and Tutors'}, 
+tabs = [{'function': 'bioinformatics', 'name': 'Bioinformatics Tools'},
+        {'function': 'statistics', 'name': 'Statistical Analyses'},
+        #{'function': 'citation', 'name': 'Citations'},
+        #{'function': 'projects', 'name': 'Projects and Resources'},
+        #{'function': 'goals', 'name': 'Personal Goals'},
+        #{'function': 'assistants', 'name': 'Assistants and Tutors'}, 
         ]
         
 if not session.has_key('login_count'): session.login_count = 0
@@ -61,23 +55,23 @@ def index():
     if password_aging(session.username) == True:
         session.pwdaged = True
         redirect(URL(r=request, f='../account/change_password'))
-    return dict(tab_list=tabs, name=name, version=version,
+    return dict(module='default', tab_list=tabs, name=name, version=version,
                 message=T('CyNote Main Menu'))
     
 def bioinformatics():
     response.flash = cynote_header
     name = check_login()
-    return dict(tab_list=tabs, name=name, 
+    return dict(module='default', tab_list=tabs, name=name, 
                 message=T('CyNote - Bioinformatics Menu'))
 
 def statistics():
     response.flash = cynote_header
     name = check_login()
-    return dict(tab_list=tabs, name=name, 
+    return dict(module='default', tab_list=tabs, name=name, 
                 message=T('CyNote - Statistics Menu'))
 
 def assistants():
     response.flash = cynote_header
     name = check_login()
-    return dict(tab_list=tabs, name=name, 
+    return dict(module='default', tab_list=tabs, name=name, 
                 message=T('CyNote - Assistants and Tutors'))
