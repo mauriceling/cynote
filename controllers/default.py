@@ -7,6 +7,7 @@ exec('from applications.%s.controllers.option import *' % (request.application))
 
 tabs = {'bioinformatics': 'Bioinformatics Tools',
         'statistics': 'Statistical Analysis',
+        'adhocDB': 'Ad hoc Research Database',
         #'citation': 'Citations',
         #'projects': 'Projects and Resources',
         #'goals': 'Personal Goals',
@@ -55,23 +56,34 @@ def index():
     if password_aging(session.username) == True:
         session.pwdaged = True
         redirect(URL(r=request, f='../account/change_password'))
-    return dict(module='default', tab_list=tabs, name=name, version=version,
+    return dict(module='default', tab_list=tabs, name=name, 
+                version=version, copyright=copyright,
                 message=T('CyNote Main Menu'))
     
 def bioinformatics():
     response.flash = cynote_header
     name = check_login()
     return dict(module='default', tab_list=tabs, name=name, 
+                copyright=copyright,
                 message=T('CyNote - Bioinformatics Menu'))
 
 def statistics():
     response.flash = cynote_header
     name = check_login()
     return dict(module='default', tab_list=tabs, name=name, 
+                copyright=copyright,
                 message=T('CyNote - Statistics Menu'))
+                
+def adhocDB():
+    response.flash = cynote_header
+    name = check_login()
+    return dict(module='default', tab_list=tabs, name=name, 
+                copyright=copyright,
+                message=T('CyNote - Ad hoc Research Database Menu'))
 
 def assistants():
     response.flash = cynote_header
     name = check_login()
     return dict(module='default', tab_list=tabs, name=name, 
+                copyright=copyright,
                 message=T('CyNote - Assistants and Tutors'))
