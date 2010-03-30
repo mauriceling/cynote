@@ -1,6 +1,6 @@
-exec("""from applications.%s.modules.copads.StatisticsDistribution \
+exec("""from applications.%s.modules.copads.statisticsdistribution \
     import ChiSquareDistribution""" % (request.application))
-exec("""from applications.%s.modules.copads.StatisticsDistribution \
+exec("""from applications.%s.modules.copads.statisticsdistribution \
     import NormalDistribution""" % (request.application))
 
 #######################################################################
@@ -262,7 +262,7 @@ def input_SS():
     return dict(form=form)
     
 def analyze_SS():
-    exec("""from applications.%s.modules.copads.SampleStatistics \
+    exec("""from applications.%s.modules.copads.samplestatistics \
     import SingleSample""" % (request.application))
     result = {}
     result['data'] = session.pop('data', [])
@@ -307,7 +307,7 @@ def regression():
                           _name='analysis_type'), '',
                    INPUT(_type='submit', _value='SUBMIT'))))
     if form.accepts(request.vars,session):
-        exec("""from applications.%s.modules.copads.SampleStatistics \
+        exec("""from applications.%s.modules.copads.samplestatistics \
         import TwoSample""" % (request.application))
         if form.vars.name1 == '': form.vars.name1 = 'Sample 1'
         if form.vars.name2 == '': form.vars.name2 = 'Sample 2'
@@ -332,7 +332,7 @@ def analyze_regression():
     result['analysis_type'] = session.pop('analysis_type', '')
     analysis_results = {}
     if result['analysis_type'] == 'Linear regression':
-        exec("""from applications.%s.modules.copads.HypothesisTest \
+        exec("""from applications.%s.modules.copads.hypothesis \
         import ZPearsonCorrelation""" % (request.application))
         analysis_results['pcorr'] = session.pop('pcorr', 0.0)
         temp = data.linear_regression()
@@ -359,7 +359,7 @@ def analyze_regression():
 # More than Two Samples (MS)
 #######################################################################
 def parse_data(data, name):
-    exec("""from applications.%s.modules.copads.SampleStatistics \
+    exec("""from applications.%s.modules.copads.samplestatistics \
     import MultiSample""" % (request.application))
     dataset = MultiSample()
     datalist = [sample for sample in data.split('\r\n')]
