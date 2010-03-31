@@ -81,6 +81,15 @@ def replace_cynote(old_cynote, new_cynote):
              ignore = ignore_patterns('.svn', '.hg', '*.pyc'))
     print "Step 5 completed"
     print
+
+def process_new_cynote(new_cynote):
+    # Step 6: Perform release specific tasks for new cynote version
+    from new_cynote_processor import *
+    print "Step 6: Process new CyNote (%s) " % (new_cynote)
+    new_cynote_process_driver(new_cynote)
+    print "Step 6 completed"
+    print
+
     
 def print_headers():
     print '=================================================================='
@@ -150,4 +159,5 @@ if __name__ == '__main__':
         print
         remove_old(old_cynote, new_cynote)
         replace_cynote(old_cynote, new_cynote)
-    
+        process_new_cynote(new_cynote)
+        
