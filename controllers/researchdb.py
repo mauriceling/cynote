@@ -15,8 +15,8 @@ def create_table():
         field_template = "SQLField('%s')"
         col_def = [field_template % x for x in fields]
         col_def.append("SQLField('datetime', 'datetime', default=now)")
-        col_def = ', '.join(col_def)
-        table_def = "researchdb.define_table('%s', " % form.vars.name
+        col_def = ',\n\t '.join(col_def)
+        table_def = "researchdb.define_table('%s', \n\t" % form.vars.name
         table_def = table_def + col_def + ')'
         rdb_file = os.sep.join([os.getcwd(), 'applications', 
                                 request.application, 'models',
