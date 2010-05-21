@@ -131,7 +131,67 @@ def new_entry():
                       user=session.username)
         redirect(URL(r=request, f='entries'))
     return dict(form=form)
-    
+
+def new_experiment():
+    """
+    Create a new entry, if successful, it will redirect to the TOC page 
+    (entries function).
+    Only allow new entry creation in unarchived notebooks.
+    Possible to have duplicate titles
+    The author is set to username
+    Event is logged in db.log table as "New entry created."
+    """
+    if session.username == None:
+        redirect(URL(r=request, f='../account/log_in'))
+    # get unarchived notebooks
+    notebook = [notebook['name'] 
+                for notebook in cynotedb(cynotedb.notebook.archived == False).\
+                    select(cynotedb.notebook.name)]
+    notebook.sort()
+    form = FORM(TABLE(
+            TR('Title of Experiment: ', INPUT(_type='text', _name='title', _size=80)),
+            TR('Purpose: ', TEXTAREA(_type='text', _name='purpose')),
+            #TR('File: ', INPUT(_type='file', _name='uploadfile')),
+            TR('Hypotheses: ', TEXTAREA(_type='text', _name='hypotheses', _size=80)),
+            TR('Notebook: ', SELECT(notebook, _name='notebook')),
+            TR('Procedures: ', TEXTAREA(_type='text', _name='procedures')),
+            TR('Possible Results: ', TEXTAREA(_type='text', _name='results')),
+            TR('',INPUT(_type='submit', _name='SUBMIT'))))
+    if form.accepts(request.vars, session):
+        # get notebook.id from notebook.name
+        notebook_id=cynotedb(cynotedb.notebook.name == form.vars.notebook).\
+                select(cynotedb.notebook.id).as_list()[0]['id']
+        description = '\n\n'.join(['PURPOSE: ', form.vars.purpose,
+                       'HYPOTHESES: ', form.vars.hypotheses,
+                       'PROCEDURES: ', form.vars.procedures,
+                       'POSSIBLE RESULTS: ', form.vars.results])
+        form.vars.uploadfile = ''
+        if form.vars.uploadfile != '':
+            # if there is file to upload
+            import os, random, shutil
+            upload_dir = os.sep.join([os.getcwd(), 'applications', 
+                                    request.application, 'uploads'])
+            sourcefile = form.vars.uploadfile.filename
+            newfile = upload_dir + os.sep + 'entry.file.' + \
+                    str(int(random.random()*10000000000000)) + \
+                    os.path.splitext(sourcefile)[-1]
+            shutil.copy2(sourcefile, newfile)
+            cynotedb.entry.insert(title=form.vars.title,
+                              author=session.username,
+                              notebook=notebook_id,
+                              file=newfile.split(os.sep)[-1],
+                              filename=newfile.split(os.sep)[-1],
+                              description=description)
+        else:
+            cynotedb.entry.insert(title=form.vars.title,
+                                  author=session.username,
+                                  notebook=notebook_id,
+                                  file='',
+                                  filename='',
+                                  description=description)
+        redirect(URL(r=request, f='entries'))
+    return dict(form=form)
+                
 def new_notebook():
     """
     Create a new notebook, if successful, it will redirect to the TOC page 
@@ -429,3 +489,11 @@ def ntp_stamp():
   
 def ntp_stamp_output():
     return dict(result=session.pop('result', ''))
+
+def testform():
+    form = FORM(TABLE(
+            TR('Title: ', INPUT(_type='text', _name='title', _size=80))))
+    if form.accepts(request.vars, session):
+        print form.vars.title
+    return dict(form=form)
+

@@ -1,0 +1,21 @@
+{{extend 'layout.html'}}
+[<a href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
+Back to Menu </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry"> 
+Create New Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook"> 
+Create New Notebook </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries"> 
+List all Entries </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual"> 
+Notarize an Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
+Show all Results </a>]
+<h1>Create New Experiment</h1>
+Change description
+<br>
+The date and time according to UTC will be recorded for each new entry.
+<br>
+<br>
+{{=form}}
+
