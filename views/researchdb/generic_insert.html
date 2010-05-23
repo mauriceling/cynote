@@ -11,13 +11,6 @@ List all Entries </a>|
 Notarize an Entry </a>|
 <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
 Show all Results </a>]
+<h1>Insert New Record into Ad hoc Research Table <b><i>{{=table}}</i></b></h1>
 <br>
-<h1>Listing of Ad Hoc Tables</h1>
-
-{{for t in tables:}}
-  <h2>Table name: {{=t.tablename}}</h2>
-  <pre style="word-wrap:break-word; white-space:pre-wrap">Description: {{=t.description}}
-  [<a href="http://{{=request.env.http_host}}/{{=request.application}}/researchdb/generic_insert/researchdb/{{=t.tablename}}">Insert New Record</a>]
-  </pre>
-  <br>
-{{pass}}
+{{=form}}
