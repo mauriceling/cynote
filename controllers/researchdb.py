@@ -20,7 +20,7 @@ def create_table():
         table_def = table_def + col_def + ')'
         rdb_file = os.sep.join([os.getcwd(), 'applications', 
                                 request.application, 'models',
-                                'researchdb.py'])
+                                'researchdb_adhoc.py'])
         f = open(rdb_file, 'a')
         f.write('\n' + table_def + '\n')
         f.close()
