@@ -41,13 +41,26 @@ def old_to_new(old_cynote, new_cynote):
     #           new_cynote's uploads directory
     odirectory = os.sep.join([old_cynote, 'applications', 'init', 'uploads'])
     ndirectory = os.sep.join([new_cynote, 'applications', 'init', 'uploads'])
-    print "Step 2.1: remove contents of %s's uploads directory to \
+    print "Step 2.2: remove contents of %s's uploads directory to \
 %s's uploads directory" % (odirectory, ndirectory)
     for f in [t for t in os.walk(odirectory)][0][2]:
         copy2(os.sep.join([odirectory, f]), ndirectory)
         print '%s from %s copied to %s' % (f, odirectory, ndirectory)
-    print "Step 2.1 completed"
+    print "Step 2.2 completed"
     print
+    # Step 2.3: move ad hoc database definitions from old_cynote's models 
+    #           directory to new_cynote's models directory
+    odirectory = os.sep.join([old_cynote, 'applications', 'init', 'models',
+                              'researchdb_adhoc.py'])
+    ndirectory = os.sep.join([new_cynote, 'applications', 'init', 'models',
+                              'researchdb_adhoc.py'])
+    print "Step 2.3: move ad hoc database definitions from %s's models \
+directory to %s's models directory" % (odirectory, ndirectory)
+    copy2(odirectory, ndirectory)
+    print '%s copied to %s' % (odirectory, ndirectory)
+    print "Step 2.3 completed"
+    print
+    
 
 def backup_data(directory, zipFile):
     # Step 3.1: create backup file
