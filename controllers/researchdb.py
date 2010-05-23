@@ -55,7 +55,7 @@ def create_table():
         fields = [x.strip() 
                   for x in form.vars.definition.split(',')
                     if x.strip() != '']
-        field_template = "SQLField('%s')"
+        field_template = "SQLField('%s', 'text')"
         col_def = [field_template % x for x in fields]
         col_def.append("SQLField('datetime', 'datetime', default=now)")
         col_def = ',\n\t '.join(col_def)
