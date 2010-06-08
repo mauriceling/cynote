@@ -400,6 +400,7 @@ def unarchive_notebook():
 
 def filehash(f, block_size=1024):
     import hashlib as h
+    sha1 = h.sha1()
     md5 = h.md5()
     sha224 = h.sha224()
     sha256 = h.sha256()
@@ -409,14 +410,15 @@ def filehash(f, block_size=1024):
         data = f.read(block_size) 
         if not data: 
             break 
+        sha1.update(data)
         md5.update(data)
         sha224.update(data)
         sha256.update(data)
         sha384.update(data)
         sha512.update(data)
-    return '|'.join([md5.hexdigest(), sha224.hexdigest(),
-                     sha256.hexdigest(), sha384.hexdigest(),
-                     sha512.hexdigest()])
+    return '|'.join([sha1.hexdigest(), md5.hexdigest(), 
+                     sha224.hexdigest(), sha256.hexdigest(), 
+                     sha384.hexdigest(), sha512.hexdigest()])
 
 def generate_hash():
     import os
