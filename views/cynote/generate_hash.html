@@ -37,3 +37,13 @@ Total number of comments processed: {{=str(len(comment))}}</h3>
 <br>Comment Hash: <pre style="word-wrap:break-word; white-space:pre-wrap">{{=c[3]}}</pre>
 <br>
 {{pass}}
+<h3>------------------------------------------------------------------------
+------------------------------------------------------------------------
+<br>------------------------------------------------------------------------
+------------------------------------------------------------------------</h3>
+<br>
+{{for f in upfile:}}
+<b>File name: {{=f[0]}}</b>
+<br>File Hash: <pre style="word-wrap:break-word; white-space:pre-wrap">{{=f[1]}}</pre>
+<br>
+{{pass}}

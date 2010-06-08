@@ -398,7 +398,28 @@ def unarchive_notebook():
         redirect(URL(r=request, f='unarchive_notebook'))
     return dict(form=form)
 
+def filehash(f, block_size=1024):
+    import hashlib as h
+    md5 = h.md5()
+    sha224 = h.sha224()
+    sha256 = h.sha256()
+    sha384 = h.sha384()
+    sha512 = h.sha512()
+    while True: 
+        data = f.read(block_size) 
+        if not data: 
+            break 
+        md5.update(data)
+        sha224.update(data)
+        sha256.update(data)
+        sha384.update(data)
+        sha512.update(data)
+    return '|'.join([md5.hexdigest(), sha224.hexdigest(),
+                     sha256.hexdigest(), sha384.hexdigest(),
+                     sha512.hexdigest()])
+
 def generate_hash():
+    import os
     import hashlib as h
     entry = [[e['entry']['id'], str(e['entry']['datetime']), 
               e['entry']['title'],
@@ -422,15 +443,23 @@ def generate_hash():
                 for e in cynotedb(cynotedb.comment.id>0).select(cynotedb.comment.id, 
                     cynotedb.comment.entry_id, cynotedb.comment.datetime, 
                     cynotedb.comment.body).records]
+    upload_dir = os.sep.join([os.getcwd(), 'applications', 
+                              request.application, 'uploads'])
+    upfile = [[f, filehash(open(os.sep.join([upload_dir, f])))]
+              for f in [t for t in os.walk(upload_dir)][0][2]]
     for e in entry:
         db.entry_hash.insert(eid=e[0], edatetime=e[1], etitle=e[2], ehash=e[3])
     for c in comment:
         db.comment_hash.insert(cid=c[0], cdatetime=c[1], eid=c[2], chash=c[3])
+    for f in upfile:
+        db.file_hash.insert(filename=f[0], fhash=f[1])
     db.log.insert(event='Entry hash generation. n=' + str(len(entry)), 
                   user=session.username)
     db.log.insert(event='Comment hash generation. n=' + str(len(comment)), 
                   user=session.username)
-    return dict(entry=entry, comment=comment)
+    db.log.insert(event='Uploaded file hash generation. n=' + str(len(upfile)), 
+                  user=session.username)
+    return dict(entry=entry, comment=comment, upfile=upfile)
 
 def ntp_stamp():
     if session.username == None: 

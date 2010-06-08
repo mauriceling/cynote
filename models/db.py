@@ -25,3 +25,8 @@ db.define_table('comment_hash',
                 SQLField('eid'),
                 SQLField('hashed', 'datetime', default=now),
                 SQLField('chash', 'text'))
+
+db.define_table('file_hash',
+                SQLField('filename'),
+                SQLField('hashed', 'datetime', default=now),
+                SQLField('fhash', 'text'))
