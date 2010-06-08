@@ -56,9 +56,12 @@ def old_to_new(old_cynote, new_cynote):
                               'researchdb_adhoc.py'])
     print "Step 2.3: move ad hoc database definitions from %s's models \
 directory to %s's models directory" % (odirectory, ndirectory)
-    copy2(odirectory, ndirectory)
-    print '%s copied to %s' % (odirectory, ndirectory)
-    print "Step 2.3 completed"
+    try:
+        copy2(odirectory, ndirectory)
+        print '%s copied to %s' % (odirectory, ndirectory)
+        print "Step 2.3 completed"
+    except IOError:
+        print 'researchdb_adhoc.py file not found in old CyNote version.'
     print
     
 
@@ -147,7 +150,7 @@ def get_bdirectory():
     correct = False
     while correct == False:
         bdirectory = raw_input('Please enter a directory to keep your \
-        backup file: ')
+backup file: ')
         if os.path.isdir(bdirectory):
             correct = True
         else:
