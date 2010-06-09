@@ -479,7 +479,7 @@ def ntp_stamp():
                 TR(INPUT(_type='submit', _value='Stamp'))))
     if form.accepts(request.vars, session):
         from time import ctime
-        import ntplib
+        exec("from applications.%s.modules import ntplib" % (request.application))
         client = ntplib.NTPClient()
         try:
             response = client.request(form.vars.server, version=3)
