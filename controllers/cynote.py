@@ -511,6 +511,8 @@ def ntp_stamp():
                         ehash='NTP timestamp. ' + ' | '.join(results))
             db.comment_hash.insert(cid='NTP', cdatetime='NTP', eid='NTP', 
                         chash='NTP timestamp. ' + ' | '.join(results))
+            db.file_hash.insert(filename='NTP', 
+                        fhash='NTP timestamp. ' + ' | '.join(results))
         except: 
             results = 'Failure to connect to network time server or there is \
             an internet error. Please try again later.'
