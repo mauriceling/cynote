@@ -1,6 +1,6 @@
 password_age = 90 # password expiry = 90 days
 login_expiry = 24 # login expiry = 24 hours
-version = "1.4.1"
+version = "1.5"
 copyright = {
             'year': '2008-2010',
             'director': 'Maurice Ling',
