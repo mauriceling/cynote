@@ -134,12 +134,12 @@ def new_entry():
 
 def new_experiment():
     """
-    Create a new entry, if successful, it will redirect to the TOC page 
-    (entries function).
+    Create a new experiment entry, if successful, it will redirect to the TOC 
+    page (entries function).
     Only allow new entry creation in unarchived notebooks.
     Possible to have duplicate titles
     The author is set to username
-    Event is logged in db.log table as "New entry created."
+    Event is logged in db.log table as "New experiment entry created."
     """
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
@@ -189,6 +189,9 @@ def new_experiment():
                                   file='',
                                   filename='',
                                   description=description)
+        db.log.insert(event='New experiment entry created. Title = %s'% \
+                            (form.vars.title), 
+                      user=session.username)
         redirect(URL(r=request, f='entries'))
     return dict(form=form)
                 
