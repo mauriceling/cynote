@@ -71,6 +71,33 @@ def show():
     return dict(entry=entries[0],
                 comments=comments,
                 records=records)
+
+def activity_log(title, author, notebook, description, log_comment, file=''):
+    """
+    Generic activity log to create a new notebook entry.
+    """
+    if file != '':
+        # if there is file to upload
+        import os, random, shutil
+        upload_dir = os.sep.join([os.getcwd(), 'applications', 
+                                request.application, 'uploads'])
+        sourcefile = file.filename
+        newfile = upload_dir + os.sep + 'entry.file.' + \
+                str(int(random.random()*10000000000000)) + \
+                os.path.splitext(sourcefile)[-1]
+        shutil.copy2(sourcefile, newfile)
+        cynotedb.entry.insert(title=title, author=author, 
+                              notebook=notebook,
+                              file=newfile.split(os.sep)[-1],
+                              filename=newfile.split(os.sep)[-1],
+                              description=description)
+    else:
+        cynotedb.entry.insert(title=title, author=author,
+                              notebook=notebook,
+                              file='', filename='',
+                              description=description)
+    db.log.insert(event=log_comment, user=session.username)
+    return (log_comment, session.username)
     
 def new_entry():
     """
@@ -99,39 +126,15 @@ def new_entry():
         # get notebook.id from notebook.name
         notebook_id=cynotedb(cynotedb.notebook.name == form.vars.notebook).\
                 select(cynotedb.notebook.id).as_list()[0]['id']
-        if form.vars.uploadfile != '':
-            # if there is file to upload
-            import os, random, shutil
-            upload_dir = os.sep.join([os.getcwd(), 'applications', 
-                                    request.application, 'uploads'])
-            sourcefile = form.vars.uploadfile.filename
-            newfile = upload_dir + os.sep + 'entry.file.' + \
-                    str(int(random.random()*10000000000000)) + \
-                    os.path.splitext(sourcefile)[-1]
-            shutil.copy2(sourcefile, newfile)
-            cynotedb.entry.insert(title=form.vars.title,
-                              author=session.username,
-                              notebook=notebook_id,
-                              file=newfile.split(os.sep)[-1],
-                              filename=newfile.split(os.sep)[-1],
-                              description=form.vars.description)
-        else:
-            # no file to upload 
-            cynotedb.entry.insert(title=form.vars.title,
-                              author=session.username,
-                              notebook=notebook_id,
-                              file='',
-                              filename='',
-                              description=form.vars.description)
-        db.log.insert(event='New entry created. %s. Title = %s'% \
-                            (cynotedb(
-                            cynotedb.notebook.id==notebook_id)\
-                            .select(cynotedb.notebook.name),
-                            form.vars.title), 
-                      user=session.username)
+        activity_log(form.vars.title, session.username,
+                     notebook_id, form.vars.description,
+                     'New entry created. %s. Title = %s'% \
+                     (cynotedb(cynotedb.notebook.id==notebook_id)\
+                        .select(cynotedb.notebook.name), form.vars.title),
+                     form.vars.uploadfile)
         redirect(URL(r=request, f='entries'))
     return dict(form=form)
-
+    
 def new_experiment():
     """
     Create a new experiment entry, if successful, it will redirect to the TOC 
@@ -166,35 +169,12 @@ def new_experiment():
                        'PROCEDURES: ', form.vars.procedures,
                        'POSSIBLE RESULTS: ', form.vars.results])
         form.vars.uploadfile = ''
-        if form.vars.uploadfile != '':
-            # if there is file to upload
-            import os, random, shutil
-            upload_dir = os.sep.join([os.getcwd(), 'applications', 
-                                    request.application, 'uploads'])
-            sourcefile = form.vars.uploadfile.filename
-            newfile = upload_dir + os.sep + 'entry.file.' + \
-                    str(int(random.random()*10000000000000)) + \
-                    os.path.splitext(sourcefile)[-1]
-            shutil.copy2(sourcefile, newfile)
-            cynotedb.entry.insert(title=form.vars.title,
-                              author=session.username,
-                              notebook=notebook_id,
-                              file=newfile.split(os.sep)[-1],
-                              filename=newfile.split(os.sep)[-1],
-                              description=description)
-        else:
-            cynotedb.entry.insert(title=form.vars.title,
-                                  author=session.username,
-                                  notebook=notebook_id,
-                                  file='',
-                                  filename='',
-                                  description=description)
-        db.log.insert(event='New experiment entry created. Title = %s'% \
-                            (form.vars.title), 
-                      user=session.username)
+        activity_log(form.vars.title, session.username, notebook_id, description,
+                     'New experiment entry created. Title = ' + form.vars.title,
+                     form.vars.uploadfile)
         redirect(URL(r=request, f='entries'))
     return dict(form=form)
-                
+    
 def new_notebook():
     """
     Create a new notebook, if successful, it will redirect to the TOC page 
