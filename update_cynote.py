@@ -64,12 +64,19 @@ directory to %s's models directory" % (odirectory, ndirectory)
         print 'researchdb_adhoc.py file not found in old CyNote version.'
     print
     
-
+def process_new_cynote(new_cynote):
+    # Step 3: Perform release specific tasks for new cynote version
+    from new_cynote_processor import *
+    print "Step 3: Process new CyNote (%s) " % (new_cynote)
+    new_cynote_process_driver(new_cynote)
+    print "Step 3 completed"
+    print
+    
 def backup_data(directory, zipFile):
-    # Step 3.1: create backup file
+    # Step 4: create backup file
     z = zipfile.ZipFile(zipFile, 'w')
-    print "Step 3.1: Backup file (%s) created" % (zfile)
-    print "Step 3.2: Backing up.................."
+    print "Step 4.1: Backup file (%s) created" % (zfile)
+    print "Step 4.2: Backing up.................."
     def walker(zip, directory, files, root=directory):
         for file in files:
             file = os.path.join(directory, file)
@@ -79,22 +86,14 @@ def backup_data(directory, zipFile):
             print "Backing up: %s" % (file)
     os.path.walk(directory, walker, z)
     z.close()
-    print "Step 3 completed"
-    print
-
-def remove_old(old_cynote, new_cynote):
-    # Step 4: remove old cynote
-    print "Step 4: remove %s directory" % (old_cynote)
-    os.chdir(new_cynote)
-    rmtree(old_cynote)
     print "Step 4 completed"
     print
 
-def process_new_cynote(new_cynote):
-    # Step 5: Perform release specific tasks for new cynote version
-    from new_cynote_processor import *
-    print "Step 5: Process new CyNote (%s) " % (new_cynote)
-    new_cynote_process_driver(new_cynote)
+def remove_old(old_cynote, new_cynote):
+    # Step 5: remove old cynote
+    print "Step 5: remove %s directory" % (old_cynote)
+    os.chdir(new_cynote)
+    rmtree(old_cynote)
     print "Step 5 completed"
     print
     
@@ -167,15 +166,16 @@ if __name__ == '__main__':
     bdirectory = get_bdirectory()
     cleanup_new_cynote(new_cynote)
     old_to_new(old_cynote, new_cynote)
+    process_new_cynote(new_cynote)
     zfile = bdirectory + os.sep + 'cynote_backup-' + \
             str(int(time.time())) + '.zip'
     backup_data(old_cynote, zfile)
     if os.path.isfile(zfile):
         print "Backup file %s found" % (zfile)
-        print "Proceed to replace CyNote.............."
         print
-        remove_old(old_cynote, new_cynote)
-        process_new_cynote(new_cynote)
+        print "You may now delete " + str(old_cynote) + " folder"
+        print "and rename " + str(new_cynote) + " folder as " + str(old_cynote)
+        #remove_old(old_cynote, new_cynote)
         #replace_cynote(old_cynote, new_cynote)
         
         
