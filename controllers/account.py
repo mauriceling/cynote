@@ -46,6 +46,16 @@ def log_in():
                 TR('', INPUT(_type='submit', _value='login')))) 
     if form.accepts(request.vars, session):
         if userdb(userdb.user.username == form.vars.username) \
+             (userdb.user.password == h(form.vars.password).hexdigest()) \
+             (userdb.user.authorized == True).count():
+            session.username = form.vars.username
+            db.user_event.insert(event='Login (hashed password). %s' % \
+                                 session.username, 
+                                 user='system')
+            session.login_count = 1
+            redirect(URL(r=request, f='logged'))
+        # Legacy management #1 - convert all plain text logins to hash
+        elif userdb(userdb.user.username == form.vars.username) \
            (userdb.user.password == form.vars.password) \
            (userdb.user.authorized == True).count():
             session.username = form.vars.username
@@ -59,15 +69,7 @@ def log_in():
                           form.vars.username, user='system')
             session.login_count = 1
             redirect(URL(r=request, f='logged'))
-        elif userdb(userdb.user.username == form.vars.username) \
-             (userdb.user.password == h(form.vars.password).hexdigest()) \
-             (userdb.user.authorized == True).count():
-            session.username = form.vars.username
-            db.user_event.insert(event='Login (hashed password). %s' % \
-                                 session.username, 
-                                 user='system')
-            session.login_count = 1
-            redirect(URL(r=request, f='logged'))
+        # end of Legacy management # 1
         else:
             db.user_event.insert(event='Login error. Username used = %s. \
             Password used = %s. Login count = %s' % 
