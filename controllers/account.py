@@ -136,6 +136,7 @@ def change_password():
 def logged():
     """redirection when login is successful"""
     session.login_time = time()
+    legacy_management()
     return dict(name=session.username)
 
 def log_out():
@@ -191,3 +192,14 @@ def deauth_user():
                           user=session.username)
             userdb(userdb.user.username == user).update(authorized=False)
     return dict(form=form)
+
+###############################################################################
+# Legacy management codes
+###############################################################################
+def legacy_management():
+    process_notebook_types() # legacy management #2
+    
+def process_notebook_types():
+    # legacy management #2 - adding notebook types
+    cynotedb(cynotedb.notebook.type == None).update(type='ledger')
+    

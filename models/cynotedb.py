@@ -8,6 +8,7 @@ cynotedb=SQLDB('sqlite://cynotedb.db')
 cynotedb.define_table('notebook',
                 SQLField('name', 'text'),
                 SQLField('description', 'text'),
+                SQLField('type','text', default='ledger'),
                 SQLField('archived', 'boolean', default=False))
 
 #the new entry table
