@@ -197,9 +197,5 @@ def deauth_user():
 # Legacy management codes
 ###############################################################################
 def legacy_management():
-    process_notebook_types() # legacy management #2
-    
-def process_notebook_types():
-    # legacy management #2 - adding notebook types
-    cynotedb(cynotedb.notebook.type == None).update(type='ledger')
+    pass
     

@@ -1,1 +1,1 @@
-#1; controller/cynote.py; convert all plain text logins to hash
+#1; controller/account.py; convert all plain text logins to hash

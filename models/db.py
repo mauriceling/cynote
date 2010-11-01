@@ -26,6 +26,20 @@ db.define_table('comment_hash',
                 SQLField('hashed', 'datetime', default=now),
                 SQLField('chash', 'text'))
 
+db.define_table('track_entry_hash',
+                SQLField('eid'),
+                SQLField('edatetime'),
+                SQLField('etitle', 'text'),
+                SQLField('hashed', 'datetime', default=now),
+                SQLField('ehash', 'text'))
+                
+db.define_table('track_comment_hash',
+                SQLField('cid'),
+                SQLField('cdatetime'),
+                SQLField('eid'),
+                SQLField('hashed', 'datetime', default=now),
+                SQLField('chash', 'text'))
+                
 db.define_table('file_hash',
                 SQLField('filename'),
                 SQLField('hashed', 'datetime', default=now),

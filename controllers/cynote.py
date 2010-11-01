@@ -179,13 +179,13 @@ def new_notebook():
     """
     Create a new notebook, if successful, it will redirect to the TOC page 
     (entries function).
-    Event is logged in db.log table as "New notebook created."
+    Event is logged in db.log table as "New ledger notebook created."
     """
     if session.username == None:
         redirect(URL(r=request, f='../account/log_in'))
     form = SQLFORM(cynotedb.notebook, fields=['name', 'description'])
     if form.accepts(request.vars,session):
-        db.log.insert(event='New notebook created. Notebook = ' + 
+        db.log.insert(event='New ledger notebook created. Notebook = ' + 
                     request.vars.name, 
                     user=session.username)
         redirect(URL(r=request, f='entries'))
@@ -428,6 +428,28 @@ def generate_hash():
                 for e in cynotedb(cynotedb.comment.id>0).select(cynotedb.comment.id, 
                     cynotedb.comment.entry_id, cynotedb.comment.datetime, 
                     cynotedb.comment.body).records]
+    tentry = [[e['entry']['id'], str(e['entry']['datetime']), 
+              e['entry']['title'],
+              '|'.join([h.sha1(e['entry']['description']).hexdigest(),
+                        h.md5(e['entry']['description']).hexdigest(),
+                        h.sha224(e['entry']['description']).hexdigest(),
+                        h.sha256(e['entry']['description']).hexdigest(),
+                        h.sha384(e['entry']['description']).hexdigest(),
+                        h.sha512(e['entry']['description']).hexdigest()])]
+              for e in cynotedb(cynotedb.track_entry.id>0).select(cynotedb.track_entry.id, 
+                  cynotedb.track_entry.title, cynotedb.track_entry.datetime, 
+                  cynotedb.track_entry.description).records]
+    tcomment = [[e['comment']['id'], str(e['comment']['datetime']), 
+                e['comment']['entry_id'],
+                '|'.join([h.sha1(e['comment']['body']).hexdigest(),
+                          h.md5(e['comment']['body']).hexdigest(),
+                          h.sha224(e['comment']['body']).hexdigest(),
+                          h.sha256(e['comment']['body']).hexdigest(),
+                          h.sha384(e['comment']['body']).hexdigest(),
+                          h.sha512(e['comment']['body']).hexdigest()])]
+                for e in cynotedb(cynotedb.track_comment.id>0).select(cynotedb.track_comment.id, 
+                    cynotedb.track_comment.entry_id, cynotedb.track_comment.datetime, 
+                    cynotedb.track_comment.body).records]
     upload_dir = os.sep.join([os.getcwd(), 'applications', 
                               request.application, 'uploads'])
     upfile = [[f, filehash(open(os.sep.join([upload_dir, f])))]
@@ -436,15 +458,27 @@ def generate_hash():
         db.entry_hash.insert(eid=e[0], edatetime=e[1], etitle=e[2], ehash=e[3])
     for c in comment:
         db.comment_hash.insert(cid=c[0], cdatetime=c[1], eid=c[2], chash=c[3])
+    for e in tentry:
+        db.track_entry_hash.insert(eid=e[0], edatetime=e[1], 
+                                   etitle=e[2], ehash=e[3])
+    for c in tcomment:
+        db.track_comment_hash.insert(cid=c[0], cdatetime=c[1], 
+                                     eid=c[2], chash=c[3])
     for f in upfile:
         db.file_hash.insert(filename=f[0], fhash=f[1])
-    db.log.insert(event='Entry hash generation. n=' + str(len(entry)), 
+    db.log.insert(event='Notebook Entry hash generation. n=' + str(len(entry)), 
                   user=session.username)
-    db.log.insert(event='Comment hash generation. n=' + str(len(comment)), 
+    db.log.insert(event='Notebook Comment hash generation. n=' + str(len(comment)), 
+                  user=session.username)
+    db.log.insert(event='Trackbook Entry hash generation. n=' + str(len(tentry)), 
+                  user=session.username)
+    db.log.insert(event='Trackbook Comment hash generation. n=' + str(len(tcomment)), 
                   user=session.username)
     db.log.insert(event='Uploaded file hash generation. n=' + str(len(upfile)), 
                   user=session.username)
-    return dict(entry=entry, comment=comment, upfile=upfile)
+    return dict(entry=entry, comment=comment, 
+                tentry=tentry, tcomment=tcomment,
+                upfile=upfile)
 
 def ntp_stamp():
     if session.username == None: 

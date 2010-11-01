@@ -8,7 +8,6 @@ cynotedb=SQLDB('sqlite://cynotedb.db')
 cynotedb.define_table('notebook',
                 SQLField('name', 'text'),
                 SQLField('description', 'text'),
-                SQLField('type','text', default='ledger'),
                 SQLField('archived', 'boolean', default=False))
 
 #the new entry table
@@ -34,6 +33,37 @@ cynotedb.define_table('comment',
                 SQLField('body', 'text'),
                 SQLField('datetime', 'datetime', default=now),
                 SQLField('entry_id', cynotedb.entry))
+
+#the trackbook table
+cynotedb.define_table('trackbook',
+                SQLField('name', 'text'),
+                SQLField('description', 'text'),
+                SQLField('type', 'text', default='tracker'),
+                SQLField('archived', 'boolean', default=False))
+
+#the new tracker entry table
+#file upload
+#link to trackbook table
+#using datetime
+cynotedb.define_table('track_entry',
+                SQLField('title', 'text'),
+                SQLField('author'),
+                SQLField('file', 'upload'),
+                SQLField('filename'),
+                SQLField('keywords', length=256),
+                SQLField('notebook', cynotedb.trackbook),
+                SQLField('datetime', 'datetime', default=now),
+                SQLField('description', 'text'))
+
+#the tracker comment table
+#entry_id link to tracker entry table
+cynotedb.define_table('track_comment', 
+                SQLField('author'),
+                SQLField('file','upload'),
+                SQLField('filename'),
+                SQLField('body', 'text'),
+                SQLField('datetime', 'datetime', default=now),
+                SQLField('entry_id', cynotedb.trackbook))
                 
 cynotedb.define_table('result',
                 SQLField('author', default=session.username),
