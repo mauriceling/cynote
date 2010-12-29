@@ -21,5 +21,6 @@ copyright = {
 cynote_header = """Welcome to CyNote - A web-enabled notebook compliant 
     with general research record-keeping standard (US FDA 21 CFR Part 11)"""
     
-cynote_dependencies = ['biopython==1.50',
-                       'pil==1.1.6']
+cynote_dependencies = ['biopython==1.56',
+                       #'pil==1.1.6'
+                      ]
