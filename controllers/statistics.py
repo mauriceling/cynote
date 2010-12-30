@@ -8,7 +8,7 @@ exec("""from applications.%s.modules.copads.statisticsdistribution \
 #######################################################################
 def categorical():
     if session.username == None: 
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(
             TABLE(
                 TR('Idenifier: ', 
@@ -79,7 +79,7 @@ def analyze_categorical():
 #######################################################################
 def ttcontingency():
     if session.username == None: 
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(
             TABLE(
                 TR('', 
@@ -200,7 +200,7 @@ def analyze_ttcontingency():
 #######################################################################
 def tccontingency():
     if session.username == None: 
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(
             TABLE(
                 TR('Name #1: ', INPUT(_name='name1', value='Enter name #1'),
@@ -249,7 +249,7 @@ def analyze_tccontingency():
 #######################################################################
 def input_SS():
     if session.username == None: 
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(
             TABLE(
                 TR('Data: ', TEXTAREA(_name='data',
@@ -284,7 +284,7 @@ def analyze_SS():
 #######################################################################
 def regression():
     if session.username == None: 
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(
             TABLE(
                 TR('Name #1: ', INPUT(_name='name1', value='Enter name #1'),
@@ -378,7 +378,7 @@ def parse_data(data, name):
     
 def input_MS():
     if session.username == None: 
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(
             TABLE(
                 TR('Data: ', TEXTAREA(_name='data',

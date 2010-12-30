@@ -11,7 +11,7 @@ def complement(seq, type='dna'):
     
 def primer_tm():
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(TABLE(TR("Left primer sequence:  ", 
                         INPUT(_type="text",_name="lprimer",
                               requires=IS_NOT_EMPTY())),
@@ -163,7 +163,7 @@ def process_primer_tm(result, pos='l'):
 
 def design_primer():
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(TABLE(TR("Sequence:  ", 
                         TEXTAREA(_type="text", _name="sequence",
                                  requires=IS_NOT_EMPTY())),

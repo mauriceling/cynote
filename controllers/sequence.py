@@ -6,7 +6,7 @@ def seqClean(s):
     
 def dna_aa():
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(TABLE(TR('Sequence (raw format):  ', 
                         TEXTAREA(_type='text', _name='sequence',
                                  requires=IS_NOT_EMPTY())),
@@ -93,7 +93,8 @@ def fasta_to_raw(fasta):
     return raw
     
 def protein_analysis():
-    if session.username == None: redirect(URL(r=request,f='../account/log_in'))
+    if session.username == None: 
+        redirect(URL(r=request, c='account', f='log_in'))
     from Bio.SeqUtils.ProtParam import ProteinAnalysis
     form = FORM(TABLE(
             TR("Amino acid sequence:  ",
@@ -169,7 +170,7 @@ genetic_code = {"Standard (1)" : 1,
 
 def ncbiblast():
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(TABLE(TR("Job Title: ", 
                         INPUT(_type="text", _name="title")),
                       TR("Sequence:  ", 
@@ -283,7 +284,7 @@ def ncbiblast_output():
 
 def restriction_digest():
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(TABLE(TR("Sequence:  ", 
                         TEXTAREA(_type="text",
                                  _value="Enter your DNA sequence in plain form",

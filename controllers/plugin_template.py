@@ -1,6 +1,6 @@
 def input_form():
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(
             TABLE(
                 TR("Sequence: ",
@@ -39,7 +39,7 @@ options = range(5)
           
 def multi_input():
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(
             TABLE(
                 *[TR('T',

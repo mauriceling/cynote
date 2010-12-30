@@ -5,7 +5,7 @@ import StringIO
 def export(): 
     # export the entire database
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form_user = FORM(
             TR("",
                INPUT(_type="submit", _name="ex_user",

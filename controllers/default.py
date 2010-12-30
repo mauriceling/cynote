@@ -35,7 +35,7 @@ def check_login(session=session):
         session.login_time = 0
     if session.username == None or \
         session.login_time + login_expiry * 3600 < int(time.time()): 
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     else: 
         return session.username
 
@@ -55,7 +55,7 @@ def index():
     name = check_login()
     if password_aging(session.username) == True:
         session.pwdaged = True
-        redirect(URL(r=request, f='../account/change_password'))
+        redirect(URL(r=request, c='account', f='change_password'))
     return dict(module='default', tab_list=tabs, name=name, 
                 version=version, copyright=copyright,
                 message=T('CyNote Main Menu'))

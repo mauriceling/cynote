@@ -8,7 +8,7 @@ def entries():
     list the notebooks available.
     """
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     else:
         records = cynotedb(cynotedb.entry.notebook == request.vars.notebook) \
             (cynotedb.entry.notebook == cynotedb.notebook.id) \
@@ -28,7 +28,7 @@ def archived_entries():
     list the notebooks available.
     """
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     else:
         records = cynotedb(cynotedb.entry.notebook == request.vars.notebook) \
             (cynotedb.entry.notebook == cynotedb.notebook.id) \
@@ -43,7 +43,7 @@ def show():
     Called by TOC (entries or archived_entries) in order to provide an entry.id
     """
     if session.username == None: 
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     else: 
         id = request.args[0]
     entries = cynotedb(cynotedb.entry.id == id).select()
@@ -109,7 +109,7 @@ def new_entry():
     Event is logged in db.log table as "New entry created."
     """
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     # get unarchived notebooks
     notebook = [notebook['name'] 
                 for notebook in cynotedb(cynotedb.notebook.archived == False).\
@@ -145,7 +145,7 @@ def new_experiment():
     Event is logged in db.log table as "New experiment entry created."
     """
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     # get unarchived notebooks
     notebook = [notebook['name'] 
                 for notebook in cynotedb(cynotedb.notebook.archived == False).\
@@ -182,7 +182,7 @@ def new_notebook():
     Event is logged in db.log table as "New ledger notebook created."
     """
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = SQLFORM(cynotedb.notebook, fields=['name', 'description'])
     if form.accepts(request.vars,session):
         db.log.insert(event='New ledger notebook created. Notebook = ' + 
@@ -212,7 +212,7 @@ def notarize_bysystem():
     """
     session.username = username
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     for entry_id in cynotedb().select(cynotedb.entry.id):
         id = entry_id['id']
         cynotedb.comment.insert(author='system',
@@ -227,7 +227,7 @@ def notarize_bymanual():
     Redirected to TOC page (entries function)
     """
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     cynotedb.comment.body.default = 'Notarize'
     cynotedb.comment.file.default = ''
     cynotedb.comment.author.default = session.username 
@@ -244,7 +244,7 @@ def results():
     new entry
     """
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     records = cynotedb(cynotedb.result.id == cynotedb.result.id) \
               (cynotedb.result.author == session.username) \
               .select(orderby = cynotedb.result.id)
@@ -337,7 +337,7 @@ def archive_notebook():
     Event is logged in db.log table as "Notebook archived."
     """  
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))          
+        redirect(URL(r=request, c='account', f='log_in'))          
     form = FORM(
             TABLE(*[TR('' + str(id['name']), 
                     INPUT(_type='checkbox', _name=str(id['name']),
@@ -362,7 +362,7 @@ def unarchive_notebook():
     Event is logged in db.log table as "Notebook unarchived."
     """ 
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))           
+        redirect(URL(r=request, c='account', f='log_in'))           
     form = FORM(
             TABLE(*[TR('' + str(id['name']), 
                     INPUT(_type='checkbox', _name=str(id['name']),
@@ -482,7 +482,7 @@ def generate_hash():
 
 def ntp_stamp():
     if session.username == None: 
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(
             TABLE(
                 TR('Network Time Servers: ',

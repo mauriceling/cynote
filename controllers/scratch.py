@@ -12,7 +12,7 @@ def new_entry():
     Event is logged in db.log table as "New entry created."
     """
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     cynotedb.entry.author.default = session.username
     form = SQLFORM(cynotedb.entry,
                    fields=['title','file','keywords','notebook','description'])

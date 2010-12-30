@@ -45,7 +45,7 @@ def get_table(request):
 
 def create_table():
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     form = FORM(TABLE(
             TR('Table Name: ', INPUT(_type='text', _name='name', _size=80)),
             TR('Column Definition: ', TEXTAREA(_type='text', _name='definition')),
@@ -83,7 +83,7 @@ def list_table():
 
 def generic_insert():
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     (db, table) = get_table(request)
     form = SQLFORM(db[table], ignore_rw=True)
     print request

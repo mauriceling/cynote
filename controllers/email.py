@@ -1,5 +1,5 @@
 def form():
-    if session.username == None: redirect(URL(r=request,f='../account/log_in'))
+    if session.username == None: redirect(URL(r=request, c='account', f='log_in'))
     form=SQLFORM(emaildb.message,fields=['your_name','your_email','your_message'])
     if form.accepts(request.vars,session):
        subject='cfgroup message from '+form.vars.your_name

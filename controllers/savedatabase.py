@@ -89,7 +89,7 @@ def comment_export(notebook, filename):
     
 def online():
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))    
+        redirect(URL(r=request, c='account', f='log_in'))    
     form = FORM(TABLE(TR("FTP Server: ", 
                         INPUT(_type="text", _name="ftpserver")),
                       TR("FTP Username: ", 
@@ -134,7 +134,7 @@ def backup_result():
     
 def backup_ftp(server, username, password, bpath, blist, buploads):
     if session.username == None:
-        redirect(URL(r=request, f='../account/log_in'))
+        redirect(URL(r=request, c='account', f='log_in'))
     result = []
     try: 
         s = FTP(server)
