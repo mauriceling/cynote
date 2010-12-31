@@ -1,8 +1,11 @@
+exec('from applications.%s.controllers.option import *' % (request.application))
+
 def index():
     response.flash = cynote_header
-    name = check_login()
+    if session.username == None: 
+        redirect(URL(r=request, c='account', f='log_in'))
     return dict(tab_list=session.installed_plugins, 
-                name=name, copyright=copyright,
+                name=session.username, copyright=copyright,
                 message=T('CyNote - Statistics Menu'))
                 
 def input_form():
