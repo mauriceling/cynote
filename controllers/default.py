@@ -37,10 +37,10 @@ def check_login(session=session):
         return session.username
 
 
-global name
-global version
-global copyright
-global cynote_header
+# global name
+# global version
+# global copyright
+# global cynote_header
 
 def index():
     try: session['dependencies']

@@ -1,4 +1,4 @@
-def template():
+def index():
     response.flash = cynote_header
     name = check_login()
     return dict(tab_list=session.installed_plugins, 
