@@ -1,3 +1,10 @@
+def template():
+    response.flash = cynote_header
+    name = check_login()
+    return dict(tab_list=session.installed_plugins, 
+                name=name, copyright=copyright,
+                message=T('CyNote - Statistics Menu'))
+                
 def input_form():
     if session.username == None:
         redirect(URL(r=request, c='account', f='log_in'))

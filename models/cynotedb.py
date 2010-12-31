@@ -2,6 +2,8 @@ import datetime
 
 now=datetime.datetime.utcnow()
 
+session.installed_plugins = {}
+
 cynotedb=SQLDB('sqlite://cynotedb.db')
 
 #the notebook table

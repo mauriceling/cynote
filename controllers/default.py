@@ -5,14 +5,11 @@ from setuptools.command.easy_install import main
 
 exec('from applications.%s.controllers.option import *' % (request.application))
 
-tabs = {'bioinformatics': 'Bioinformatics Tools',
-        'statistics': 'Statistical Analysis',
-        'adhocDB': 'Ad hoc Research Database',
-        #'citation': 'Citations',
-        #'projects': 'Projects and Resources',
-        #'goals': 'Personal Goals',
-        #'assistants': 'Assistants and Tutors', 
-        }
+session.installed_plugins[('default', 'bioinformatics')] = 'Bioinformatics Tools'
+session.installed_plugins[('default', 'statistics')] = 'Statistical Analysis'
+session.installed_plugins[('default', 'adhocDB')] = 'Ad hoc Research Database'
+
+tabs = session.installed_plugins
         
 if not session.has_key('login_count'): session.login_count = 0
 
@@ -39,6 +36,12 @@ def check_login(session=session):
     else: 
         return session.username
 
+
+global name
+global version
+global copyright
+global cynote_header
+
 def index():
     try: session['dependencies']
     except KeyError: session['dependencies'] = 'NOT DONE'
@@ -56,34 +59,34 @@ def index():
     if password_aging(session.username) == True:
         session.pwdaged = True
         redirect(URL(r=request, c='account', f='change_password'))
-    return dict(module='default', tab_list=tabs, name=name, 
+    return dict(tab_list=session.installed_plugins, name=name, 
                 version=version, copyright=copyright,
                 message=T('CyNote Main Menu'))
     
 def bioinformatics():
     response.flash = cynote_header
     name = check_login()
-    return dict(module='default', tab_list=tabs, name=name, 
-                copyright=copyright,
+    return dict(tab_list=session.installed_plugins, 
+                name=name, copyright=copyright,
                 message=T('CyNote - Bioinformatics Menu'))
 
 def statistics():
     response.flash = cynote_header
     name = check_login()
-    return dict(module='default', tab_list=tabs, name=name, 
-                copyright=copyright,
+    return dict(tab_list=session.installed_plugins, 
+                name=name, copyright=copyright,
                 message=T('CyNote - Statistics Menu'))
                 
 def adhocDB():
     response.flash = cynote_header
     name = check_login()
-    return dict(module='default', tab_list=tabs, name=name, 
-                copyright=copyright,
+    return dict(tab_list=session.installed_plugins, 
+                name=name, copyright=copyright,
                 message=T('CyNote - Ad hoc Research Database Menu'))
 
 def assistants():
     response.flash = cynote_header
     name = check_login()
-    return dict(module='default', tab_list=tabs, name=name, 
-                copyright=copyright,
+    return dict(tab_list=session.installed_plugins, 
+                name=name, copyright=copyright,
                 message=T('CyNote - Assistants and Tutors'))
