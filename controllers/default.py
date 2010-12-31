@@ -36,12 +36,6 @@ def check_login(session=session):
     else: 
         return session.username
 
-
-# global name
-# global version
-# global copyright
-# global cynote_header
-
 def index():
     try: session['dependencies']
     except KeyError: session['dependencies'] = 'NOT DONE'

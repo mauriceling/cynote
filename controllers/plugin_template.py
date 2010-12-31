@@ -6,7 +6,7 @@ def index():
         redirect(URL(r=request, c='account', f='log_in'))
     return dict(tab_list=session.installed_plugins, 
                 name=session.username, copyright=copyright,
-                message=T('CyNote - Statistics Menu'))
+                message=T('CyNote Plugin - Template Menu'))
                 
 def input_form():
     if session.username == None:
