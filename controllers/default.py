@@ -1,11 +1,11 @@
 import time
-from ez_setup import use_setuptools
-use_setuptools()
-from setuptools.command.easy_install import main
+# from ez_setup import use_setuptools
+# use_setuptools()
+# from setuptools.command.easy_install import main
 
 exec('from applications.%s.controllers.option import *' % (request.application))
 
-session.installed_plugins[('default', 'bioinformatics')] = 'Bioinformatics Tools'
+# session.installed_plugins[('default', 'bioinformatics')] = 'Bioinformatics Tools'
 session.installed_plugins[('default', 'statistics')] = 'Statistical Analysis'
 session.installed_plugins[('default', 'adhocDB')] = 'Ad hoc Research Database'
 
@@ -13,6 +13,18 @@ tabs = session.installed_plugins
         
 if not session.has_key('login_count'): session.login_count = 0
 
+# try: session['dependencies']
+# except KeyError: session['dependencies'] = 'NOT DONE'
+# if session['dependencies'] != 'DONE':
+	# for dependency in cynote_dependencies:
+		# try: 
+			# main([dependency])
+		# except KeyError: 
+			# print dependency + ' installation error'
+		# except: 
+			# print dependency + ' generic error (please inform Maurice Ling)'
+		# session['dependencies'] = 'DONE'
+			
 def password_aging(username, password_age=password_age):
     current_time = int(time.time())
     last_password_change = userdb(userdb.user.username == username) \
@@ -37,17 +49,6 @@ def check_login(session=session):
         return session.username
 
 def index():
-    try: session['dependencies']
-    except KeyError: session['dependencies'] = 'NOT DONE'
-    if session['dependencies'] != 'DONE':
-        for dependency in cynote_dependencies:
-            try: 
-                main([dependency])
-            except KeyError: 
-                print dependency + ' installation error'
-            except: 
-                print dependency + ' generic error (please inform Maurice Ling)'
-            session['dependencies'] = 'DONE'
     response.flash = cynote_header
     name = check_login()
     if password_aging(session.username) == True:
