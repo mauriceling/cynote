@@ -2,7 +2,7 @@ password_age = 90 # password expiry = 90 days
 login_expiry = 24 # login expiry = 24 hours
 version = "1.5"
 copyright = {
-            'year': '2008-2010',
+            'year': '2008-2013',
             'director': 'Maurice Ling',
             'license': """CyNote is free software: you can redistribute it 
                           and/or modify it under the terms of the GNU General 
