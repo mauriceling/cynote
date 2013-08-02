@@ -1,0 +1,43 @@
+{{extend 'layout.html'}}
+[<a href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
+Back to Menu </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry"> 
+Create New Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook"> 
+Create New Notebook </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries"> 
+List all Entries </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual"> 
+Notarize an Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
+Show all Results </a>]
+<h1>{{=entry.title}}</h1>
+Posted on {{=entry.datetime}}</br></br>
+<h2>By:{{=entry.author}}</h2>
+<h2>{{=entry.keywords}}</h2>
+{{if str(entry.file).split('.')[-1] in ['bmp', 'jpg', 'jpe', 'jpeg', 
+                                        'tif', 'tiff', 'gif', 'png']:}}
+<img width='200' src = "../cynote/download/{{=entry.file}}">
+{{pass}}
+<a href = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=entry.file}}">
+{{=entry.file}}</a>
+<pre style="word-wrap:break-word; white-space:pre-wrap">{{=entry.description}}</pre>
+<h4>-------------------------------------------------------------------</h4>
+<h2>Comments</h2><p>
+{{for comment in records:}}
+<h3>{{=comment.author}} says </h3>
+<a href = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=comment.file}}">
+{{=comment.file}}</a><br>
+<pre style="word-wrap:break-word; white-space:pre-wrap">{{=comment.body}}</pre>
+{{if str(entry.file).split('.')[-1] in ['bmp', 'jpg', 'jpe', 'jpeg', 
+                                        'tif', 'tiff', 'gif', 'png']:}}
+<img width='200' src = "http://{{=request.env.http_host}}/{{=request.application}}/cynote/download/{{=comment.file}}"><br>
+{{pass}}
+<h5>Posted on {{=comment.datetime}}</h5>
+<h4>-------------------------------------------------------------------</h4>
+{{pass}}
+
+
+<h4>-------------------------------------------------------------------</h4>
+<h2>Add a Comment</h2>
+{{=comments}}

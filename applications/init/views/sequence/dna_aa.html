@@ -1,0 +1,23 @@
+{{extend 'layout.html'}}
+[<a href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
+Back to Menu </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry"> 
+Create New Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook"> 
+Create New Notebook </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries"> 
+List all Entries </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual"> 
+Notarize an Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
+Show all Results </a>]
+<br><br>
+<h1>Basic Sequence Utilities</h1><br>
+This page contains tools to perform basic sequence manipulations:<br>
+1. Complementation: Produce the complementary sequence of the given DNA sequence (anti-sense strand from sense strand)<br>
+2. Transcription: Transcribes the given DNA sequence to RNA<br>
+3. Translation: Translates the given DNA/RNA sequence in amino acid sequence<br>
+4. Back Transcription: Produce the DNA sequence from given RNA sequence
+<br>
+<br>
+{{=form}}

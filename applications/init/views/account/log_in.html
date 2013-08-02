@@ -1,0 +1,8 @@
+{{extend 'layout.html'}}
+<h1>Log In Form<br></h1>
+<h2>You need to login before you can do anything.</h2><br>
+You can either log-in here or click 
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/account/new_account"> here </a> 
+to create an account.
+<br><br>
+{{=BEAUTIFY(form)}}

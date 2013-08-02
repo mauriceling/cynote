@@ -1,0 +1,25 @@
+{{extend 'layout.html'}}
+[<a href="http://{{=request.env.http_host}}/{{=request.application}}/default/index"> 
+Back to Menu </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry"> 
+Create New Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook"> 
+Create New Notebook </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries"> 
+List all Entries </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual"> 
+Notarize an Entry </a>|
+<a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/results"> 
+Show all Results </a>]
+<br>
+<h1>2 x C Correlation Results<br></h1>
+<h3>Data: </h3>
+&nbsp;&nbsp;&nbsp; {{=name[0]}}: <pre>{{=data[0]}}</pre>
+&nbsp;&nbsp;&nbsp; {{=name[1]}}: <pre>{{=data[1]}}</pre><br><br>
+<h2>Statistics:</h2>
+<br>
+<b>Goodman and Kruskal's Gamma: </b> {{=result['gamma']}}
+<br><br>
+<b>Kendall's tau-a: </b> {{=result['tau_a']}}
+<br><br>
+<b>Kendall's tau-c: </b> {{=result['tau_c']}}

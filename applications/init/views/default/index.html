@@ -1,0 +1,82 @@
+{{extend 'layout.html'}}&nbsp;<div class="center">
+<br>
+{{try:}}{{=H1(message)}}{{except:}}{{=BEAUTIFY(response._vars)}}{{pass}}
+</div>
+<div class="left">
+<br>
+<h2>Welcome to CyNote (version {{=version}}), {{=name}}</h2>
+<br>
+[ <a target="_blank" title="About CyNote" href="http://maurice.vodien.com/portfolio/RprojCyNote.html">
+About CyNote</a> ]
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/account/log_out"> 
+Logout</a> ]
+<br>
+{{for tab in tab_list.keys():}}
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/{{=tab[0]}}/{{=tab[1]}}">
+{{=tab_list[tab]}}</a> ]
+{{pass}}
+<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_entry">
+Create New Notebook Entry</a> ] 
+Create a new entry in one of the existing notebooks<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_experiment">
+Create New Experiment Entry</a> ] 
+Create a new entry, using the experiment entry template, in one of the existing notebooks<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/new_notebook">
+Create New Notebook</a> ] 
+Create a new notebook to hold entries as every entry must be part of a notebook<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/entries">
+List Entries by Notebook</a> ] 
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/archived_entries">
+List Archived Entries by Notebook</a> ] Show a list of entries for a particular notebook (Table of Contents)<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/notarize_bymanual">
+Notarize an Entry</a> ]
+Signing off a single entry as an individual<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/savedatabase/online">
+Backup Notebooks</a> ] 
+Allows for backup of notebooks as separate files and to remote FTP sites<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/archive_notebook">
+Archive Notebook(s)</a> ]
+Set notebook(s) for archiving and
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/unarchive_notebook">
+Un-Archive Notebook(s)</a> ]
+Release previously archived notebook(s) for use<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/account/auth_new_user"> 
+Authorize User(s)</a> ]
+Authorize newly signed-up user(s) and
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/account/deauth_user"> 
+De-authorize User(s)</a> ]
+De-authorize user(s) without removing the account<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/account/change_password">
+Change Password</a> ] Change password for any account<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/generate_hash">
+Generate Digital Signature</a> ] Generate a unique number for each of the 
+existing entries and comments<br><br>
+
+[ <a href="http://{{=request.env.http_host}}/{{=request.application}}/cynote/ntp_stamp">
+NTP Stamp</a> ] Stamping / Notarizing log files with global Network Time 
+Protocol (NTP) servers
+
+<br><br>
+
+
+<hr style="width: 100%; height: 2px;">
+<p>Copyright (c) {{=copyright['year']}} <a href="http://maurice.vodien.com">{{=copyright['director']}}</a>, 
+on behalf of
+<a target="_blank" title="CyNote @ SourceForge" href="http://cynote.sourceforge.net">CyNote Development Team</a><br><br>
+{{=copyright['license']}}
+</p>
+<hr style="width: 100%; height: 2px;">
+</div>
