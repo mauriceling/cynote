@@ -1,0 +1,1 @@
+python web2py.py --ip=localhost --port=8000 --password=admin
