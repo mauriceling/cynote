@@ -1,5 +1,0 @@
-svn update
-cd applications/init
-svn update
-cd modules/copads
-svn update
