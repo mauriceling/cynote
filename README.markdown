@@ -1,3 +1,5 @@
+[![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/mauriceling/cynote/)](https://archive.softwareheritage.org/browse/origin/directory/?origin_url=https://github.com/mauriceling/cynote/)
+
 ## Readme
 
 web2py is a free open source full-stack framework for rapid development of fast, scalable, secure and portable database-driven web-based applications. 
